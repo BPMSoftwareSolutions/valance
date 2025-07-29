@@ -1,0 +1,24 @@
+{
+  "name": "sequence-definition",
+  "description": "Validates that sequence files follow proper structure and naming conventions",
+  "type": "content",
+  "filePattern": ".*sequence.*\\.js$",
+  "rules": [
+    {
+      "operator": "mustContain",
+      "value": "export.*sequence",
+      "message": "File must export a sequence"
+    },
+    {
+      "operator": "mustContain", 
+      "value": "name.*:",
+      "message": "Sequence must have a name property"
+    },
+    {
+      "operator": "matchesPattern",
+      "value": "steps\\s*:\\s*\\[",
+      "message": "Sequence must have a steps array"
+    }
+  ]
+}
+
