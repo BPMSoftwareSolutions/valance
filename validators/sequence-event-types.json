@@ -1,0 +1,12 @@
+{
+  "name": "sequence-event-types",
+  "description": "Validates that all event types follow naming conventions and are properly formatted",
+  "type": "content",
+  "filePattern": ".*sequence.*\\.(js|json)$",
+  "rules": [
+    {
+      "plugin": "validateSequenceEventTypes",
+      "message": "Sequence event types validation failed"
+    }
+  ]
+}

@@ -10,6 +10,9 @@
   "scripts": {
     "test": "node cli/cli.js --validator sequence-definition --files \"test/**/*.js\"",
     "test-plugin": "node cli/cli.js --validator symphony-structure --files \"test/sample-symphony.js\"",
+    "test-sequence-good": "node cli/cli.js --validator sequence-required-fields --files \"test/good-sequence.js\"",
+    "test-sequence-bad": "node cli/cli.js --validator sequence-required-fields --files \"test/bad-sequence.js\"",
+    "test-sequence-profile": "node cli/cli.js --profile renderx-sequence-profile --files \"test/*sequence*.js\"",
     "validate-all": "node cli/cli.js --validators sequence-definition component-boundaries symphony-structure --files \"**/*.js\"",
     "dry-run": "node cli/cli.js --validator sequence-definition --files \"test/**/*.js\" --dry-run",
     "test-profile": "node cli/cli.js --profile renderx-profile --files \"test/**/*.js\""

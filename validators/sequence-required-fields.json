@@ -1,0 +1,12 @@
+{
+  "name": "sequence-required-fields",
+  "description": "Validates that sequence has all required fields (name, description, key, tempo, movements)",
+  "type": "content",
+  "filePattern": ".*sequence.*\\.(js|json)$",
+  "rules": [
+    {
+      "plugin": "validateSequenceRequiredFields",
+      "message": "Sequence required fields validation failed"
+    }
+  ]
+}

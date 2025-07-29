@@ -1,0 +1,13 @@
+{
+  "name": "sequence-musical-properties",
+  "description": "Validates musical properties like key signature, tempo range, and time signature",
+  "type": "content",
+  "filePattern": ".*sequence.*\\.(js|json)$",
+  "rules": [
+    {
+      "plugin": "validateSequenceMusicalProperties",
+      "strictMode": false,
+      "message": "Sequence musical properties validation failed"
+    }
+  ]
+}

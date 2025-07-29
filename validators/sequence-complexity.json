@@ -1,0 +1,13 @@
+{
+  "name": "sequence-complexity",
+  "description": "Validates sequence complexity metrics (strict mode)",
+  "type": "content",
+  "filePattern": ".*sequence.*\\.(js|json)$",
+  "rules": [
+    {
+      "plugin": "validateSequenceComplexity",
+      "strictMode": false,
+      "message": "Sequence complexity validation failed"
+    }
+  ]
+}

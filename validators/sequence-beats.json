@@ -1,0 +1,13 @@
+{
+  "name": "sequence-beats",
+  "description": "Validates beat structure, numbering, dependencies, and properties",
+  "type": "content",
+  "filePattern": ".*sequence.*\\.(js|json)$",
+  "rules": [
+    {
+      "plugin": "validateSequenceBeats",
+      "includeWarnings": false,
+      "message": "Sequence beats validation failed"
+    }
+  ]
+}

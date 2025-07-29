@@ -1,0 +1,12 @@
+{
+  "name": "sequence-movements",
+  "description": "Validates that sequence movements have proper structure and required fields",
+  "type": "content",
+  "filePattern": ".*sequence.*\\.(js|json)$",
+  "rules": [
+    {
+      "plugin": "validateSequenceMovements",
+      "message": "Sequence movements validation failed"
+    }
+  ]
+}

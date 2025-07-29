@@ -1,0 +1,13 @@
+{
+  "name": "sequence-documentation",
+  "description": "Validates sequence documentation quality (strict mode)",
+  "type": "content",
+  "filePattern": ".*sequence.*\\.(js|json)$",
+  "rules": [
+    {
+      "plugin": "validateSequenceDocumentation",
+      "strictMode": false,
+      "message": "Sequence documentation validation failed"
+    }
+  ]
+}

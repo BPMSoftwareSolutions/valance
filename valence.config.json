@@ -1,0 +1,24 @@
+{
+  "validation": {
+    "minTempo": 60,
+    "maxTempo": 200,
+    "requiredTimeSignature": "4/4",
+    "maxBeatsPerSequence": 12,
+    "minDescriptionLength": 20
+  },
+  "musicalKeys": [
+    "C Major", "D Major", "E Major", "F Major", "G Major", "A Major", "B Major",
+    "C Minor", "D Minor", "E Minor", "F Minor", "G Minor", "A Minor", "B Minor"
+  ],
+  "namingConventions": {
+    "sequencePattern": "^[A-Z][a-zA-Z\\s]+Symphony No\\. \\d+$",
+    "eventTypePattern": "^[A-Z_]{4,}$"
+  },
+  "musicalTerms": [
+    "tempo", "key", "movement", "beat", "measure", "rhythm", "melody", "harmony"
+  ],
+  "complexity": {
+    "maxBeatsWarning": 12,
+    "maxMovementsWarning": 3
+  }
+}

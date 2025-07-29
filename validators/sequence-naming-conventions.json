@@ -1,0 +1,13 @@
+{
+  "name": "sequence-naming-conventions",
+  "description": "Validates sequence naming conventions (strict mode)",
+  "type": "content",
+  "filePattern": ".*sequence.*\\.(js|json)$",
+  "rules": [
+    {
+      "plugin": "validateSequenceNamingConventions",
+      "includeWarnings": true,
+      "message": "Sequence naming conventions validation failed"
+    }
+  ]
+}
