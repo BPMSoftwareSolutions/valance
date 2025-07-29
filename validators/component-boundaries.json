@@ -1,0 +1,13 @@
+{
+  "name": "component-boundaries",
+  "description": "Validates component boundary definitions",
+  "type": "naming",
+  "filePattern": ".*\\.js$",
+  "rules": [
+    {
+      "operator": "hasExtension",
+      "value": [".js"],
+      "message": "File must have .js extension"
+    }
+  ]
+}

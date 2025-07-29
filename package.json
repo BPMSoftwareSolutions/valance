@@ -1,0 +1,31 @@
+{
+  "name": "valence",
+  "version": "1.0.0",
+  "description": "A modular, portable architecture validation engine",
+  "type": "module",
+  "main": "cli/cli.js",
+  "bin": {
+    "valence": "./cli/cli.js"
+  },
+  "scripts": {
+    "test": "node cli/cli.js --validator sequence-definition --files \"test/**/*.js\"",
+    "validate-all": "node cli/cli.js --validators sequence-definition component-boundaries --files \"**/*.js\"",
+    "dry-run": "node cli/cli.js --validator sequence-definition --files \"test/**/*.js\" --dry-run",
+    "test-profile": "node cli/cli.js --profile renderx-profile --files \"test/**/*.js\""
+  },
+  "dependencies": {
+    "yargs": "^17.7.2",
+    "glob": "^10.3.10"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "architecture",
+    "validation",
+    "linting",
+    "code-quality",
+    "cli"
+  ],
+  "author": "",
+  "license": "MIT"
+}
+
