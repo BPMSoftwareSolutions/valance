@@ -1,3 +1,8 @@
+# Dot folders (local only)
+.*/
+!.git/
+!.gitignore
+
 # Dependencies
 node_modules/
 npm-debug.log*
