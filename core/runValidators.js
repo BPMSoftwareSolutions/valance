@@ -3,6 +3,9 @@ import fs from 'fs/promises';
 import path from 'path';
 import { loadPlugins } from './pluginLoader.js';
 
+// Cache for loaded plugin evaluators
+const pluginCache = new Map();
+
 // Built-in operators
 const builtInOperators = {
   mustContain: (content, pattern) => {
@@ -50,6 +53,38 @@ export async function runValidators(validators, files) {
   }
   
   return results;
+}
+
+async function executePluginRule(content, rule, context) {
+  try {
+    const pluginName = rule.plugin;
+
+    // Check cache first
+    if (pluginCache.has(pluginName)) {
+      const plugin = pluginCache.get(pluginName);
+      return await plugin.evaluate(content, rule, context);
+    }
+
+    // Load plugin dynamically
+    const pluginPath = path.resolve(`plugins/${pluginName}.js`);
+    const plugin = await import(`file://${pluginPath.replace(/\\/g, '/')}`);
+
+    if (!plugin.evaluate || typeof plugin.evaluate !== 'function') {
+      throw new Error(`Plugin ${pluginName} must export an 'evaluate' function`);
+    }
+
+    // Cache the plugin for future use
+    pluginCache.set(pluginName, plugin);
+
+    // Execute the plugin evaluator
+    return await plugin.evaluate(content, rule, context);
+
+  } catch (error) {
+    return {
+      passed: false,
+      message: `Plugin execution error: ${error.message}`
+    };
+  }
 }
 
 async function runSingleValidator(validator, files, operators) {
@@ -107,24 +142,36 @@ async function runSingleValidator(validator, files, operators) {
 async function validateFileContent(filePath, rules, operators) {
   try {
     const content = await fs.readFile(filePath, 'utf-8');
-    
+
     for (const rule of rules) {
-      const { operator, value, message } = rule;
-      const operatorFn = operators[operator];
-      
-      if (!operatorFn) {
-        throw new Error(`Unknown operator: ${operator}`);
-      }
-      
-      const result = await operatorFn(content, value);
-      if (!result) {
-        return {
-          passed: false,
-          message: message || `Failed ${operator} check`
-        };
+      // Check if this rule uses a plugin-based evaluator
+      if (rule.plugin) {
+        const result = await executePluginRule(content, rule, { filePath });
+        if (!result.passed) {
+          return {
+            passed: false,
+            message: result.message || `Failed plugin ${rule.plugin} check`
+          };
+        }
+      } else {
+        // Use traditional operator-based validation
+        const { operator, value, message } = rule;
+        const operatorFn = operators[operator];
+
+        if (!operatorFn) {
+          throw new Error(`Unknown operator: ${operator}`);
+        }
+
+        const result = await operatorFn(content, value);
+        if (!result) {
+          return {
+            passed: false,
+            message: message || `Failed ${operator} check`
+          };
+        }
       }
     }
-    
+
     return { passed: true };
   } catch (error) {
     return {
@@ -137,45 +184,65 @@ async function validateFileContent(filePath, rules, operators) {
 async function validateStructure(files, rules, operators) {
   const details = [];
   let passed = true;
-  
+
   for (const rule of rules) {
-    const { operator, value, message } = rule;
-    const operatorFn = operators[operator];
-    
-    if (!operatorFn) {
-      throw new Error(`Unknown operator: ${operator}`);
-    }
-    
-    const result = await operatorFn(files, value);
-    if (!result) {
-      passed = false;
-      details.push(message || `Failed ${operator} check`);
+    if (rule.plugin) {
+      // For structure validation, we pass the files array as content
+      const result = await executePluginRule(files, rule, { type: 'structure' });
+      if (!result.passed) {
+        passed = false;
+        details.push(result.message || `Failed plugin ${rule.plugin} check`);
+      }
+    } else {
+      const { operator, value, message } = rule;
+      const operatorFn = operators[operator];
+
+      if (!operatorFn) {
+        throw new Error(`Unknown operator: ${operator}`);
+      }
+
+      const result = await operatorFn(files, value);
+      if (!result) {
+        passed = false;
+        details.push(message || `Failed ${operator} check`);
+      }
     }
   }
-  
+
   return { passed, details };
 }
 
 async function validateNaming(filePath, rules, operators) {
   const fileName = path.basename(filePath);
-  
+
   for (const rule of rules) {
-    const { operator, value, message } = rule;
-    const operatorFn = operators[operator];
-    
-    if (!operatorFn) {
-      throw new Error(`Unknown operator: ${operator}`);
-    }
-    
-    const result = await operatorFn(fileName, value);
-    if (!result) {
-      return {
-        passed: false,
-        message: message || `Failed ${operator} check`
-      };
+    if (rule.plugin) {
+      // For naming validation, we pass the filename as content
+      const result = await executePluginRule(fileName, rule, { filePath, type: 'naming' });
+      if (!result.passed) {
+        return {
+          passed: false,
+          message: result.message || `Failed plugin ${rule.plugin} check`
+        };
+      }
+    } else {
+      const { operator, value, message } = rule;
+      const operatorFn = operators[operator];
+
+      if (!operatorFn) {
+        throw new Error(`Unknown operator: ${operator}`);
+      }
+
+      const result = await operatorFn(fileName, value);
+      if (!result) {
+        return {
+          passed: false,
+          message: message || `Failed ${operator} check`
+        };
+      }
     }
   }
-  
+
   return { passed: true };
 }
 

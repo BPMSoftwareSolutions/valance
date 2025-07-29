@@ -1,0 +1,19 @@
+{
+  "name": "symphony-structure",
+  "description": "Validates symphony structure using plugin-based evaluator",
+  "type": "content",
+  "filePattern": ".*symphony.*\\.js$",
+  "rules": [
+    {
+      "plugin": "validateSymphonyStructure",
+      "requiresName": true,
+      "requiresVersion": true,
+      "message": "Symphony structure validation failed"
+    },
+    {
+      "operator": "mustContain",
+      "value": "export.*symphony",
+      "message": "File must export a symphony object"
+    }
+  ]
+}

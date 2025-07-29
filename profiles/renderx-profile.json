@@ -2,6 +2,7 @@
   "name": "renderx-profile",
   "description": "Validation profile for RenderX components",
   "validators": [
-    "sequence-definition"
+    "sequence-definition",
+    "symphony-structure"
   ]
 }
