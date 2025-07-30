@@ -174,20 +174,21 @@ async function findSequenceRegistrations(projectRoot, verbose) {
 function extractSequenceCallsFromContent(content, filePath, verbose) {
   const calls = [];
   const lines = content.split('\n');
-  
-  // Patterns for sequence calls
+
+  // Patterns for sequence calls (without global flag to avoid state issues)
   const callPatterns = [
-    /conductor\.startSequence\s*\(\s*['"]([^'"]+)['"]/g,
-    /communicationSystem\.conductor\.startSequence\s*\(\s*['"]([^'"]+)['"]/g,
-    /startSequence\s*\(\s*['"]([^'"]+)['"]/g,
-    /startCanvasLibraryDropFlow\s*\(/g,
-    /startCanvas\w+Flow\s*\(/g
+    /conductor\.startSequence\s*\(\s*['"]([^'"]+)['"]/,
+    /communicationSystem\.conductor\.startSequence\s*\(\s*['"]([^'"]+)['"]/,
+    /startSequence\s*\(\s*['"]([^'"]+)['"]/,
+    /startCanvasLibraryDropFlow\s*\(/,
+    /startCanvas\w+Flow\s*\(/
   ];
 
   lines.forEach((line, index) => {
     for (const pattern of callPatterns) {
-      let match;
-      while ((match = pattern.exec(line)) !== null) {
+      // Use match() instead of exec() to avoid global state issues
+      const match = line.match(pattern);
+      if (match) {
         const sequenceName = match[1] || extractSequenceNameFromSpecialCall(line);
         if (sequenceName) {
           calls.push({
@@ -196,17 +197,31 @@ function extractSequenceCallsFromContent(content, filePath, verbose) {
             lineNumber: index + 1,
             context: line.trim()
           });
-          
+
           if (verbose) {
             console.log(`🔍 [DEBUG] Found sequence call: ${sequenceName} at ${filePath}:${index + 1}`);
           }
+
+          // Break after first match to avoid multiple patterns matching the same line
+          break;
         }
       }
-      pattern.lastIndex = 0; // Reset regex
     }
   });
 
-  return calls;
+  // Remove duplicates based on sequenceName, filePath, and lineNumber
+  const uniqueCalls = [];
+  const seen = new Set();
+
+  for (const call of calls) {
+    const key = `${call.sequenceName}:${call.filePath}:${call.lineNumber}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      uniqueCalls.push(call);
+    }
+  }
+
+  return uniqueCalls;
 }
 
 /**
@@ -215,23 +230,24 @@ function extractSequenceCallsFromContent(content, filePath, verbose) {
 function extractSequenceRegistrationsFromContent(content, filePath, verbose) {
   const registrations = [];
   const lines = content.split('\n');
-  
-  // Patterns for sequence registrations
+
+  // Patterns for sequence registrations (without global flag to avoid state issues)
   const registrationPatterns = [
-    /conductor\.defineSequence\s*\(\s*['"]([^'"]+)['"]/g,
-    /conductor\.registerSequence\s*\(\s*([^,)]+)/g,
-    /registerAllSequences\s*\(/g,
-    /ALL_SEQUENCES\s*=\s*\[/g,
-    /ALL_CANVAS_SEQUENCES\s*=\s*\[/g
+    /conductor\.defineSequence\s*\(\s*['"]([^'"]+)['"]/,
+    /conductor\.registerSequence\s*\(\s*([^,)]+)/,
+    /registerAllSequences\s*\(/,
+    /ALL_SEQUENCES\s*=\s*\[/,
+    /ALL_CANVAS_SEQUENCES\s*=\s*\[/
   ];
 
   lines.forEach((line, index) => {
     for (const pattern of registrationPatterns) {
-      let match;
-      while ((match = pattern.exec(line)) !== null) {
+      // Use match() instead of exec() to avoid global state issues
+      const match = line.match(pattern);
+      if (match) {
         let sequenceName = match[1];
         let registrationType = 'Individual';
-        
+
         if (line.includes('registerAllSequences') || line.includes('ALL_SEQUENCES')) {
           sequenceName = 'BULK_REGISTRATION';
           registrationType = 'Bulk';
@@ -255,17 +271,31 @@ function extractSequenceRegistrationsFromContent(content, filePath, verbose) {
             registrationContext: extractRegistrationContext(content, index),
             context: line.trim()
           });
-          
+
           if (verbose) {
             console.log(`🔍 [DEBUG] Found sequence registration: ${sequenceName} (${registrationType}) at ${filePath}:${index + 1}`);
           }
+
+          // Break after first match to avoid multiple patterns matching the same line
+          break;
         }
       }
-      pattern.lastIndex = 0; // Reset regex
     }
   });
 
-  return registrations;
+  // Remove duplicates based on sequenceName, filePath, and lineNumber
+  const uniqueRegistrations = [];
+  const seen = new Set();
+
+  for (const reg of registrations) {
+    const key = `${reg.sequenceName}:${reg.filePath}:${reg.lineNumber}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      uniqueRegistrations.push(reg);
+    }
+  }
+
+  return uniqueRegistrations;
 }
 
 /**
@@ -304,14 +334,15 @@ function resolveActualSequenceName(callName, nameMap) {
  * Check if sequence is covered by bulk registration
  */
 function isSequenceCoveredByBulkRegistration(callName, actualName, nameMap) {
-  // Check if this sequence would be covered by bulk registration patterns
-  const bulkPatterns = [
-    /canvas-.*-symphony/,
-    /library-.*-flow/,
-    /component-.*-sequence/
-  ];
+  // Only return true if we can actually find the sequence in a known bulk registration
+  // Don't just assume based on naming patterns - that leads to false positives
 
-  return bulkPatterns.some(pattern => pattern.test(callName) || pattern.test(actualName));
+  // Check if the sequence name is explicitly in our name map from bulk registrations
+  const isInNameMap = nameMap.has(callName) || nameMap.has(actualName);
+
+  // For now, be conservative and only trust explicit registrations
+  // TODO: In the future, we could check actual bulk registration arrays
+  return isInNameMap && (callName !== actualName); // Only if it was mapped from bulk
 }
 
 /**
