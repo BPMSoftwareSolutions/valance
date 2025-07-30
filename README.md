@@ -138,6 +138,26 @@ node cli/cli.js --validator sequence-definition --files "test/**/*.js" --dry-run
 node cli/cli.js --validator sequence-definition --files "test/**/*.js" --format json
 ```
 
+#### Generate comprehensive reports
+```bash
+node cli/cli.js --validator sequence-definition --files "test/**/*.js" --generate-reports
+```
+
+#### Filter by confidence threshold
+```bash
+node cli/cli.js --validator import-path-validation --files "src/**/*.ts" --confidence-threshold 0.8
+```
+
+#### Show override statistics
+```bash
+node cli/cli.js --validator import-path-validation --files "src/**/*.ts" --show-overrides
+```
+
+#### Custom report directory
+```bash
+node cli/cli.js --validator sequence-definition --files "test/**/*.js" --generate-reports --report-dir custom-reports
+```
+
 ### NPM Scripts
 ```bash
 npm run test                    # Run sequence-definition validator on test files
@@ -151,12 +171,21 @@ npm run test-profile          # Test using renderx-profile
 ```
 
 ### CLI Options
+
+#### Basic Options
 - `--profile, -p`: Run validators from a specific profile
 - `--validator, -v`: Run a single validator
 - `--validators, -vs`: Run multiple specific validators
 - `--files, -f`: File pattern to validate (glob pattern, default: `**/*`)
 - `--dry-run, -d`: Show what would be validated without running
 - `--format`: Output format (`json` or `table`, default: `table`)
+
+#### Confidence Engine Options
+- `--generate-reports`: Generate comprehensive reports (HTML, Markdown, JSON)
+- `--report-dir`: Custom report directory (default: `reports`)
+- `--confidence-threshold`: Filter violations by confidence level (0.0-1.0)
+- `--apply-overrides`: Apply false positive overrides (default: `true`)
+- `--show-overrides`: Show override statistics
 
 ## 🎼 RenderX Sequence Validation
 
