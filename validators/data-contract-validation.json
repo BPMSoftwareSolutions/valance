@@ -1,0 +1,94 @@
+{
+  "name": "data-contract-validation",
+  "description": "Validate data contracts through RenderX musical sequencing architecture",
+  "type": "content", 
+  "filePattern": ".*\\.(ts|tsx|js|jsx)$",
+  "confidenceThreshold": 0.8,
+  "rules": [
+    {
+      "plugin": "validateDataContracts",
+      "enabledValidations": [
+        "MISSING_DATA_PROPERTY",
+        "MISSING_CONVENIENCE_FUNCTION",
+        "DATA_TRANSFORMATION_MISMATCH",
+        "HANDLER_CONTRACT_VIOLATION"
+      ],
+      "dataFlowValidation": {
+        "validateConvenienceFunctions": true,
+        "validateHandlerContracts": true,
+        "validateDataTransformations": true,
+        "checkRequiredProperties": true
+      },
+      "convenienceFunctionPatterns": [
+        "conductorEventBus.startSequence",
+        "MusicalSequences.start",
+        "conductor.startSequence"
+      ],
+      "handlerPatterns": [
+        "function.*[Hh]andler",
+        "const.*[Hh]andler.*=",
+        "export.*[Hh]andler"
+      ],
+      "requiredDataProperties": {
+        "canvas-events": ["element", "position", "dimensions"],
+        "button-events": ["buttonId", "eventType"],
+        "container-events": ["containerId", "state"],
+        "sequence-events": ["sequenceName", "data"]
+      },
+      "autoFixEnabled": true,
+      "message": "Data contract validation failed - data flow between convenience functions and handlers is inconsistent"
+    }
+  ],
+  "metadata": {
+    "migrationSource": "migration/DataContractValidator.cs",
+    "migrationDate": "2025-07-30", 
+    "complexity": "high",
+    "estimatedEffort": "3-4 days",
+    "confidenceRange": "80-95%",
+    "features": [
+      "Convenience function contract extraction",
+      "Handler contract validation",
+      "Data flow analysis",
+      "Property requirement validation",
+      "Auto-fix suggestions for data objects"
+    ],
+    "violationTypes": {
+      "MISSING_DATA_PROPERTY": {
+        "description": "Convenience function does not provide required property for handler",
+        "impact": "Error - handler will receive incomplete data",
+        "autoFixAvailable": true,
+        "example": "Handler expects 'elementId' but convenience function only provides 'position'"
+      },
+      "MISSING_CONVENIENCE_FUNCTION": {
+        "description": "Handler expects data but no convenience function provides it",
+        "impact": "Warning - handler may not receive expected data",
+        "autoFixAvailable": true,
+        "example": "Handler 'handleCanvasResize' expects data but no startCanvasResize function exists"
+      },
+      "DATA_TRANSFORMATION_MISMATCH": {
+        "description": "Data transformation between convenience function and handler is inconsistent",
+        "impact": "Error - data structure mismatch",
+        "autoFixAvailable": false,
+        "example": "Convenience function provides object but handler expects array"
+      },
+      "HANDLER_CONTRACT_VIOLATION": {
+        "description": "Handler does not follow expected contract patterns",
+        "impact": "Warning - may cause runtime issues",
+        "autoFixAvailable": false,
+        "example": "Handler accesses properties not defined in function signature"
+      }
+    },
+    "dataFlowArchitecture": {
+      "description": "RenderX uses convenience functions to start musical sequences with data",
+      "flow": "Convenience Function → startSequence(data) → Musical Conductor → Event Handler",
+      "contracts": "Each convenience function defines a data contract for its sequence",
+      "validation": "Ensures data provided by convenience functions matches handler expectations"
+    },
+    "implementationNotes": {
+      "simplification": "This is a simplified implementation of the complex C# DataContractValidator",
+      "dependencies": "Original C# version depends on SequenceStartDataExtractor, ConductorTransformationAnalyzer, HandlerContractExtractor, and DataFlowValidator",
+      "scope": "Focuses on core data contract validation between convenience functions and handlers",
+      "future": "Can be extended to include full conductor transformation analysis"
+    }
+  }
+}

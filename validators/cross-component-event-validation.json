@@ -1,0 +1,90 @@
+{
+  "name": "cross-component-event-validation",
+  "description": "Validate events across component boundaries in RenderX musical sequence architecture",
+  "type": "content",
+  "filePattern": ".*\\.(ts|tsx|js|jsx)$",
+  "confidenceThreshold": 0.8,
+  "rules": [
+    {
+      "plugin": "validateCrossComponentEvents",
+      "enabledValidations": [
+        "MISSING_CROSS_COMPONENT_EVENT",
+        "CROSS_COMPONENT_GAP"
+      ],
+      "componentMapping": {
+        "canvas": {
+          "eventTypesPath": "src/event-types/core/canvas.event-types.ts",
+          "crossComponentEvents": true
+        },
+        "button": {
+          "eventTypesPath": "src/event-types/core/button.event-types.ts",
+          "crossComponentEvents": false
+        },
+        "container": {
+          "eventTypesPath": "src/event-types/core/container.event-types.ts", 
+          "crossComponentEvents": false
+        },
+        "element": {
+          "eventTypesPath": "src/event-types/core/element.event-types.ts",
+          "crossComponentEvents": false
+        }
+      },
+      "canvasInternalEvents": [
+        "canvas-css-sync-detected",
+        "canvas-css-synchronized",
+        "canvas-css-sync-complete",
+        "canvas-render-start",
+        "canvas-render-complete",
+        "canvas-performance-warning",
+        "canvas-mode-changed",
+        "canvas-edit-mode-coordination",
+        "canvas-zoom-changed",
+        "canvas-pan-changed",
+        "canvas-bounds-changed",
+        "canvas-tool-selected",
+        "canvas-tool-deselected",
+        "canvas-grid-toggled",
+        "canvas-snap-toggled",
+        "canvas-initialized",
+        "canvas-destroyed",
+        "canvas-reset"
+      ],
+      "autoFixEnabled": true,
+      "message": "Cross-component event validation failed - events not properly registered across component boundaries"
+    }
+  ],
+  "metadata": {
+    "migrationSource": "migration/CrossComponentEventValidator.cs",
+    "migrationDate": "2025-07-30",
+    "complexity": "medium",
+    "estimatedEffort": "3-4 days",
+    "confidenceRange": "80-95%",
+    "features": [
+      "Cross-component event detection",
+      "Event registration gap analysis",
+      "Component-internal event filtering",
+      "Auto-fix suggestions for event types",
+      "Canvas-to-component event validation"
+    ],
+    "violationTypes": {
+      "MISSING_CROSS_COMPONENT_EVENT": {
+        "description": "Cross-component event is not registered in target component event types",
+        "impact": "Error - breaks cross-component communication",
+        "autoFixAvailable": true,
+        "example": "Canvas event 'canvas-element-selected' missing from button.event-types.ts"
+      },
+      "CROSS_COMPONENT_GAP": {
+        "description": "Canvas event should be accessible in other components but is not registered",
+        "impact": "Warning - limits cross-component integration",
+        "autoFixAvailable": true,
+        "example": "Canvas drag events not available in container component"
+      }
+    },
+    "componentArchitecture": {
+      "description": "RenderX uses a musical sequence architecture where components communicate through events",
+      "crossComponentFlow": "Canvas → Event → Musical Sequence → Target Component",
+      "eventTypeFiles": "Each component has an event-types.ts file defining available events",
+      "internalEvents": "Some events are component-internal and should not cross boundaries"
+    }
+  }
+}

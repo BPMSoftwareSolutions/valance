@@ -6,15 +6,15 @@ This page tracks the migration of C# validators from the original RenderX Archit
 
 | Status | Count | Percentage |
 |--------|-------|------------|
-| ✅ **Migrated** | 7 | 39% |
-| ❌ **Not Migrated** | 11 | 61% |
+| ✅ **Migrated** | 10 | 56% |
+| ❌ **Not Migrated** | 8 | 44% |
 | **Total Validators** | 18 | 100% |
 
 **Last Updated**: 2025-07-30
 
 ---
 
-## ✅ Migrated Validators (7/18)
+## ✅ Migrated Validators (10/18)
 
 ### 1. **ImportPathValidator** ✅
 - **C# Source**: `migration/ImportPathValidator.cs`
@@ -94,9 +94,53 @@ This page tracks the migration of C# validators from the original RenderX Archit
 - **Status**: ✅ Basic implementation
 - **Features**: Architectural boundary enforcement
 
+### 8. **ArchitectureViolationDetector** ✅
+- **C# Source**: `migration/ArchitectureViolationDetector.cs`
+- **JavaScript Plugin**: `plugins/validateArchitectureViolations.js` (280 lines)
+- **Validator Config**: `validators/architecture-violation-detection.json`
+- **Migration Date**: 2025-07-30
+- **Status**: ✅ Complete with confidence scoring
+- **Features**:
+  - 10 violation pattern types
+  - Context-aware validation (sequence/symphony files)
+  - Auto-fix suggestions for critical violations
+  - Confidence scoring (85-100%)
+  - Severity classification (critical/error/warning)
+- **Production Usage**: Active in `renderx-comprehensive-profile`
+
+### 9. **DataContractValidator** ✅
+- **C# Source**: `migration/DataContractValidator.cs`
+- **JavaScript Plugin**: `plugins/validateDataContracts.js` (350 lines)
+- **Validator Config**: `validators/data-contract-validation.json`
+- **Migration Date**: 2025-07-30
+- **Status**: ✅ Complete with simplified implementation
+- **Features**:
+  - Convenience function contract extraction
+  - Handler contract validation
+  - Data flow analysis between functions and handlers
+  - Missing property detection
+  - Auto-fix suggestions for data objects
+  - Confidence scoring (80-100%)
+- **Production Usage**: Active in `renderx-comprehensive-profile`
+
+### 10. **CrossComponentEventValidator** ✅
+- **C# Source**: `migration/CrossComponentEventValidator.cs`
+- **JavaScript Plugin**: `plugins/validateCrossComponentEvents.js` (290 lines)
+- **Validator Config**: `validators/cross-component-event-validation.json`
+- **Migration Date**: 2025-07-30
+- **Status**: ✅ Complete with cross-component analysis
+- **Features**:
+  - Cross-component event detection
+  - Event registration gap analysis
+  - Component-internal event filtering
+  - Canvas-to-component event validation
+  - Auto-fix suggestions for event types
+  - Confidence scoring (80-95%)
+- **Production Usage**: Active in `renderx-comprehensive-profile`
+
 ---
 
-## ❌ Not Migrated Validators (11/18)
+## ❌ Not Migrated Validators (8/18)
 
 ### High Priority (Core Architecture)
 
@@ -126,13 +170,7 @@ This page tracks the migration of C# validators from the original RenderX Archit
 - **Migration Effort**: ~5-7 days
 - **Priority**: High (developer productivity)
 
-#### 10. **ArchitectureViolationDetector** ❌
-- **C# Source**: `migration/ArchitectureViolationDetector.cs` ✅
-- **JavaScript Plugin**: ❌ Not implemented
-- **Complexity**: 🟡 Medium
-- **Purpose**: Detect architectural pattern violations
-- **Migration Effort**: ~3-4 days
-- **Priority**: High (core architecture)
+
 
 ### Medium Priority (Analysis & Validation)
 
@@ -145,21 +183,7 @@ This page tracks the migration of C# validators from the original RenderX Archit
 - **Migration Effort**: ~4-5 days
 - **Priority**: Medium (orchestration)
 
-#### 12. **DataContractValidator** ❌
-- **C# Source**: `migration/DataContractValidator.cs` ✅
-- **JavaScript Plugin**: ❌ Not implemented
-- **Complexity**: 🟡 Medium
-- **Purpose**: Validate data contracts between components
-- **Migration Effort**: ~3-4 days
-- **Priority**: Medium (data integrity)
 
-#### 13. **CrossComponentEventValidator** ❌
-- **C# Source**: `migration/CrossComponentEventValidator.cs` ✅
-- **JavaScript Plugin**: ❌ Not implemented
-- **Complexity**: 🟡 Medium
-- **Purpose**: Validate events across component boundaries
-- **Migration Effort**: ~3-4 days
-- **Priority**: Medium (component integration)
 
 #### 14. **ExportCompletenessValidator** ❌
 - **C# Source**: `migration/ExportCompletenessValidator.cs` ✅
@@ -216,15 +240,15 @@ This page tracks the migration of C# validators from the original RenderX Archit
 ## 🎯 Migration Roadmap
 
 ### Phase 1: Core Architecture (High Priority)
-**Estimated Effort**: 10-14 days
+**Estimated Effort**: 7-10 days
 1. **LegacyImportDetector** (2-3 days)
-2. **ArchitectureViolationDetector** (3-4 days)
+2. ~~**ArchitectureViolationDetector**~~ ✅ **COMPLETED** (2025-07-30)
 3. **ViolationAutoFixer** (5-7 days)
 
 ### Phase 2: Validation & Integration (Medium Priority)
-**Estimated Effort**: 15-20 days
-1. **DataContractValidator** (3-4 days)
-2. **CrossComponentEventValidator** (3-4 days)
+**Estimated Effort**: 9-13 days
+1. ~~**DataContractValidator**~~ ✅ **COMPLETED** (2025-07-30)
+2. ~~**CrossComponentEventValidator**~~ ✅ **COMPLETED** (2025-07-30)
 3. **ExportCompletenessValidator** (2-3 days)
 4. **FunctionAvailabilityValidator** (3-4 days)
 5. **SingleSymphonyValidator** (4-5 days)
