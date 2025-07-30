@@ -1,0 +1,64 @@
+Loaded profile: renderx-comprehensive-profile (10 validators)
+Found 57 files matching pattern: testdata/RenderX/src/**/*
+[
+  {
+    "validator": "sequence-required-fields",
+    "passed": true,
+    "message": "All checks passed",
+    "details": []
+  },
+  {
+    "validator": "sequence-musical-properties",
+    "passed": true,
+    "message": "All checks passed",
+    "details": []
+  },
+  {
+    "validator": "sequence-movements",
+    "passed": true,
+    "message": "All checks passed",
+    "details": []
+  },
+  {
+    "validator": "sequence-beats",
+    "passed": true,
+    "message": "All checks passed",
+    "details": []
+  },
+  {
+    "validator": "sequence-event-types",
+    "passed": true,
+    "message": "All checks passed",
+    "details": []
+  },
+  {
+    "validator": "sequence-naming-conventions",
+    "passed": true,
+    "message": "All checks passed",
+    "details": []
+  },
+  {
+    "validator": "sequence-documentation",
+    "passed": true,
+    "message": "All checks passed",
+    "details": []
+  },
+  {
+    "validator": "sequence-complexity",
+    "passed": true,
+    "message": "All checks passed",
+    "details": []
+  },
+  {
+    "validator": "symphony-structure",
+    "passed": true,
+    "message": "All checks passed",
+    "details": []
+  },
+  {
+    "validator": "import-path-validation",
+    "passed": true,
+    "message": "All checks passed",
+    "details": []
+  }
+]

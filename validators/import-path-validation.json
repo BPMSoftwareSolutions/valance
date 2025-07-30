@@ -1,0 +1,67 @@
+{
+  "name": "import-path-validation",
+  "description": "Ensure modules do not import from forbidden layers and follow correct import path patterns",
+  "type": "content",
+  "filePattern": ".*\\.(ts|js)$",
+  "rules": [
+    {
+      "plugin": "validateImports",
+      "forbiddenImports": [
+        "src/internal",
+        "src/infra",
+        "src/utils/private",
+        "internal/",
+        "private/"
+      ],
+      "message": "Forbidden import detected - modules should not import from restricted layers"
+    },
+    {
+      "plugin": "validateImports",
+      "importRules": {
+        "EVENTBUS_IMPORT": {
+          "filePattern": "(hooks|registry)\\.js$",
+          "importPattern": "import[\\s\\S]*?from\\s+['\"]([^'\"]*EventBus\\.js)['\"]",
+          "expectedPattern": "../../../../EventBus.ts",
+          "description": "EventBus imports must be 4 levels up from symphony directory",
+          "autoFixPattern": "../../../../EventBus.ts"
+        },
+        "CONDUCTOR_IMPORT": {
+          "filePattern": "hooks\\.js$",
+          "importPattern": "import[\\s\\S]*?from\\s+['\"]([^'\"]*sequences/index\\.js)['\"]",
+          "expectedPattern": "../../../index.ts",
+          "description": "Conductor imports must be 3 levels up from symphony directory",
+          "autoFixPattern": "../../../index.ts"
+        },
+        "EVENT_TYPES_IMPORT": {
+          "filePattern": "(registry|sequence)\\.js$",
+          "importPattern": "import[\\s\\S]*?from\\s+['\"]([^'\"]*event-types/core/[^'\"]*\\.event-types\\.js)['\"]",
+          "expectedPattern": "../../../../event-types/core/{component}.event-types.ts",
+          "description": "Event types imports must be 4 levels up from symphony directory",
+          "autoFixPattern": "../../../../event-types/core/{component}.event-types.ts"
+        },
+        "CSS_GENERATION_IMPORT": {
+          "filePattern": "business-logic\\.js$",
+          "importPattern": "import[\\s\\S]*?from\\s+['\"]([^'\"]*components/elements/[^/]+/[^'\"]*\\.utils\\.js)['\"]",
+          "expectedPattern": "../../../../../components/elements/{component}/{component}.utils.ts",
+          "description": "CSS generation imports must be 5 levels up from symphony directory",
+          "autoFixPattern": "../../../../../components/elements/{component}/{component}.utils.ts"
+        },
+        "INTERNAL_SYMPHONY_IMPORT": {
+          "filePattern": "(index|hooks|handlers|registry|business-logic)\\.js$",
+          "importPattern": "import[\\s\\S]*?from\\s+['\"](\\.\/[^'\"]+\\.js)['\"]",
+          "expectedPattern": "./{filename}.js",
+          "description": "Internal symphony imports must use relative paths within symphony directory",
+          "autoFixPattern": "./{filename}.js"
+        },
+        "SEQUENCE_TYPES_IMPORT": {
+          "filePattern": "sequence\\.js$",
+          "importPattern": "import[\\s\\S]*?from\\s+['\"]([^'\"]*SequenceTypes\\.js)['\"]",
+          "expectedPattern": "../../../core/SequenceTypes.ts",
+          "description": "SequenceTypes imports must be 3 levels up from symphony directory",
+          "autoFixPattern": "../../../core/SequenceTypes.ts"
+        }
+      },
+      "message": "Import path validation failed - check import patterns and directory structure"
+    }
+  ]
+}
