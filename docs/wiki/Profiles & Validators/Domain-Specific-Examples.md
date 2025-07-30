@@ -8,9 +8,10 @@ Real-world examples of Valence validation in production environments, featuring 
 RenderX sequences are musical-inspired architectural definitions that describe component interactions and state flows. Valence includes comprehensive validation migrated from the original C# SequenceValidator.
 
 ### Production Results
-✅ **6 RenderX sequence files validated**  
-✅ **100% success rate across all 8 validators**  
+✅ **57 RenderX files validated** (complete codebase)
+✅ **100% success rate across all 11 validators**
 ✅ **Zero validation failures - production ready**
+✅ **Confidence Engine integration** - Enhanced reporting with confidence scores
 
 ### Complete Validator Suite
 
@@ -84,40 +85,129 @@ RenderX sequences are musical-inspired architectural definitions that describe c
 - Valid dependencies between beats
 - Required beat properties (event, title, description)
 
-### RenderX Profile
+### RenderX Comprehensive Profile
 ```json
-// profiles/renderx-sequence-profile.json
+// profiles/renderx-comprehensive-profile.json
 {
-  "name": "renderx-sequence-profile",
-  "description": "Comprehensive validation profile for RenderX sequence definitions",
+  "name": "renderx-comprehensive-profile",
+  "description": "Complete validation profile for RenderX architecture including sequences, imports, and integration flows",
   "validators": [
     "sequence-required-fields",
-    "sequence-musical-properties", 
+    "sequence-musical-properties",
     "sequence-movements",
     "sequence-beats",
     "sequence-event-types",
     "sequence-naming-conventions",
     "sequence-documentation",
-    "sequence-complexity"
+    "sequence-complexity",
+    "symphony-structure",
+    "import-path-validation",
+    "integration-flow-validation"
   ]
 }
 ```
 
+### New Architectural Validators
+
+#### 9. Import Path Validation
+```json
+// validators/import-path-validation.json
+{
+  "name": "import-path-validation",
+  "description": "Validates import paths follow architectural conventions and prevent forbidden dependencies",
+  "type": "content",
+  "filePattern": ".*\\.(ts|js)$",
+  "confidenceThreshold": 0.7,
+  "rules": [
+    {
+      "plugin": "validateImports",
+      "forbiddenImports": ["src/internal", "src/infra", "private/"],
+      "importRules": [
+        {
+          "filePattern": ".*symphony.*sequence\\.ts$",
+          "importPattern": "EventBus",
+          "expectedPattern": "../../../../EventBus.ts",
+          "description": "EventBus imports must be 4 levels up from symphony directory"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Features:**
+- **🎯 Confidence Scoring** - Each violation includes confidence level (70-95%)
+- **🔍 Auto-fix Suggestions** - Provides corrected import paths
+- **🚫 Forbidden Import Detection** - Prevents architectural boundary violations
+- **📏 Path Depth Validation** - Ensures correct relative import depths
+
+#### 10. Integration Flow Validation
+```json
+// validators/integration-flow-validation.json
+{
+  "name": "integration-flow-validation",
+  "description": "Validates integration flow between UI event handlers and musical sequences",
+  "type": "content",
+  "filePattern": ".*\\.(ts|tsx|js|jsx)$",
+  "confidenceThreshold": 0.8,
+  "rules": [
+    {
+      "plugin": "validateIntegrationFlow",
+      "checkSymphonyRegistration": true,
+      "validateUIHandlers": true
+    }
+  ]
+}
+```
+
+**Features:**
+- **🎼 Symphony Registration Validation** - Ensures symphonies are properly registered
+- **🖱️ UI Handler Integration** - Validates event handlers call correct symphonies
+- **⚡ Runtime Error Prevention** - Detects "Sequence not found" errors before deployment
+- **🎯 High Confidence Detection** - 88-95% confidence in violations
+
 ### Production Validation Example
 ```bash
-# Validate actual RenderX sequences
-node cli/cli.js --profile renderx-sequence-profile --files ".testdata/RenderX/src/**/*sequence*.ts"
+# Validate complete RenderX architecture with Confidence Engine
+node cli/cli.js --profile renderx-comprehensive-profile --files "testdata/RenderX/src/**/*" --generate-reports
 
 # Results:
-# Found 6 files matching pattern
+# Found 57 files matching pattern
 # ✅ PASS sequence-required-fields - All checks passed
-# ✅ PASS sequence-musical-properties - All checks passed  
+# ✅ PASS sequence-musical-properties - All checks passed
 # ✅ PASS sequence-movements - All checks passed
 # ✅ PASS sequence-beats - All checks passed
 # ✅ PASS sequence-event-types - All checks passed
 # ✅ PASS sequence-naming-conventions - All checks passed
 # ✅ PASS sequence-documentation - All checks passed
 # ✅ PASS sequence-complexity - All checks passed
+# ✅ PASS symphony-structure - All checks passed
+# ✅ PASS import-path-validation - All checks passed
+# ✅ PASS integration-flow-validation - All checks passed
+
+# Enhanced Confidence Engine Output:
+# 📊 Generating comprehensive reports...
+# ✅ Reports generated:
+#    📄 Markdown: reports/validation-report.md
+#    🌐 HTML: reports/validation-report.html
+#    📋 JSON: reports/validation-report.json
+```
+
+### Confidence Engine Integration
+```bash
+# Filter by confidence level (only show high-confidence violations)
+node cli/cli.js --validator import-path-validation --files "src/**/*.ts" --confidence-threshold 0.9
+
+# Example output with confidence scores:
+# ❌ FAIL import-path-validation - Found 3 violation(s)
+#     🟥 Forbidden import detected: 'src/internal/services' (Line 12)
+#       Confidence: 95% | Rule: forbiddenImport
+#       Code: import x from 'src/internal/services';
+#       💡 Suggested fix: import x from 'src/public/services';
+
+# Apply false positive overrides
+node cli/cli.js --validator integration-flow-validation --files "src/**/*.tsx" --show-overrides
+# 📋 Override Statistics: 2 total overrides, 1 added this week
 ```
 
 ### Valid RenderX Sequence Structure

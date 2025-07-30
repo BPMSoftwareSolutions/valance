@@ -1,0 +1,18 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2025-01-30T03:20:00.000Z",
+  "overrides": {
+    "YWJjZGVmZ2hpams": {
+      "violationKey": "YWJjZGVmZ2hpams",
+      "rule": "forbiddenImport",
+      "filePath": "test/import-path-validation/invalid-import.ts",
+      "line": 3,
+      "message": "Forbidden import detected: 'src/internal/services/InternalService' contains 'src/internal'",
+      "status": "false_positive",
+      "reason": "This is a test file demonstrating forbidden imports - not production code",
+      "addedBy": "developer@example.com",
+      "addedAt": "2025-01-30T03:20:00.000Z",
+      "originalConfidence": 0.95
+    }
+  }
+}

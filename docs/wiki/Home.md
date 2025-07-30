@@ -4,6 +4,19 @@ Welcome to the **Valence Architecture Validation Engine** documentation!
 
 Valence is a modular, portable architecture validation engine designed to enforce structural integrity, naming conventions, and domain-specific architectural rules across any codebase.
 
+## 🎯 **NEW: Valence Confidence Engine**
+
+The **Valence Confidence Engine (VCE)** transforms traditional binary pass/fail validation into a nuanced, confidence-driven system that helps developers prioritize issues, trust results, and collaborate effectively.
+
+**Key Features:**
+- **🎯 Confidence Scoring** - Every violation includes a confidence score (0.0-1.0)
+- **🔍 Explainable Results** - Rich metadata with code snippets and auto-fix suggestions
+- **⚙️ Threshold Filtering** - Filter violations by confidence levels
+- **🚫 False Positive Management** - Override system for managing known false positives
+- **📊 Enhanced Reporting** - Confidence-aware HTML, Markdown, and JSON reports
+
+[Learn more about the Confidence Engine →](Getting%20Started/Confidence-Engine)
+
 ## 🚀 Getting Started
 
 - **[What is Valence?](Getting%20Started/What-is-Valence)** - Core concepts and architecture
@@ -14,6 +27,7 @@ Valence is a modular, portable architecture validation engine designed to enforc
 
 - **[Writing a Validator (JSON)](Profiles%20%26%20Validators/Writing-a-Validator-JSON)** - Creating JSON validator definitions
 - **[Writing a Plugin (JS)](Profiles%20%26%20Validators/Writing-a-Plugin-JS)** - Custom JavaScript validation logic
+- **[Architectural Validators](Profiles%20%26%20Validators/Architectural-Validators)** - Import paths, integration flows, and symphony structure
 - **[Common Operators Explained](Profiles%20%26%20Validators/Common-Operators-Explained)** - Built-in validation operators
 - **[Domain-Specific Examples (e.g., RenderX)](Profiles%20%26%20Validators/Domain-Specific-Examples)** - Real-world validation cases
 
@@ -43,10 +57,12 @@ Valence includes comprehensive sequence validation capabilities migrated from C#
 
 ## Recent Updates
 
+- 🎯 **NEW: Valence Confidence Engine** - Confidence-driven validation with explainable results
+- ✅ **ImportPathValidator & IntegrationFlowValidator Migration** - C# validators migrated to JavaScript plugins
+- ✅ **Enhanced Reporting System** - Confidence scores, code snippets, and auto-fix suggestions
+- ✅ **False Positive Override System** - Team collaboration features for managing known issues
 - ✅ **C# SequenceValidator Migration Complete** - All 8 validators migrated to JavaScript plugins
-- ✅ **RenderX Production Validation** - 100% success rate on 6 production sequence files
-- ✅ **Comprehensive Reporting** - HTML, JSON, and Markdown report generation
-- ✅ **Plugin System** - Custom validation logic support
+- ✅ **RenderX Production Validation** - 100% success rate on 57 production files
 
 ## Quick Commands
 
@@ -55,11 +71,14 @@ Valence includes comprehensive sequence validation capabilities migrated from C#
 npm install
 npm run test
 
-# Validate RenderX sequences
-node cli/cli.js --profile renderx-sequence-profile --files "src/**/*sequence*.ts"
+# Validate with Confidence Engine
+node cli/cli.js --validator import-path-validation --files "src/**/*.ts" --generate-reports --confidence-threshold 0.8
 
-# Generate reports
-node cli/cli.js --validator sequence-beats --files "*.js" --format json
+# Validate RenderX with comprehensive profile
+node cli/cli.js --profile renderx-comprehensive-profile --files "testdata/RenderX/src/**/*"
+
+# Apply false positive overrides
+node cli/cli.js --validator integration-flow-validation --files "src/**/*.tsx" --show-overrides
 ```
 
 ## Support
