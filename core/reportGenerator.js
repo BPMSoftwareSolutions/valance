@@ -275,8 +275,7 @@ export class ReportGenerator {
   }
 
   getTotalFilesAnalyzed() {
-    // This would need to be passed in from the CLI or calculated differently
-    return 'N/A';
+    return this.options.totalFilesAnalyzed || 'N/A';
   }
 
   getSeverityIcon(severity) {
