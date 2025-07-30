@@ -10,7 +10,7 @@
  */
 
 import { useCallback, useEffect, useRef } from 'react';
-import { startCanvasLibraryDropFlow } from './sequence';
+import { startCanvasLibraryDropFlow, CANVAS_LIBRARY_DROP_SEQUENCE } from './sequence';
 
 /**
  * Hook for Canvas Library Drop Symphony integration
@@ -31,6 +31,22 @@ export const useCanvasLibraryDropSymphony = (
   } = {}
 ) => {
   const activeSequenceRef = useRef<string | null>(null);
+
+  // ✅ REGISTER MUSICAL SEQUENCE - Pure Musical Sequence Architecture
+  useEffect(() => {
+    if (!conductor) {
+      console.warn('🚨 Canvas Library Drop Symphony: No conductor provided');
+      return;
+    }
+
+    console.log('🎼 Registering Canvas Library Drop Musical Sequence');
+    conductor.defineSequence('canvas-library-drop-symphony', CANVAS_LIBRARY_DROP_SEQUENCE);
+
+    return () => {
+      console.log('🎼 Unregistering Canvas Library Drop Musical Sequence');
+      // Note: conductor doesn't have unregister method, sequences persist for app lifetime
+    };
+  }, [conductor]);
   const dropStateRef = useRef<{
     isDragging: boolean;
     dragData: any;

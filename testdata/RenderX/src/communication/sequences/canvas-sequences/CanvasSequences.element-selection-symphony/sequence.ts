@@ -140,3 +140,29 @@ export const startCanvasElementSelectionFlow = (
     }
   });
 };
+
+/**
+ * Register Canvas Element Selection Sequence with Conductor
+ * Ensures sequence is properly registered before being called
+ *
+ * @param conductor - The musical conductor instance
+ */
+export const registerCanvasElementSelectionSequence = (conductor: any): void => {
+  if (!conductor) {
+    console.warn('🚨 Canvas Element Selection: No conductor provided for registration');
+    return;
+  }
+
+  console.log('🎼 Registering Canvas Element Selection Musical Sequence');
+
+  // Register sequence with proper sequence name
+  conductor.defineSequence('Canvas Element Selection Symphony No. 37', CANVAS_ELEMENT_SELECTION_SEQUENCE);
+
+  console.log('✅ Canvas Element Selection sequence registered successfully');
+};
+
+// Auto-register sequence when this module is imported (for validation purposes)
+// Note: This will be overridden by the main registration system
+if (typeof window !== 'undefined' && (window as any).renderxConductor) {
+  registerCanvasElementSelectionSequence((window as any).renderxConductor);
+}

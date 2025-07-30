@@ -303,3 +303,30 @@ export const startLayoutModeChangeFlow = (
     }
   });
 };
+
+/**
+ * Register Panel Toggle Sequences with Conductor
+ * Ensures sequences are properly registered before being called
+ *
+ * @param conductor - The musical conductor instance
+ */
+export const registerPanelToggleSequences = (conductor: any): void => {
+  if (!conductor) {
+    console.warn('🚨 Panel Toggle: No conductor provided for registration');
+    return;
+  }
+
+  console.log('🎼 Registering Panel Toggle Musical Sequences');
+
+  // Register both sequences with proper sequence names matching the startSequence calls
+  conductor.defineSequence('Panel Toggle Symphony No. 1', PANEL_TOGGLE_SEQUENCE);
+  conductor.defineSequence('Layout Mode Change Symphony No. 2', LAYOUT_MODE_CHANGE_SEQUENCE);
+
+  console.log('✅ Panel Toggle sequences registered successfully');
+};
+
+// Auto-register sequences when this module is imported (for validation purposes)
+// Note: This will be overridden by the main registration system
+if (typeof window !== 'undefined' && (window as any).renderxConductor) {
+  registerPanelToggleSequences((window as any).renderxConductor);
+}

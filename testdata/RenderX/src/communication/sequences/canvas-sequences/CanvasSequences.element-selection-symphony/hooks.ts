@@ -10,7 +10,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { startCanvasElementSelectionFlow } from './sequence';
+import { startCanvasElementSelectionFlow, CANVAS_ELEMENT_SELECTION_SEQUENCE } from './sequence';
 
 /**
  * Hook for Canvas Element Selection Symphony integration
@@ -41,6 +41,22 @@ export const useCanvasElementSelectionSymphony = (
     lastSelected: null,
     selectionMode: 'single'
   });
+
+  // ✅ REGISTER MUSICAL SEQUENCE - Pure Musical Sequence Architecture
+  useEffect(() => {
+    if (!conductor) {
+      console.warn('🚨 Canvas Element Selection Symphony: No conductor provided');
+      return;
+    }
+
+    console.log('🎼 Registering Canvas Element Selection Musical Sequence');
+    conductor.defineSequence('canvas-element-selection-symphony', CANVAS_ELEMENT_SELECTION_SEQUENCE);
+
+    return () => {
+      console.log('🎼 Unregistering Canvas Element Selection Musical Sequence');
+      // Note: conductor doesn't have unregister method, sequences persist for app lifetime
+    };
+  }, [conductor]);
 
   /**
    * Handle element selection operation

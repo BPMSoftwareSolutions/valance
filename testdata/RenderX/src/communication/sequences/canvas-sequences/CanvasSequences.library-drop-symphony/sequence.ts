@@ -160,3 +160,29 @@ export const startCanvasLibraryDropFlow = (
     }
   });
 };
+
+/**
+ * Register Canvas Library Drop Sequence with Conductor
+ * Ensures sequence is properly registered before being called
+ *
+ * @param conductor - The musical conductor instance
+ */
+export const registerCanvasLibraryDropSequence = (conductor: any): void => {
+  if (!conductor) {
+    console.warn('🚨 Canvas Library Drop: No conductor provided for registration');
+    return;
+  }
+
+  console.log('🎼 Registering Canvas Library Drop Musical Sequence');
+
+  // Register sequence with proper sequence name
+  conductor.defineSequence('Canvas Library Drop Symphony No. 33', CANVAS_LIBRARY_DROP_SEQUENCE);
+
+  console.log('✅ Canvas Library Drop sequence registered successfully');
+};
+
+// Auto-register sequence when this module is imported (for validation purposes)
+// Note: This will be overridden by the main registration system
+if (typeof window !== 'undefined' && (window as any).renderxConductor) {
+  registerCanvasLibraryDropSequence((window as any).renderxConductor);
+}

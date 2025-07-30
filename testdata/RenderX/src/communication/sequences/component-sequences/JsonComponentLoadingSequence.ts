@@ -263,3 +263,30 @@ export const startJsonComponentErrorFlow = (
     }
   });
 };
+
+/**
+ * Register JSON Component Loading Sequences with Conductor
+ * Ensures sequences are properly registered before being called
+ *
+ * @param conductor - The musical conductor instance
+ */
+export const registerJsonComponentLoadingSequences = (conductor: any): void => {
+  if (!conductor) {
+    console.warn('🚨 JSON Component Loading: No conductor provided for registration');
+    return;
+  }
+
+  console.log('🎼 Registering JSON Component Loading Musical Sequences');
+
+  // Register both sequences with proper sequence names matching the startSequence calls
+  conductor.defineSequence('JSON Component Loading Symphony No. 1', JSON_COMPONENT_LOADING_SEQUENCE);
+  conductor.defineSequence('JSON Component Error Handling Symphony No. 2', JSON_COMPONENT_ERROR_SEQUENCE);
+
+  console.log('✅ JSON Component Loading sequences registered successfully');
+};
+
+// Auto-register sequences when this module is imported (for validation purposes)
+// Note: This will be overridden by the main registration system
+if (typeof window !== 'undefined' && (window as any).renderxConductor) {
+  registerJsonComponentLoadingSequences((window as any).renderxConductor);
+}
