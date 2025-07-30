@@ -39,6 +39,10 @@ The **Valence Confidence Engine (VCE)** transforms traditional binary pass/fail 
 
 - **[GitHub Actions](CI-CD%20Integration/GitHub-Actions.md)** - Automated validation in CI/CD
 
+## 🔄 Migration
+
+- **[C# to JavaScript Migration Status](Migration/C%23-to-JavaScript-Migration-Status.md)** - Track migration progress from C# validators
+
 ## 🤝 Contributing
 
 - **[Adding Validators](Contributing/Adding-Validators.md)** - Contributing new validators
