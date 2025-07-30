@@ -15,33 +15,33 @@ The **Valence Confidence Engine (VCE)** transforms traditional binary pass/fail 
 - **🚫 False Positive Management** - Override system for managing known false positives
 - **📊 Enhanced Reporting** - Confidence-aware HTML, Markdown, and JSON reports
 
-[Learn more about the Confidence Engine →](Getting%20Started/Confidence-Engine)
+[Learn more about the Confidence Engine →](Getting%20Started/Confidence-Engine.md)
 
 ## 🚀 Getting Started
 
-- **[What is Valence?](Getting%20Started/What-is-Valence)** - Core concepts and architecture
-- **[Installing & Running](Getting%20Started/Installing-and-Running)** - Setup and first validation
-- **[Example Validations](Getting%20Started/Example-Validations)** - Common validation scenarios
+- **[What is Valence?](Getting%20Started/What-is-Valence.md)** - Core concepts and architecture
+- **[Installing & Running](Getting%20Started/Installing-and-Running.md)** - Setup and first validation
+- **[Example Validations](Getting%20Started/Example-Validations.md)** - Common validation scenarios
 
 ## 🔧 Profiles & Validators
 
-- **[Writing a Validator (JSON)](Profiles%20%26%20Validators/Writing-a-Validator-JSON)** - Creating JSON validator definitions
-- **[Writing a Plugin (JS)](Profiles%20%26%20Validators/Writing-a-Plugin-JS)** - Custom JavaScript validation logic
-- **[Architectural Validators](Profiles%20%26%20Validators/Architectural-Validators)** - Import paths, integration flows, and symphony structure
-- **[Common Operators Explained](Profiles%20%26%20Validators/Common-Operators-Explained)** - Built-in validation operators
-- **[Domain-Specific Examples (e.g., RenderX)](Profiles%20%26%20Validators/Domain-Specific-Examples)** - Real-world validation cases
+- **[Writing a Validator (JSON)](Profiles%20%26%20Validators/Writing-a-Validator-JSON.md)** - Creating JSON validator definitions
+- **[Writing a Plugin (JS)](Profiles%20%26%20Validators/Writing-a-Plugin-JS.md)** - Custom JavaScript validation logic
+- **[Architectural Validators](Profiles%20%26%20Validators/Architectural-Validators.md)** - Import paths, integration flows, and symphony structure
+- **[Common Operators Explained](Profiles%20%26%20Validators/Common-Operators-Explained.md)** - Built-in validation operators
+- **[Domain-Specific Examples (e.g., RenderX)](Profiles%20%26%20Validators/Domain-Specific-Examples.md)** - Real-world validation cases
 
 ## 🤖 Agents & Automation
 
-- **[Using AI to Generate Rules](Agents%20%26%20Automation/Using-AI-to-Generate-Rules)** - AI-assisted rule creation
+- **[Using AI to Generate Rules](Agents%20%26%20Automation/Using-AI-to-Generate-Rules.md)** - AI-assisted rule creation
 
 ## 🔄 CI/CD Integration
 
-- **[GitHub Actions](CI-CD%20Integration/GitHub-Actions)** - Automated validation in CI/CD
+- **[GitHub Actions](CI-CD%20Integration/GitHub-Actions.md)** - Automated validation in CI/CD
 
 ## 🤝 Contributing
 
-- **[Adding Validators](Contributing/Adding-Validators)** - Contributing new validators
+- **[Adding Validators](Contributing/Adding-Validators.md)** - Contributing new validators
 
 ---
 
@@ -53,7 +53,7 @@ Valence includes comprehensive sequence validation capabilities migrated from C#
 ✅ **100% Success Rate** - Production-validated on RenderX codebase
 ✅ **Plugin Architecture** - Modular and extensible
 
-[Learn more about RenderX Integration →](Profiles%20%26%20Validators/Domain-Specific-Examples#renderx-sequence-validation)
+[Learn more about RenderX Integration →](Profiles%20%26%20Validators/Domain-Specific-Examples.md#renderx-sequence-validation)
 
 ## Recent Updates
 

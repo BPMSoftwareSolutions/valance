@@ -365,10 +365,10 @@ node cli/cli.js --validator react-component-validation --files "test/**/*.jsx" -
 
 ## Next Steps
 
-1. **[Learn About Plugins](Writing-a-Plugin-JS)** - Add custom validation logic
-2. **[Explore Built-in Operators](Common-Operators-Explained)** - See all available operators
-3. **[Create Profiles](Domain-Specific-Examples#creating-profiles)** - Bundle validators together
-4. **[Set up CI/CD](GitHub-Actions)** - Automate your validation
+1. **[Learn About Plugins](Writing-a-Plugin-JS.md)** - Add custom validation logic
+2. **[Explore Built-in Operators](Common-Operators-Explained.md)** - See all available operators
+3. **[Create Profiles](Domain-Specific-Examples.md#creating-profiles)** - Bundle validators together
+4. **[Set up CI/CD](../CI-CD%20Integration/GitHub-Actions.md)** - Automate your validation
 
 ---
 

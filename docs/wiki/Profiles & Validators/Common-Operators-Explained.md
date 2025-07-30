@@ -416,10 +416,10 @@ node cli/cli.js --validator my-validator --files "test/sample.js" --format json
 
 ## Next Steps
 
-1. **[See Real Examples](Domain-Specific-Examples)** - Study operator usage in production
-2. **[Create Complex Validators](Writing-a-Validator-JSON)** - Combine operators effectively
-3. **[Write Plugins](Writing-a-Plugin-JS)** - When operators aren't enough
-4. **[Build Profiles](Domain-Specific-Examples#creating-profiles)** - Bundle validators together
+1. **[See Real Examples](Domain-Specific-Examples.md)** - Study operator usage in production
+2. **[Create Complex Validators](Writing-a-Validator-JSON.md)** - Combine operators effectively
+3. **[Write Plugins](Writing-a-Plugin-JS.md)** - When operators aren't enough
+4. **[Build Profiles](Domain-Specific-Examples.md#creating-profiles)** - Bundle validators together
 
 ---
 

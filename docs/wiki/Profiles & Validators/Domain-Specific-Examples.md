@@ -562,10 +562,10 @@ node cli/cli.js --profile my-profile --files "src/**/*" --format json > .reports
 
 ## Next Steps
 
-1. **[Set up CI/CD](GitHub-Actions)** - Automate domain-specific validation
-2. **[Create Custom Plugins](Writing-a-Plugin-JS)** - Add domain-specific logic
-3. **[Generate Reports](GitHub-Actions#reporting)** - Track validation metrics
-4. **[Use AI Assistance](Using-AI-to-Generate-Rules)** - Generate domain rules
+1. **[Set up CI/CD](../CI-CD%20Integration/GitHub-Actions.md)** - Automate domain-specific validation
+2. **[Create Custom Plugins](Writing-a-Plugin-JS.md)** - Add domain-specific logic
+3. **[Generate Reports](../CI-CD%20Integration/GitHub-Actions.md#reporting)** - Track validation metrics
+4. **[Use AI Assistance](../Agents%20%26%20Automation/Using-AI-to-Generate-Rules.md)** - Generate domain rules
 
 ---
 
