@@ -1,0 +1,22 @@
+{
+  "confidenceThreshold": 0.8,
+  "reportOptions": {
+    "includeCodeSnippets": true,
+    "showLowConfidence": true,
+    "generateReports": true,
+    "reportDir": "reports"
+  },
+  "validators": {
+    "import-path-validation": {
+      "confidenceThreshold": 0.7
+    },
+    "integration-flow-validation": {
+      "confidenceThreshold": 0.8
+    }
+  },
+  "profiles": {
+    "renderx-comprehensive-profile": {
+      "confidenceThreshold": 0.75
+    }
+  }
+}

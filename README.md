@@ -2,6 +2,17 @@
 
 **Valence** is a modular, portable architecture validation engine designed to enforce structural integrity, naming conventions, and domain-specific architectural rules across any codebase. It is built with Node.js and designed for cross-environment execution, including support for AI agent collaboration.
 
+## 🎯 **NEW: Valence Confidence Engine**
+
+The **Valence Confidence Engine (VCE)** transforms traditional binary pass/fail validation into a nuanced, confidence-driven system that helps developers prioritize issues, trust results, and collaborate effectively.
+
+**Key Features:**
+- **🎯 Confidence Scoring** - Every violation includes a confidence score (0.0-1.0)
+- **🔍 Explainable Results** - Rich metadata with code snippets and auto-fix suggestions
+- **⚙️ Threshold Filtering** - Filter violations by confidence levels
+- **🚫 False Positive Management** - Override system for managing known false positives
+- **📊 Enhanced Reporting** - Confidence-aware HTML, Markdown, and JSON reports
+
 ---
 
 ## 🧠 Architecture & Technology Stack
@@ -19,12 +30,15 @@
 
 Valence performs architecture validation in a portable, agent-executable way:
 
+- **Confidence-Driven Validation** - Every violation includes confidence scores and rich metadata
 - **File presence checks** - Validate required files exist
 - **Regex and semantic validations** - Pattern matching and content validation
-- **Import boundary enforcement** - Control dependencies and module access
+- **Import boundary enforcement** - Control dependencies and module access with auto-fix suggestions
+- **Integration flow validation** - Ensure UI components properly integrate with backend systems
 - **Domain-specific structure enforcement** - Symphony patterns, sequence definitions
 - **Plugin-based evaluator extensions** - Custom validation logic via JavaScript plugins
 - **Profile-based validator orchestration** - Bundle validators for comprehensive validation
+- **Enhanced reporting** - HTML dashboards, confidence analysis, and false positive management
 - **Built-in operators** - mustContain, matchesPattern, fileExists, hasExtension
 - **Configuration-driven** - Centralized config with tempo ranges, naming patterns, complexity limits
 
