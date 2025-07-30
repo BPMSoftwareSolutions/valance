@@ -1,0 +1,103 @@
+{
+  "name": "architecture-violation-detection",
+  "description": "Detect architectural pattern violations in RenderX musical sequence architecture",
+  "type": "content",
+  "filePattern": ".*\\.(ts|tsx|js|jsx)$",
+  "confidenceThreshold": 0.8,
+  "rules": [
+    {
+      "plugin": "validateArchitectureViolations",
+      "enabledViolations": [
+        "DIRECT_EVENTBUS_EMIT",
+        "CONDUCTOR_EMIT_EVENT", 
+        "DIRECT_EXECUTE_MOVEMENT",
+        "DIRECT_EXECUTE_BEAT",
+        "INCORRECT_EVENTBUS_METHOD",
+        "STATIC_EVENTBUS_EMIT",
+        "GENERIC_EMIT_PATTERN",
+        "CUSTOM_EVENT_DISPATCH",
+        "DOM_EVENT_DISPATCH",
+        "WINDOW_EVENT_DISPATCH"
+      ],
+      "severityLevels": {
+        "critical": ["DIRECT_EVENTBUS_EMIT", "CONDUCTOR_EMIT_EVENT", "DIRECT_EXECUTE_MOVEMENT", "INCORRECT_EVENTBUS_METHOD", "STATIC_EVENTBUS_EMIT"],
+        "error": ["DIRECT_EXECUTE_BEAT", "CUSTOM_EVENT_DISPATCH", "DOM_EVENT_DISPATCH"],
+        "warning": ["GENERIC_EMIT_PATTERN", "WINDOW_EVENT_DISPATCH"]
+      },
+      "contextRules": {
+        "DIRECT_EXECUTE_BEAT": {
+          "allowedContexts": ["sequence.ts", "symphony.ts"],
+          "description": "executeBeat() should only be called within sequence beat definitions"
+        }
+      },
+      "autoFixEnabled": true,
+      "message": "Architecture violation detected - code bypasses musical sequence architecture"
+    }
+  ],
+  "metadata": {
+    "migrationSource": "migration/ArchitectureViolationDetector.cs",
+    "migrationDate": "2025-07-30",
+    "complexity": "medium",
+    "estimatedEffort": "3-4 days",
+    "confidenceRange": "85-95%",
+    "features": [
+      "10 violation pattern types",
+      "Context-aware validation",
+      "Auto-fix suggestions",
+      "Confidence scoring",
+      "Severity classification"
+    ],
+    "violationTypes": {
+      "DIRECT_EVENTBUS_EMIT": {
+        "description": "Direct eventBus.emit() calls that bypass musical sequence architecture",
+        "impact": "Critical - breaks architectural boundaries",
+        "autoFixAvailable": true
+      },
+      "CONDUCTOR_EMIT_EVENT": {
+        "description": "conductor.emitEvent() calls that bypass proper beat execution",
+        "impact": "Critical - violates sequence execution flow",
+        "autoFixAvailable": true
+      },
+      "DIRECT_EXECUTE_MOVEMENT": {
+        "description": "Direct conductor.executeMovement() calls outside sequence context",
+        "impact": "Critical - breaks sequence orchestration",
+        "autoFixAvailable": false
+      },
+      "DIRECT_EXECUTE_BEAT": {
+        "description": "conductor.executeBeat() called outside sequence beat context",
+        "impact": "Error - violates beat execution context",
+        "autoFixAvailable": false
+      },
+      "INCORRECT_EVENTBUS_METHOD": {
+        "description": "Incorrect EventBus methods (on/off instead of subscribe/unsubscribe)",
+        "impact": "Critical - API incompatibility",
+        "autoFixAvailable": true
+      },
+      "STATIC_EVENTBUS_EMIT": {
+        "description": "Static EventBus.emit() calls that bypass instance-based architecture",
+        "impact": "Critical - breaks instance isolation",
+        "autoFixAvailable": true
+      },
+      "GENERIC_EMIT_PATTERN": {
+        "description": "Generic .emit() patterns that may bypass architecture",
+        "impact": "Warning - potential architectural bypass",
+        "autoFixAvailable": false
+      },
+      "CUSTOM_EVENT_DISPATCH": {
+        "description": "Custom event dispatch methods that bypass musical sequences",
+        "impact": "Error - circumvents event coordination",
+        "autoFixAvailable": false
+      },
+      "DOM_EVENT_DISPATCH": {
+        "description": "Direct DOM event dispatch that bypasses component architecture",
+        "impact": "Error - breaks component boundaries",
+        "autoFixAvailable": false
+      },
+      "WINDOW_EVENT_DISPATCH": {
+        "description": "Window-level event dispatch that may bypass component communication",
+        "impact": "Warning - potential architectural bypass",
+        "autoFixAvailable": false
+      }
+    }
+  }
+}
