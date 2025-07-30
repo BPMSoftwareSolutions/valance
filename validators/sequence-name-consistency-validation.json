@@ -1,0 +1,84 @@
+{
+  "name": "sequence-name-consistency-validation",
+  "description": "Validates sequence name consistency across definitions, registrations, and calls. Detects naming mismatches that cause 'Sequence not found' runtime errors.",
+  "type": "content",
+  "filePattern": ".*\\.(ts|tsx|js|jsx)$",
+  "version": "1.0.0",
+  "author": "Valence Validation System",
+  "tags": ["sequence", "naming", "consistency", "runtime-errors"],
+  "rules": [
+    {
+      "name": "validateSequenceNameConsistency",
+      "description": "Cross-references sequence definitions, registrations, and calls to detect naming inconsistencies",
+      "severity": "error",
+      "enabled": true,
+      "plugin": "validateSequenceNameConsistency",
+      "checkSequenceConsistency": true,
+      "validateNamingPatterns": true,
+      "detectConvenienceFunctionBypass": true,
+      "enforceNamingConventions": true,
+      "verbose": false,
+      "configuration": {
+        "preferredNamingPattern": "kebab-case",
+        "allowDirectCalls": false,
+        "requireConvenienceFunctions": true,
+        "strictConsistency": true
+      }
+    }
+  ],
+  "filePatterns": [
+    "**/*.ts",
+    "**/*.tsx", 
+    "**/*.js",
+    "**/*.jsx"
+  ],
+  "excludePatterns": [
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    "**/*.test.*",
+    "**/*.spec.*"
+  ],
+  "documentation": {
+    "purpose": "Prevents runtime 'Sequence not found' errors by validating sequence name consistency",
+    "scope": "All sequence-related files including definitions, registrations, and calls",
+    "validationTypes": [
+      "Sequence definition vs call consistency",
+      "Registration vs call name matching", 
+      "Naming pattern consistency across sequences",
+      "Convenience function usage validation",
+      "Direct call detection and recommendations"
+    ],
+    "commonIssues": [
+      "Sequence called with different name than defined",
+      "Direct calls bypassing convenience functions",
+      "Inconsistent naming patterns (kebab-case vs formal names)",
+      "Sequences defined but not registered",
+      "Calls to non-existent sequences"
+    ],
+    "examples": {
+      "validPattern": {
+        "definition": "name: 'canvas-component-drag-symphony'",
+        "registration": "conductor.registerSequence(CANVAS_COMPONENT_DRAG_SEQUENCE)",
+        "call": "conductor.startSequence('canvas-component-drag-symphony', data)"
+      },
+      "invalidPattern": {
+        "definition": "name: 'Canvas Component Drag Symphony No. 4'", 
+        "registration": "conductor.defineSequence('canvas-component-drag-symphony', SEQUENCE)",
+        "call": "conductor.startSequence('canvas-component-drag-symphony', data)",
+        "issue": "Name mismatch between definition and call"
+      }
+    }
+  },
+  "relatedValidators": [
+    "sequence-registration-validation",
+    "sequence-naming-conventions", 
+    "integration-flow-validation"
+  ],
+  "fixes": {
+    "SequenceNotFound": "Ensure sequence is properly defined and registered with matching names",
+    "InconsistentNamingPattern": "Standardize on kebab-case naming across all sequences",
+    "DirectCallBypassesConvenienceFunction": "Use convenience functions instead of direct conductor calls",
+    "SequenceDefinedButNotRegistered": "Add conductor.registerSequence() call for defined sequences"
+  }
+}
