@@ -1,0 +1,294 @@
+/**
+ * RenderX Evolution - Global CSS
+ * 
+ * Comprehensive global styles matching the RX.React legacy system.
+ * Includes theme variables, component styles, and system-wide CSS.
+ * 
+ * @version 1.0.0
+ * @author RenderX Evolution Team
+ * @date 2025-07-29
+ */
+
+/* CSS Custom Properties (Variables) - Enhanced Theme System */
+:root {
+  /* Base Color Palette */
+  --primary-color: #007bff;
+  --primary-hover: #0056b3;
+  --secondary-color: #6c757d;
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+  --error-color: #dc3545;
+
+  /* Light Theme (Default) */
+  --theme-bg-primary: #ffffff;
+  --theme-bg-secondary: #f8f9fa;
+  --theme-bg-tertiary: #e9ecef;
+  --theme-text-primary: #212529;
+  --theme-text-secondary: #6c757d;
+  --theme-text-muted: #868e96;
+  --theme-border: #dee2e6;
+  --theme-border-light: #e9ecef;
+  --theme-border-dark: #adb5bd;
+  --theme-accent: #007bff;
+  --theme-success: #28a745;
+  --theme-warning: #ffc107;
+  --theme-error: #dc3545;
+
+  /* Legacy Variables (for backward compatibility) */
+  --app-background: var(--theme-bg-primary);
+  --header-background: var(--theme-bg-secondary);
+  --sidebar-background: var(--theme-bg-secondary);
+  --canvas-background: var(--theme-bg-primary);
+  --background-secondary: var(--theme-bg-tertiary);
+  --app-text: var(--theme-text-primary);
+  --text-primary: var(--theme-text-primary);
+  --text-secondary: var(--theme-text-secondary);
+  --text-muted: var(--theme-text-muted);
+  --border-color: var(--theme-border);
+  --border-light: var(--theme-border-light);
+  --border-dark: var(--theme-border-dark);
+  --element-background: var(--theme-bg-primary);
+  --element-hover: var(--theme-bg-secondary);
+  --element-active: var(--theme-bg-tertiary);
+
+  /* Typography */
+  --app-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+
+  /* Border Radius */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.2s ease;
+  --transition-slow: 0.3s ease;
+
+  /* Component-Specific Theme Variables */
+  --canvas-bg: var(--theme-bg-primary);
+  --canvas-grid: var(--theme-border);
+  --sidebar-bg: var(--theme-bg-secondary);
+  --header-bg: var(--theme-bg-secondary);
+  --control-bg: var(--theme-bg-primary);
+  --control-border: var(--theme-border);
+  --control-text: var(--theme-text-primary);
+
+  /* Button Theme Variables */
+  --button-bg: var(--theme-bg-primary);
+  --button-text: var(--theme-text-primary);
+  --button-border: var(--theme-border);
+  --button-hover-bg: var(--theme-bg-secondary);
+  --button-active-bg: var(--theme-bg-tertiary);
+
+  /* Input Theme Variables */
+  --input-bg: var(--theme-bg-primary);
+  --input-text: var(--theme-text-primary);
+  --input-border: var(--theme-border);
+  --input-focus-border: var(--theme-accent);
+  --input-placeholder: var(--theme-text-muted);
+
+  /* Chart Theme Variables */
+  --chart-bg: var(--theme-bg-primary);
+  --chart-border: var(--theme-border);
+  --chart-text: var(--theme-text-primary);
+  --chart-grid: rgba(0, 0, 0, 0.1);
+  --chart-axis: var(--theme-text-secondary);
+
+  /* Layout Mode Variables */
+  --preview-background: var(--theme-bg-secondary);
+  --preview-overlay-bg: rgba(0, 0, 0, 0.8);
+  --fullscreen-bg: var(--theme-bg-primary);
+
+  /* Legacy Component Variables - Exact RX.React Values */
+  --bg-color: #ffffff;
+  --text-color: #333333;
+  --border: 1px solid #d1d5db;
+  --padding: 8px 12px;
+  --border-radius: 4px;
+  --font-size: 14px;
+}
+
+/* Dark Theme Overrides */
+[data-theme="dark"] {
+  --theme-bg-primary: #1a1a1a;
+  --theme-bg-secondary: #2d2d2d;
+  --theme-bg-tertiary: #404040;
+  --theme-text-primary: #ffffff;
+  --theme-text-secondary: #b3b3b3;
+  --theme-text-muted: #888888;
+  --theme-border: #404040;
+  --theme-border-light: #333333;
+  --theme-border-dark: #555555;
+  --theme-accent: #4dabf7;
+  --theme-success: #51cf66;
+  --theme-warning: #ffd43b;
+  --theme-error: #ff6b6b;
+
+  /* Dark mode component overrides */
+  --chart-grid: rgba(255, 255, 255, 0.1);
+  --preview-overlay-bg: rgba(0, 0, 0, 0.9);
+  --fullscreen-bg: #000000;
+
+  /* Button dark theme */
+  --button-hover-bg: var(--theme-bg-tertiary);
+
+  /* Input dark theme */
+  --input-focus-border: var(--theme-accent);
+
+  /* Legacy Component Variables - Dark Theme */
+  --bg-color: #2d2d2d;
+  --text-color: #ffffff;
+  --border: 1px solid #404040;
+}
+
+.theme-dark {
+  --theme-bg-primary: #1a1a1a;
+  --theme-bg-secondary: #2d2d2d;
+  --theme-bg-tertiary: #404040;
+  --theme-text-primary: #ffffff;
+  --theme-text-secondary: #b3b3b3;
+  --theme-text-muted: #888888;
+  --theme-border: #404040;
+  --theme-border-light: #333333;
+  --theme-border-dark: #555555;
+
+  /* Legacy Component Variables - Dark Theme */
+  --bg-color: #2d2d2d;
+  --text-color: #ffffff;
+  --border: 1px solid #404040;
+}
+
+/* System Theme Detection (Fallback) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --theme-bg-primary: #1a1a1a;
+    --theme-bg-secondary: #2d2d2d;
+    --theme-bg-tertiary: #404040;
+    --theme-text-primary: #ffffff;
+    --theme-text-secondary: #b3b3b3;
+    --theme-text-muted: #888888;
+    --theme-border: #404040;
+    --theme-border-light: #333333;
+    --theme-border-dark: #555555;
+    --theme-accent: #4dabf7;
+    --theme-success: #51cf66;
+    --theme-warning: #ffd43b;
+    --theme-error: #ff6b6b;
+
+    /* Legacy Component Variables - System Dark */
+    --bg-color: #2d2d2d;
+    --text-color: #ffffff;
+    --border: 1px solid #404040;
+  }
+}
+
+/* CSS Reset and Base Styles */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--app-font-family);
+  background-color: var(--app-background);
+  color: var(--app-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Typography Reset */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Button Reset */
+button {
+  font-family: inherit;
+  font-size: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* Input Reset */
+input, textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm);
+}
+
+/* Focus Styles */
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* Utility Classes */
+.gap-sm { gap: var(--spacing-sm); }
+.gap-md { gap: var(--spacing-md); }
+.gap-lg { gap: var(--spacing-lg); }
+
+.text-xs { font-size: var(--font-size-xs); }
+.text-sm { font-size: var(--font-size-sm); }
+.text-base { font-size: var(--font-size-base); }
+.text-lg { font-size: var(--font-size-lg); }
+.text-xl { font-size: var(--font-size-xl); }
+
+.font-normal { font-weight: var(--font-weight-normal); }
+.font-medium { font-weight: var(--font-weight-medium); }
+.font-semibold { font-weight: var(--font-weight-semibold); }
+.font-bold { font-weight: var(--font-weight-bold); }
+
+.leading-tight { line-height: var(--line-height-tight); }
+.leading-normal { line-height: var(--line-height-normal); }
+.leading-relaxed { line-height: var(--line-height-relaxed); }
+
+/* Component Theme Classes */
+.theme-light { --component-theme: light; }
+.theme-dark { --component-theme: dark; }
