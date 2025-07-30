@@ -1,6 +1,8 @@
 {
   "name": "sequence-name-consistency-validation",
   "description": "Validates sequence name consistency across definitions, registrations, and calls. Detects naming mismatches that cause 'Sequence not found' runtime errors.",
+  "type": "content",
+  "filePattern": ".*\\.(ts|tsx|js|jsx)$",
   "version": "1.0.0",
   "author": "Valence Validation System",
   "tags": ["sequence", "naming", "consistency", "runtime-errors"],
