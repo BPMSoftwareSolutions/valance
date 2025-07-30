@@ -1,0 +1,14 @@
+Loaded validator: integration-flow-validation
+Found 7 files matching pattern: test/integration-flow-validation/**/*
+[
+  {
+    "validator": "integration-flow-validation",
+    "passed": false,
+    "message": "Some checks failed",
+    "details": [
+      "test/integration-flow-validation/valid-integration.tsx: Found 1 integration flow violation(s):\n  Line 1: Symphony 'canvas-component-drag-symphony' is not registered anywhere",
+      "test/integration-flow-validation/invalid-integration.tsx: Found 1 integration flow violation(s):\n  Line 1: Symphony 'canvas-component-drag-symphony' is not registered anywhere",
+      "test/integration-flow-validation/library-drop/sequence.ts: Found 1 integration flow violation(s):\n  Line 1: Symphony 'canvas-library-drop-symphony' is not registered anywhere"
+    ]
+  }
+]

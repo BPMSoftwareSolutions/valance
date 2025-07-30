@@ -1,0 +1,69 @@
+{
+  "name": "integration-flow-validation",
+  "description": "Validates integration flow between UI event handlers and musical sequences - detects when symphonies are structurally sound but disconnected from UI layer",
+  "type": "content",
+  "filePattern": ".*\\.(ts|tsx|js|jsx)$",
+  "rules": [
+    {
+      "plugin": "validateIntegrationFlow",
+      "verbose": false,
+      "symphonyTypes": [
+        "component-drag",
+        "library-drop", 
+        "element-selection",
+        "panel-toggle",
+        "layout-mode-change"
+      ],
+      "expectedHandlerPatterns": {
+        "component-drag": {
+          "handlerNames": ["handleCanvasElementDragStart", "handleDragStart"],
+          "eventTypes": ["onDragStart"],
+          "symphonyCall": "conductor.startSequence('canvas-component-drag-symphony'"
+        },
+        "library-drop": {
+          "handlerNames": ["handleCanvasLibraryDrop", "handleDrop"],
+          "eventTypes": ["onDrop"],
+          "symphonyCall": "conductor.startSequence('canvas-library-drop-symphony'"
+        },
+        "element-selection": {
+          "handlerNames": ["handleCanvasElementSelection", "handleClick", "handleSelection"],
+          "eventTypes": ["onClick", "onSelect"],
+          "symphonyCall": "conductor.startSequence('canvas-element-selection-symphony'"
+        }
+      },
+      "uiFilePaths": [
+        "App.tsx",
+        "src/App.tsx",
+        "components/Canvas.tsx",
+        "src/components/Canvas.tsx",
+        "src/components/Canvas/Canvas.tsx"
+      ],
+      "conductorFilePaths": [
+        "communication/sequences/MusicalConductor.ts",
+        "communication/MusicalConductor.ts",
+        "core/MusicalConductor.ts",
+        "MusicalConductor.ts"
+      ],
+      "symphonyFilePaths": [
+        "hooks.ts",
+        "index.ts", 
+        "registry.ts",
+        "sequence.ts"
+      ],
+      "validationRules": {
+        "requireSymphonyCall": true,
+        "validateSymphonyName": true,
+        "checkSymphonyRegistration": true,
+        "validateHandlerRelevance": true
+      },
+      "severityLevels": {
+        "MissingSymphonyCall": "Critical",
+        "SymphonyNameMismatch": "Critical",
+        "SymphonyNotRegistered": "Critical",
+        "HandlerNotFound": "Warning",
+        "ValidationError": "Error"
+      },
+      "message": "Integration flow validation failed - UI handlers are not properly connected to musical sequences"
+    }
+  ]
+}

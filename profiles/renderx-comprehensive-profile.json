@@ -3,7 +3,7 @@
   "description": "Comprehensive validation profile for RenderX codebase including sequence validation and import path validation",
   "validators": [
     "sequence-required-fields",
-    "sequence-musical-properties", 
+    "sequence-musical-properties",
     "sequence-movements",
     "sequence-beats",
     "sequence-event-types",
@@ -11,6 +11,7 @@
     "sequence-documentation",
     "sequence-complexity",
     "symphony-structure",
-    "import-path-validation"
+    "import-path-validation",
+    "integration-flow-validation"
   ]
 }
