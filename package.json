@@ -15,7 +15,8 @@
     "test-sequence-profile": "node cli/cli.js --profile renderx-sequence-profile --files \"test/*sequence*.js\"",
     "validate-all": "node cli/cli.js --validators sequence-definition component-boundaries symphony-structure --files \"**/*.js\"",
     "dry-run": "node cli/cli.js --validator sequence-definition --files \"test/**/*.js\" --dry-run",
-    "test-profile": "node cli/cli.js --profile renderx-profile --files \"test/**/*.js\""
+    "test-profile": "node cli/cli.js --profile renderx-profile --files \"test/**/*.js\"",
+    "migration-status": "node scripts/check-migration-status.js"
   },
   "dependencies": {
     "yargs": "^17.7.2",
