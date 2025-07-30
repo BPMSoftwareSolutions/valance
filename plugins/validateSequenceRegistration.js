@@ -33,12 +33,16 @@ export async function evaluate(content, rule, context) {
       console.log(`🔍 [DEBUG] Found ${sequenceRegistrations.length} sequence registrations`);
     }
 
+    // Check for invalid registration methods first
+    const invalidMethodViolations = validateRegistrationMethods(sequenceRegistrations, projectRoot, verbose);
+    violations.push(...invalidMethodViolations);
+
     // Cross-reference calls with registrations
     for (const call of sequenceCalls) {
       const actualSequenceName = resolveActualSequenceName(call.sequenceName, sequenceNameMap);
-      
+
       // Look for exact sequence name matches
-      const exactRegistration = sequenceRegistrations.find(r => 
+      const exactRegistration = sequenceRegistrations.find(r =>
         r.sequenceName === actualSequenceName
       );
 
@@ -52,7 +56,7 @@ export async function evaluate(content, rule, context) {
 
       if (!registration) {
         const confidence = calculateRegistrationConfidence(call, sequenceRegistrations, sequenceNameMap);
-        
+
         violations.push({
           type: 'MissingRegistration',
           sequenceName: call.sequenceName,
@@ -69,7 +73,7 @@ export async function evaluate(content, rule, context) {
             registrationAnalysis: analyzeRegistrationOptions(call.sequenceName, sequenceRegistrations)
           }
         });
-      } else if (!registration.registrationType.includes('Bulk') && 
+      } else if (!registration.registrationType.includes('Bulk') &&
                  !registration.registrationType.includes('Initialization')) {
         // Check registration timing for non-bulk registrations
         const timingIssue = validateRegistrationTiming(call, registration, verbose);
@@ -343,6 +347,45 @@ function isSequenceCoveredByBulkRegistration(callName, actualName, nameMap) {
   // For now, be conservative and only trust explicit registrations
   // TODO: In the future, we could check actual bulk registration arrays
   return isInNameMap && (callName !== actualName); // Only if it was mapped from bulk
+}
+
+/**
+ * Validate registration methods to detect missing or incorrect method calls
+ */
+function validateRegistrationMethods(sequenceRegistrations, projectRoot, verbose) {
+  const violations = [];
+
+  // Check for defineSequence calls - this method doesn't exist in MusicalConductor
+  const defineSequenceRegistrations = sequenceRegistrations.filter(r =>
+    r.context && r.context.includes('defineSequence')
+  );
+
+  for (const registration of defineSequenceRegistrations) {
+    violations.push({
+      type: 'InvalidRegistrationMethod',
+      sequenceName: registration.sequenceName,
+      lineNumber: registration.lineNumber,
+      message: `Method 'defineSequence' does not exist on MusicalConductor. Use 'registerSequence' instead.`,
+      severity: 'error',
+      confidence: 1.0,
+      impact: 'Runtime error: Method not found - sequence will not be registered',
+      details: {
+        sequenceName: registration.sequenceName,
+        registrationLocation: registration.filePath,
+        registrationLineNumber: registration.lineNumber,
+        invalidMethod: 'defineSequence',
+        correctMethod: 'registerSequence',
+        suggestedFix: `Replace conductor.defineSequence('${registration.sequenceName}', SEQUENCE) with conductor.registerSequence(SEQUENCE)`,
+        methodAnalysis: 'MusicalConductor only has registerSequence(sequence) method, not defineSequence(name, sequence)'
+      }
+    });
+
+    if (verbose) {
+      console.log(`🔍 [DEBUG] Found invalid defineSequence call: ${registration.sequenceName} at ${registration.filePath}:${registration.lineNumber}`);
+    }
+  }
+
+  return violations;
 }
 
 /**
