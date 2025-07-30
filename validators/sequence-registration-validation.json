@@ -1,0 +1,17 @@
+{
+  "name": "sequence-registration-validation",
+  "description": "Validates that musical sequences are properly registered before being called - prevents runtime 'Sequence not found' errors",
+  "type": "content",
+  "filePattern": ".*\\.(ts|tsx|js|jsx)$",
+  "confidenceThreshold": 0.95,
+  "rules": [
+    {
+      "plugin": "validateSequenceRegistration",
+      "checkSequenceRegistrations": true,
+      "validateRegistrationTiming": true,
+      "detectMissingRegistrations": true,
+      "handleBulkRegistrations": true,
+      "verbose": false
+    }
+  ]
+}

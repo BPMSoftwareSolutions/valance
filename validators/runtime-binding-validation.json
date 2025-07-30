@@ -1,0 +1,16 @@
+{
+  "name": "runtime-binding-validation",
+  "description": "Validates runtime function bindings and scope issues that could cause 'function is not defined' errors at runtime",
+  "type": "content",
+  "filePattern": ".*\\.(ts|tsx|js|jsx)$",
+  "confidenceThreshold": 0.9,
+  "rules": [
+    {
+      "plugin": "validateRuntimeBinding",
+      "checkFunctionBindings": true,
+      "validateScopeAccess": true,
+      "detectCrossScopeReferences": true,
+      "verbose": false
+    }
+  ]
+}
