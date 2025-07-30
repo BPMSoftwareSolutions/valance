@@ -12,6 +12,8 @@
     "sequence-complexity",
     "symphony-structure",
     "import-path-validation",
-    "integration-flow-validation"
+    "integration-flow-validation",
+    "runtime-binding-validation",
+    "sequence-registration-validation"
   ]
 }
