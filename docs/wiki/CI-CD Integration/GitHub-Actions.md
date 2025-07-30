@@ -427,10 +427,10 @@ jobs:
 
 ## Next Steps
 
-1. **[Set up Validation Badges](Validation-Badges)** - Show validation status
-2. **[Use AI for Rules](Using-AI-to-Generate-Rules)** - Generate validation rules
-3. **[Auto-fix Violations](Auto-Fix-Architecture-Violations)** - Automated remediation
-4. **[Monitor Metrics](Domain-Specific-Examples#reporting)** - Track validation trends
+1. **[Set up Validation Badges](Validation-Badges.md)** - Show validation status
+2. **[Use AI for Rules](../Agents%20%26%20Automation/Using-AI-to-Generate-Rules.md)** - Generate validation rules
+3. **[Auto-fix Violations](Auto-Fix-Architecture-Violations.md)** - Automated remediation
+4. **[Monitor Metrics](../Profiles%20%26%20Validators/Domain-Specific-Examples.md#reporting)** - Track validation trends
 
 ---
 

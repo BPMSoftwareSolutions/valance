@@ -461,10 +461,10 @@ export async function evaluate(content, rule, context) {
 
 ## Next Steps
 
-1. **[Learn Built-in Operators](Common-Operators-Explained)** - Understand when to use plugins vs operators
-2. **[See Real Examples](Domain-Specific-Examples)** - Study production plugin implementations
-3. **[Create Profiles](Domain-Specific-Examples#creating-profiles)** - Bundle your plugins with validators
-4. **[Set up CI/CD](GitHub-Actions)** - Automate plugin-based validation
+1. **[Learn Built-in Operators](Common-Operators-Explained.md)** - Understand when to use plugins vs operators
+2. **[See Real Examples](Domain-Specific-Examples.md)** - Study production plugin implementations
+3. **[Create Profiles](Domain-Specific-Examples.md#creating-profiles)** - Bundle your plugins with validators
+4. **[Set up CI/CD](../CI-CD%20Integration/GitHub-Actions.md)** - Automate plugin-based validation
 
 ---
 

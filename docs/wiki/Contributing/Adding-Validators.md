@@ -346,7 +346,7 @@ Track your validator's impact:
 
 ## Next Steps
 
-1. **[Study Examples](Domain-Specific-Examples)** - Learn from existing validators
+1. **[Study Examples](../Profiles%20%26%20Validators/Domain-Specific-Examples.md)** - Learn from existing validators
 2. **[Join Discussions](https://github.com/BPMSoftwareSolutions/valance/discussions)** - Connect with the community
 3. **[Check Issues](https://github.com/BPMSoftwareSolutions/valance/issues)** - Find contribution opportunities
 4. **[Submit Your First Validator](https://github.com/BPMSoftwareSolutions/valance/pulls)** - Make your first contribution

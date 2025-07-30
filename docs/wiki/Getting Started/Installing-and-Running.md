@@ -186,10 +186,10 @@ VALENCE_CONFIG=/path/to/custom/config.json node cli/cli.js --validator test
 
 ## Next Steps
 
-1. **[Try Examples](Example-Validations)** - Run sample validations
-2. **[Create Your First Validator](Writing-a-Validator-JSON)** - Build custom rules
-3. **[Explore RenderX Examples](Domain-Specific-Examples)** - See real-world usage
-4. **[Set up CI/CD](GitHub-Actions)** - Automate validation
+1. **[Try Examples](Example-Validations.md)** - Run sample validations
+2. **[Create Your First Validator](../Profiles%20%26%20Validators/Writing-a-Validator-JSON.md)** - Build custom rules
+3. **[Explore RenderX Examples](../Profiles%20%26%20Validators/Domain-Specific-Examples.md)** - See real-world usage
+4. **[Set up CI/CD](../CI-CD%20Integration/GitHub-Actions.md)** - Automate validation
 
 ---
 

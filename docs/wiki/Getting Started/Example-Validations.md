@@ -293,10 +293,10 @@ node cli/cli.js --profile renderx-sequence-profile --files "src/**/*sequence*.js
 
 ## Next Steps
 
-1. **[Create Your Own Validator](Writing-a-Validator-JSON)** - Build custom validation rules
-2. **[Write a Plugin](Writing-a-Plugin-JS)** - Add custom validation logic
-3. **[Explore Built-in Operators](Common-Operators-Explained)** - Learn available validation functions
-4. **[Set up CI/CD](GitHub-Actions)** - Automate validation in your pipeline
+1. **[Create Your Own Validator](../Profiles%20%26%20Validators/Writing-a-Validator-JSON.md)** - Build custom validation rules
+2. **[Write a Plugin](../Profiles%20%26%20Validators/Writing-a-Plugin-JS.md)** - Add custom validation logic
+3. **[Explore Built-in Operators](../Profiles%20%26%20Validators/Common-Operators-Explained.md)** - Learn available validation functions
+4. **[Set up CI/CD](../CI-CD%20Integration/GitHub-Actions.md)** - Automate validation in your pipeline
 
 ---
 

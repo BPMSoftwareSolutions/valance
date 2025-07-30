@@ -108,10 +108,10 @@ Valence validates your codebase against predefined architectural rules, ensuring
 
 ## Next Steps
 
-1. **[Install Valence](Installing-and-Running)** - Get up and running
-2. **[Try Examples](Example-Validations)** - See validation in action
-3. **[Create Validators](Writing-a-Validator-JSON)** - Build your own rules
-4. **[Write Plugins](Writing-a-Plugin-JS)** - Add custom logic
+1. **[Install Valence](Installing-and-Running.md)** - Get up and running
+2. **[Try Examples](Example-Validations.md)** - See validation in action
+3. **[Create Validators](../Profiles%20%26%20Validators/Writing-a-Validator-JSON.md)** - Build your own rules
+4. **[Write Plugins](../Profiles%20%26%20Validators/Writing-a-Plugin-JS.md)** - Add custom logic
 
 ---
 
