@@ -130,6 +130,33 @@ export class MusicalConductor {
   // ===== CIA (Conductor Integration Architecture) Methods =====
 
   /**
+   * Play a specific movement of a mounted SPA plugin (CIA-compliant)
+   * @param pluginId - The plugin identifier
+   * @param movementName - The movement name to execute
+   * @param context - Context data to pass to the movement handler
+   * @returns Execution result
+   */
+  play(pluginId: string, movementName: string, context: any = {}): any {
+    try {
+      console.log(`🎼 MusicalConductor.play(): ${pluginId} -> ${movementName}`);
+
+      // Validate plugin exists
+      const plugin = this.mountedPlugins.get(pluginId);
+      if (!plugin) {
+        console.warn(`🧠 Plugin not found: ${pluginId}. Available plugins: [${Array.from(this.mountedPlugins.keys()).join(', ')}]`);
+        return null;
+      }
+
+      // Execute the movement handler
+      return this.executeMovementHandler(pluginId, movementName, context);
+
+    } catch (error) {
+      console.error(`🧠 MusicalConductor.play() failed for ${pluginId}.${movementName}:`, (error as Error).message);
+      return null;
+    }
+  }
+
+  /**
    * Mount an SPA plugin with comprehensive validation (CIA-compliant)
    * @param sequence - The sequence definition from the plugin
    * @param handlers - The handlers object from the plugin
@@ -229,6 +256,36 @@ export class MusicalConductor {
         pluginId: id,
         message: `Mount failed with error: ${(error as Error).message}`
       };
+    }
+  }
+
+  /**
+   * Register CIA-compliant plugins
+   * Loads and mounts all plugins from the plugins directory
+   */
+  async registerCIAPlugins(): Promise<void> {
+    try {
+      console.log("🧠 Registering CIA-compliant plugins...");
+
+      // Register component-drag-symphony
+      const componentDragPlugin = await import('../../../public/plugins/component-drag-symphony/index');
+      this.mount(componentDragPlugin.sequence, componentDragPlugin.handlers, 'component-drag-symphony');
+
+      // Register library-drop-symphony
+      const libraryDropPlugin = await import('../../../public/plugins/library-drop-symphony/index');
+      this.mount(libraryDropPlugin.sequence, libraryDropPlugin.handlers, 'library-drop-symphony');
+
+      // Register panel-toggle-symphony
+      const panelTogglePlugin = await import('../../../public/plugins/panel-toggle-symphony/index');
+      this.mount(panelTogglePlugin.sequence, panelTogglePlugin.handlers, 'panel-toggle-symphony');
+
+      // Register layout-mode-symphony
+      const layoutModePlugin = await import('../../../public/plugins/layout-mode-symphony/index');
+      this.mount(layoutModePlugin.sequence, layoutModePlugin.handlers, 'layout-mode-symphony');
+
+      console.log("✅ CIA-compliant plugins registered successfully");
+    } catch (error) {
+      console.error("❌ Failed to register CIA plugins:", error);
     }
   }
 

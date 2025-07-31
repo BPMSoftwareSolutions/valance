@@ -229,27 +229,23 @@ const ElementLibrary: React.FC = () => {
     // Add visual feedback
     e.currentTarget.classList.add("dragging");
 
-    // 🎼 Start Component Drag Symphony for library element drag
+    // 🎼 Start Component Drag Symphony for library element drag using CIA conductor.play()
     const communicationSystem = (window as any).renderxCommunicationSystem;
     if (communicationSystem && communicationSystem.conductor) {
-      console.log("🎼 Starting Component Drag Symphony for library element drag...");
+      console.log("🎼 Starting Component Drag Symphony for library element drag via conductor.play()...");
 
-      // Use the convenience function instead of direct conductor call
-      startCanvasComponentDragFlow(
-        communicationSystem.conductor,
-        component, // The element being dragged
-        {
-          changes: { dragStart: true, dragData },
-          source: 'element-library-drag',
-          timestamp: Date.now(),
-          eventType: 'drag-start',
-          dragData,
-          component
-        },
-        [], // elements array (empty for library drag)
-        undefined, // setElements function (not needed for library drag)
-        undefined  // syncElementCSS function (not needed for library drag)
-      );
+      // CIA-compliant trigger using conductor.play()
+      communicationSystem.conductor.play('component-drag-symphony', 'onDragStart', {
+        element: component,
+        dragData,
+        source: 'element-library-drag',
+        timestamp: Date.now(),
+        eventType: 'drag-start',
+        changes: { dragStart: true, dragData },
+        elements: [], // elements array (empty for library drag)
+        setElements: undefined, // setElements function (not needed for library drag)
+        syncElementCSS: undefined  // syncElementCSS function (not needed for library drag)
+      });
     }
   };
 
@@ -262,25 +258,22 @@ const ElementLibrary: React.FC = () => {
     // Remove visual feedback
     e.currentTarget.classList.remove("dragging");
 
-    // 🎼 Start Component Drag Symphony for drag end
+    // 🎼 Start Component Drag Symphony for drag end using CIA conductor.play()
     const communicationSystem = (window as any).renderxCommunicationSystem;
     if (communicationSystem && communicationSystem.conductor) {
-      console.log("🎼 Starting Component Drag Symphony for drag end...");
+      console.log("🎼 Starting Component Drag Symphony for drag end via conductor.play()...");
 
-      // Use the convenience function instead of direct conductor call
-      startCanvasComponentDragFlow(
-        communicationSystem.conductor,
-        { id: 'drag-end-operation', type: 'drag-end' }, // element
-        {
-          changes: { dragEnd: true },
-          source: 'element-library-drag-end',
-          timestamp: Date.now(),
-          eventType: 'drag-end'
-        },
-        [], // elements array (empty for library drag end)
-        undefined, // setElements function
-        undefined  // syncElementCSS function
-      );
+      // CIA-compliant trigger using conductor.play()
+      communicationSystem.conductor.play('component-drag-symphony', 'onDragEnd', {
+        element: { id: 'drag-end-operation', type: 'drag-end' },
+        changes: { dragEnd: true },
+        source: 'element-library-drag-end',
+        timestamp: Date.now(),
+        eventType: 'drag-end',
+        elements: [], // elements array (empty for library drag end)
+        setElements: undefined, // setElements function
+        syncElementCSS: undefined  // syncElementCSS function
+      });
     }
   };
 
@@ -506,27 +499,23 @@ const Canvas: React.FC<{ mode: string }> = ({ mode }) => {
 
     console.log("🎼 Canvas element drag data set:", dragData);
 
-    // 🎼 Start Component Drag Symphony for canvas element drag
+    // 🎼 Start Component Drag Symphony for canvas element drag using CIA conductor.play()
     const communicationSystem = (window as any).renderxCommunicationSystem;
     if (communicationSystem && communicationSystem.conductor) {
-      console.log("🎼 Starting Component Drag Symphony for canvas element drag...");
+      console.log("🎼 Starting Component Drag Symphony for canvas element drag via conductor.play()...");
 
-      // Use the convenience function instead of direct conductor call
-      startCanvasComponentDragFlow(
-        communicationSystem.conductor,
+      // CIA-compliant trigger using conductor.play()
+      communicationSystem.conductor.play('component-drag-symphony', 'onDragStart', {
         element, // The canvas element being dragged
-        {
-          changes: { dragStart: true, dragData },
-          source: 'canvas-element-drag-start',
-          timestamp: Date.now(),
-          eventType: 'canvas-element-drag-start',
-          element,
-          dragData
-        },
-        canvasElements, // elements array
-        setCanvasElements, // setElements function
-        undefined  // syncElementCSS function
-      );
+        changes: { dragStart: true, dragData },
+        source: 'canvas-element-drag-start',
+        timestamp: Date.now(),
+        eventType: 'canvas-element-drag-start',
+        dragData,
+        elements: canvasElements, // elements array
+        setElements: setCanvasElements, // setElements function
+        syncElementCSS: undefined  // syncElementCSS function
+      });
     }
   };
 
@@ -578,17 +567,20 @@ const Canvas: React.FC<{ mode: string }> = ({ mode }) => {
         // Import the sequence function
         const { MusicalSequences } = await import("./communication/sequences");
 
-        // Start the Canvas Library Drop Symphony
-        const sequenceId = MusicalSequences.startCanvasLibraryDropFlow(
-          communicationSystem.conductor,
+        // Start the Canvas Library Drop Symphony using CIA conductor.play()
+        console.log("🎼 Starting Canvas Library Drop Symphony via conductor.play()...");
+
+        // CIA-compliant trigger using conductor.play()
+        const result = communicationSystem.conductor.play('library-drop-symphony', 'onDropValidation', {
           dragData,
           dropCoordinates,
-          { isValidDropZone: true },
-          { timestamp: Date.now(), source: "canvas-drop" }
-        );
+          dropZone: { isValidDropZone: true },
+          timestamp: Date.now(),
+          source: "canvas-drop"
+        });
 
         console.log(
-          `🎼 Canvas Library Drop Symphony started with ID: ${sequenceId}`
+          `🎼 Canvas Library Drop Symphony triggered via conductor.play(): ${result ? 'SUCCESS' : 'FAILED'}`
         );
 
         // Create element with proper ID and CSS class generation
@@ -739,6 +731,13 @@ const AppContent: React.FC = () => {
       console.log("📡 EventBus:", system.eventBus.getDebugInfo());
       console.log("🎼 Musical Conductor:", system.conductor.getStatistics());
 
+      // Register CIA-compliant plugins
+      system.conductor.registerCIAPlugins().then(() => {
+        console.log("🧠 CIA plugins registration completed");
+      }).catch((error) => {
+        console.error("❌ CIA plugins registration failed:", error);
+      });
+
       // Expose communication system globally for components to access
       (window as any).renderxCommunicationSystem = system;
     } catch (error) {
@@ -758,18 +757,18 @@ const AppContent: React.FC = () => {
       },
     }));
 
-    // Start musical sequence instead of direct event emission
+    // Start musical sequence using CIA conductor.play()
     if (communicationSystem) {
-      console.log("🎼 Starting Element Library Panel Toggle Sequence");
-      MusicalSequences.startPanelToggleFlow(
-        communicationSystem.conductor,
-        "elementLibrary",
+      console.log("🎼 Starting Element Library Panel Toggle via conductor.play()");
+      communicationSystem.conductor.play('panel-toggle-symphony', 'onTogglePanel', {
+        panelType: "elementLibrary",
         newState,
-        {
+        options: {
           animated: true,
           updateLayout: true,
-        }
-      );
+        },
+        timestamp: Date.now()
+      });
     }
   };
 
@@ -784,18 +783,18 @@ const AppContent: React.FC = () => {
       },
     }));
 
-    // Start musical sequence instead of direct event emission
+    // Start musical sequence using CIA conductor.play()
     if (communicationSystem) {
-      console.log("🎼 Starting Control Panel Toggle Sequence");
-      MusicalSequences.startPanelToggleFlow(
-        communicationSystem.conductor,
-        "controlPanel",
+      console.log("🎼 Starting Control Panel Toggle via conductor.play()");
+      communicationSystem.conductor.play('panel-toggle-symphony', 'onTogglePanel', {
+        panelType: "controlPanel",
         newState,
-        {
+        options: {
           animated: true,
           updateLayout: true,
-        }
-      );
+        },
+        timestamp: Date.now()
+      });
     }
   };
 
@@ -804,18 +803,18 @@ const AppContent: React.FC = () => {
     const previousMode = appState.layoutMode;
     setAppState((prev) => ({ ...prev, layoutMode: "preview" }));
 
-    // Start musical sequence instead of direct event emission
+    // Start musical sequence using CIA conductor.play()
     if (communicationSystem) {
-      console.log("🎼 Starting Layout Mode Change Sequence: Preview");
-      MusicalSequences.startLayoutModeChangeFlow(
-        communicationSystem.conductor,
+      console.log("🎼 Starting Layout Mode Change: Preview via conductor.play()");
+      communicationSystem.conductor.play('layout-mode-symphony', 'onModeChange', {
         previousMode,
-        "preview",
-        {
+        currentMode: "preview",
+        options: {
           animated: true,
           preserveState: true,
-        }
-      );
+        },
+        timestamp: Date.now()
+      });
     }
   };
 
@@ -826,17 +825,17 @@ const AppContent: React.FC = () => {
     // Start musical sequence instead of direct event emission
     if (communicationSystem) {
       console.log(
-        "🎼 Starting Layout Mode Change Sequence: Fullscreen Preview"
+        "🎼 Starting Layout Mode Change: Fullscreen Preview via conductor.play()"
       );
-      MusicalSequences.startLayoutModeChangeFlow(
-        communicationSystem.conductor,
+      communicationSystem.conductor.play('layout-mode-symphony', 'onModeChange', {
         previousMode,
-        "fullscreen-preview",
-        {
+        currentMode: "fullscreen-preview",
+        options: {
           animated: true,
           preserveState: false,
-        }
-      );
+        },
+        timestamp: Date.now()
+      });
     }
   };
 
@@ -844,18 +843,18 @@ const AppContent: React.FC = () => {
     const previousMode = appState.layoutMode;
     setAppState((prev) => ({ ...prev, layoutMode: "editor" }));
 
-    // Start musical sequence instead of direct event emission
+    // Start musical sequence using CIA conductor.play()
     if (communicationSystem) {
-      console.log("🎼 Starting Layout Mode Change Sequence: Editor");
-      MusicalSequences.startLayoutModeChangeFlow(
-        communicationSystem.conductor,
+      console.log("🎼 Starting Layout Mode Change: Editor via conductor.play()");
+      communicationSystem.conductor.play('layout-mode-symphony', 'onModeChange', {
         previousMode,
-        "editor",
-        {
+        currentMode: "editor",
+        options: {
           animated: true,
           preserveState: true,
-        }
-      );
+        },
+        timestamp: Date.now()
+      });
     }
   };
 

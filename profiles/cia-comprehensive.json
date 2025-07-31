@@ -9,7 +9,8 @@
     "CIA/handler-alignment-runtime",
     "CIA/mount-call-safety",
     "CIA/plugin-loader-validation",
-    "CIA/conductor-test-harness"
+    "CIA/conductor-test-harness",
+    "CIA/sequence-trigger-mapping"
   ],
   "validationLevels": {
     "critical": [
@@ -19,7 +20,8 @@
     ],
     "important": [
       "CIA/plugin-loader-validation",
-      "CIA/conductor-test-harness"
+      "CIA/conductor-test-harness",
+      "CIA/sequence-trigger-mapping"
     ],
     "recommended": []
   },
@@ -28,7 +30,8 @@
     "CIA/handler-alignment-runtime",
     "CIA/mount-call-safety",
     "CIA/plugin-loader-validation",
-    "CIA/conductor-test-harness"
+    "CIA/conductor-test-harness",
+    "CIA/sequence-trigger-mapping"
   ],
   "configuration": {
     "failFast": false,
