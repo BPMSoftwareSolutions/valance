@@ -13,6 +13,61 @@ The **Valence Confidence Engine (VCE)** transforms traditional binary pass/fail 
 - **🚫 False Positive Management** - Override system for managing known false positives
 - **📊 Enhanced Reporting** - Confidence-aware HTML, Markdown, and JSON reports
 
+## 🧠 CIA Runtime Safety
+
+The **Conductor Integration Architecture (CIA)** provides runtime safety validation for secure plugin mounting and execution.
+
+**Key Features:**
+- **🛡️ Runtime Safety** - Validates plugins before mounting to prevent crashes
+- **🔄 Graceful Degradation** - System continues operating when plugins fail
+- **⚙️ Error Recovery** - Handles malformed plugins without system impact
+- **📊 Comprehensive Testing** - Validates error scenarios and edge cases
+
+**CIA Validators:**
+- `plugin-interface-runtime` - Plugin shape validation before mounting
+- `handler-alignment-runtime` - Movement-to-handler alignment checking
+- `mount-call-safety` - Safe mounting signature enforcement
+- `plugin-loader-validation` - Dynamic import safety and error handling
+- `conductor-test-harness` - Comprehensive test coverage validation
+
+## 🎼 SPA Plugin Architecture
+
+The **Symphonic Plugin Architecture (SPA)** enables modular plugin design using musical metaphors for scalable, maintainable code.
+
+**Key Features:**
+- **🎵 Musical Structure** - Sequences, movements, handlers, and beats
+- **📁 Standardized Layout** - Consistent directory structure and contracts
+- **🔧 Modular Design** - Isolated, testable, and maintainable plugins
+- **🤖 AI-Friendly** - Enhanced annotations for LLM tooling
+
+**SPA Validators:**
+- `structure` - Directory layout and required files validation
+- `sequence-contract` - Musical properties and movements validation
+- `handler-mapping` - Movement-to-handler consistency checking
+- `index-manifest-sync` - Contract synchronization validation
+- `test-coverage` - Comprehensive testing requirements
+- `dependency-scope` - Modularity enforcement
+- `hooks-mapping` - React hooks conventions
+- `logic-contract` - Business logic quality
+- `visual-schema` - Animation configurations
+- `ai-annotation` - AI-friendly annotations
+
+## 📐 TDA Methodology
+
+The **Test-Driven Architecture (TDA)** methodology ensures architectural integrity through validation-driven design.
+
+**Key Features:**
+- **✅ Validation-First Design** - Define validators before implementing architecture
+- **🏗️ Constraint-Driven** - Let validation rules guide architectural decisions
+- **🔄 Continuous Validation** - Integrate validation into development workflow
+- **📊 Quality Metrics** - Measurable architectural health and compliance
+
+**TDA Process:**
+1. Define architectural constraints and validation strategy
+2. Implement validation rules and test them thoroughly
+3. Build architecture to pass validation requirements
+4. Iterate and refine both architecture and validation rules
+
 ---
 
 ## 🧠 Architecture & Technology Stack
@@ -31,6 +86,9 @@ The **Valence Confidence Engine (VCE)** transforms traditional binary pass/fail 
 Valence performs architecture validation in a portable, agent-executable way:
 
 - **Confidence-Driven Validation** - Every violation includes confidence scores and rich metadata
+- **CIA Runtime Safety** - Validates conductor implementations for secure plugin mounting
+- **SPA Plugin Architecture** - Enforces modular plugin design with musical metaphors
+- **TDA Methodology** - Validation-driven architectural design and quality assurance
 - **File presence checks** - Validate required files exist
 - **Regex and semantic validations** - Pattern matching and content validation
 - **Import boundary enforcement** - Control dependencies and module access with auto-fix suggestions
@@ -126,6 +184,16 @@ node cli/cli.js --validators sequence-definition component-boundaries --files "*
 #### Run validators from a profile
 ```bash
 node cli/cli.js --profile renderx-profile --files "test/**/*.js"
+```
+
+#### Validate SPA plugins
+```bash
+node cli/cli.js --profile spa-comprehensive --files "plugins/**/*symphony*"
+```
+
+#### Validate CIA conductor safety
+```bash
+node cli/cli.js --profile cia-comprehensive --files "src/**/*conductor*"
 ```
 
 #### Dry-run mode (show what would be validated)

@@ -17,6 +17,45 @@ The **Valence Confidence Engine (VCE)** transforms traditional binary pass/fail 
 
 [Learn more about the Confidence Engine →](Getting%20Started/Confidence-Engine.md)
 
+## 🏗️ Architectures
+
+Valence supports comprehensive validation for major architectural systems:
+
+### **🧠 CIA (Conductor Integration Architecture)**
+Runtime safety validation system for secure plugin mounting and execution.
+
+**Key Features:**
+- **🛡️ Runtime Safety** - Validates plugins before mounting to prevent crashes
+- **🔄 Graceful Degradation** - System continues operating when plugins fail
+- **⚙️ Error Recovery** - Handles malformed plugins without system impact
+- **📊 Comprehensive Testing** - Validates error scenarios and edge cases
+
+[Learn more about CIA →](Architectures/CIA-Conductor-Integration-Architecture.md)
+
+### **🎼 SPA (Symphonic Plugin Architecture)**
+Modular plugin architecture pattern using musical metaphors for scalable design.
+
+**Key Features:**
+- **🎵 Musical Structure** - Sequences, movements, handlers, and beats
+- **📁 Standardized Layout** - Consistent directory structure and contracts
+- **🔧 Modular Design** - Isolated, testable, and maintainable plugins
+- **🤖 AI-Friendly** - Enhanced annotations for LLM tooling
+
+[Learn more about SPA →](Architectures/SPA-Symphonic-Plugin-Architecture.md)
+
+## 📐 Methodologies
+
+### **🎯 TDA (Test-Driven Architecture)**
+Validation-driven architectural methodology where constraints guide implementation.
+
+**Key Features:**
+- **✅ Validation-First Design** - Define validators before implementing architecture
+- **🏗️ Constraint-Driven** - Let validation rules guide architectural decisions
+- **🔄 Continuous Validation** - Integrate validation into development workflow
+- **📊 Quality Metrics** - Measurable architectural health and compliance
+
+[Learn more about TDA →](Methodologies/Test-Driven-Architecture.md)
+
 ## 🚀 Getting Started
 
 - **[What is Valence?](Getting%20Started/What-is-Valence.md)** - Core concepts and architecture
@@ -61,8 +100,12 @@ Valence includes comprehensive sequence validation capabilities migrated from C#
 
 ## Recent Updates
 
+- 🧠 **NEW: CIA (Conductor Integration Architecture)** - Runtime safety validation for plugin mounting
+- 🎼 **NEW: SPA (Symphonic Plugin Architecture)** - Modular plugin architecture with musical metaphors
+- 📐 **NEW: TDA (Test-Driven Architecture)** - Validation-driven architectural methodology
 - 🎯 **NEW: Valence Confidence Engine** - Confidence-driven validation with explainable results
-- ✅ **ImportPathValidator & IntegrationFlowValidator Migration** - C# validators migrated to JavaScript plugins
+- ✅ **Complete CIA Validator Suite** - 5 validators for runtime safety (100% success rate)
+- ✅ **Complete SPA Validator Suite** - 10 validators for plugin architecture compliance
 - ✅ **Enhanced Reporting System** - Confidence scores, code snippets, and auto-fix suggestions
 - ✅ **False Positive Override System** - Team collaboration features for managing known issues
 - ✅ **C# SequenceValidator Migration Complete** - All 8 validators migrated to JavaScript plugins
@@ -77,6 +120,12 @@ npm run test
 
 # Validate with Confidence Engine
 node cli/cli.js --validator import-path-validation --files "src/**/*.ts" --generate-reports --confidence-threshold 0.8
+
+# Validate SPA plugins
+node cli/cli.js --profile spa-comprehensive --files "plugins/**/*symphony*"
+
+# Validate CIA conductor safety
+node cli/cli.js --profile cia-comprehensive --files "src/**/*conductor*"
 
 # Validate RenderX with comprehensive profile
 node cli/cli.js --profile renderx-comprehensive-profile --files "testdata/RenderX/src/**/*"
