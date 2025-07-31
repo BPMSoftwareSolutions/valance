@@ -1,0 +1,64 @@
+{
+  "name": "spa-visual-schema",
+  "description": "Validates animation configuration schemas in SPA plugins - ensures proper timeline and easing definitions",
+  "type": "content",
+  "filePattern": "**/visuals/.*\\.json$",
+  "confidenceThreshold": 0.9,
+  "version": "1.0.0",
+  "author": "Valence SPA Validation System",
+  "tags": ["spa", "visuals", "animations", "schema"],
+  "rules": [
+    {
+      "plugin": "validateSpaVisualSchema",
+      "validateAnimationSchema": true,
+      "checkRequiredFields": true,
+      "validateEasingCurves": true,
+      "checkKeyframes": true,
+      "verbose": false
+    }
+  ],
+  "animationSchema": {
+    "requiredFields": [
+      "duration",
+      "easing",
+      "keyframes"
+    ],
+    "optionalFields": [
+      "delay",
+      "iterations",
+      "direction",
+      "fillMode"
+    ],
+    "validEasings": [
+      "linear",
+      "ease",
+      "ease-in",
+      "ease-out",
+      "ease-in-out",
+      "cubic-bezier"
+    ],
+    "keyframeConstraints": {
+      "minKeyframes": 2,
+      "requiredProperties": ["offset"],
+      "validOffsets": "0-1 range"
+    }
+  },
+  "documentation": {
+    "purpose": "Ensures animation configurations follow standardized schema for consistent visual experiences",
+    "scope": "All JSON files in visuals/ directories within SPA plugins",
+    "validationTypes": [
+      "Animation schema structure validation",
+      "Required field presence checking",
+      "Easing curve validation",
+      "Keyframe structure validation",
+      "Duration and timing validation"
+    ],
+    "commonIssues": [
+      "Missing required animation fields",
+      "Invalid easing curve definitions",
+      "Malformed keyframe structures",
+      "Invalid duration or timing values",
+      "Unsupported animation properties"
+    ]
+  }
+}

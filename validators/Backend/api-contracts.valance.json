@@ -1,0 +1,63 @@
+{
+  "name": "backend-api-contracts",
+  "description": "Validates API contract definitions and endpoint consistency in backend services",
+  "type": "content",
+  "filePattern": "**/api/.*\\.(ts|js)$",
+  "confidenceThreshold": 0.9,
+  "version": "1.0.0",
+  "author": "Valence Backend Validation System",
+  "tags": ["backend", "api", "contracts", "endpoints"],
+  "rules": [
+    {
+      "plugin": "validateBackendApiContracts",
+      "checkEndpointDefinitions": true,
+      "validateRequestSchemas": true,
+      "validateResponseSchemas": true,
+      "checkHttpMethods": true,
+      "verbose": false
+    }
+  ],
+  "apiConstraints": {
+    "requiredFields": [
+      "method",
+      "path",
+      "handler",
+      "schema"
+    ],
+    "validMethods": [
+      "GET",
+      "POST",
+      "PUT",
+      "PATCH",
+      "DELETE"
+    ],
+    "pathConventions": {
+      "pattern": "^/api/v\\d+/",
+      "versioning": "required",
+      "resourceNaming": "kebab-case"
+    },
+    "schemaValidation": {
+      "requestSchema": "required for POST/PUT/PATCH",
+      "responseSchema": "required for all endpoints",
+      "errorSchema": "required"
+    }
+  },
+  "documentation": {
+    "purpose": "Ensures API endpoints follow consistent contract definitions for reliable client-server communication",
+    "scope": "All API definition files in backend services",
+    "validationTypes": [
+      "Endpoint definition completeness",
+      "Request/response schema validation",
+      "HTTP method consistency",
+      "Path convention enforcement",
+      "API versioning validation"
+    ],
+    "commonIssues": [
+      "Missing endpoint schemas",
+      "Inconsistent HTTP method usage",
+      "Invalid API path patterns",
+      "Missing error handling definitions",
+      "Incomplete contract specifications"
+    ]
+  }
+}

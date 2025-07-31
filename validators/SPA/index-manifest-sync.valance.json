@@ -1,0 +1,55 @@
+{
+  "name": "spa-index-manifest-sync",
+  "description": "Validates synchronization between index.ts, manifest.json, and sequence.ts - ensures consistent plugin contracts",
+  "type": "content",
+  "filePattern": "**/index\\.(ts|js)$",
+  "confidenceThreshold": 0.95,
+  "version": "1.0.0",
+  "author": "Valence SPA Validation System",
+  "tags": ["spa", "contracts", "synchronization", "manifest"],
+  "rules": [
+    {
+      "plugin": "validateSpaIndexManifestSync",
+      "checkManifestConsistency": true,
+      "validateSequenceRegistration": true,
+      "checkEntryPointMapping": true,
+      "validateIdConsistency": true,
+      "verbose": false
+    }
+  ],
+  "syncConstraints": {
+    "manifestFields": {
+      "id": "must match sequence.id",
+      "version": "must match sequence.version",
+      "entry": "must point to index.ts"
+    },
+    "indexRequirements": {
+      "mustImportSequence": true,
+      "mustCallRegisterSequence": true,
+      "importPattern": "import.*sequence.*from.*sequence"
+    },
+    "crossFileValidation": {
+      "idConsistency": "manifest.id === sequence.id",
+      "versionConsistency": "manifest.version === sequence.version",
+      "entryPointValid": "manifest.entry points to existing file"
+    }
+  },
+  "documentation": {
+    "purpose": "Ensures all plugin contract files are synchronized and consistent to prevent runtime registration errors",
+    "scope": "All SPA plugins with index.ts, manifest.json, and sequence.ts files",
+    "validationTypes": [
+      "Manifest to sequence ID consistency",
+      "Version synchronization across files",
+      "Entry point validation",
+      "Sequence registration verification",
+      "Import statement validation"
+    ],
+    "commonIssues": [
+      "Manifest ID doesn't match sequence ID",
+      "Version mismatch between files",
+      "Entry point in manifest doesn't exist",
+      "Missing registerSequence call in index.ts",
+      "Incorrect sequence import in index.ts"
+    ]
+  }
+}

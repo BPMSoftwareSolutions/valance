@@ -1,0 +1,58 @@
+{
+  "name": "spa-sequence-contract",
+  "description": "Validates SPA sequence.ts file structure - ensures musical properties and movements follow the contract",
+  "type": "content",
+  "filePattern": ".*sequence\\.(ts|js)$",
+  "confidenceThreshold": 0.9,
+  "version": "1.0.0",
+  "author": "Valence SPA Validation System",
+  "tags": ["spa", "sequence", "musical-properties", "movements"],
+  "rules": [
+    {
+      "plugin": "validateSpaSequenceContract",
+      "validateMusicalProperties": true,
+      "validateMovements": true,
+      "checkBeatOverlaps": true,
+      "enforceMoodEnums": true,
+      "validateIdFormat": true,
+      "verbose": false
+    }
+  ],
+  "musicalConstraints": {
+    "tempo": {
+      "min": 60,
+      "max": 180
+    },
+    "validKeys": [
+      "C Major", "D Minor", "E Major", "G Major"
+    ],
+    "validMoods": [
+      "anticipation", "focus", "celebration", "calm"
+    ]
+  },
+  "movementConstraints": {
+    "requiredFields": ["label", "startBeat", "durationInBeats"],
+    "optionalFields": ["mood"],
+    "labelPattern": "^[A-Z][a-zA-Z]*$"
+  },
+  "documentation": {
+    "purpose": "Ensures sequence.ts files follow the SPA musical contract for proper symphony orchestration",
+    "scope": "All sequence.ts files in SPA plugins",
+    "validationTypes": [
+      "Musical property validation (tempo, key, version)",
+      "Movement structure validation",
+      "Beat overlap detection",
+      "Mood enumeration enforcement",
+      "ID format validation (kebab-case)",
+      "Required field presence"
+    ],
+    "commonIssues": [
+      "Invalid tempo range (must be 60-180)",
+      "Unsupported musical key",
+      "Missing required movement fields",
+      "Overlapping beat ranges in movements",
+      "Invalid mood values",
+      "Non-kebab-case sequence ID"
+    ]
+  }
+}

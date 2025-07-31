@@ -1,0 +1,71 @@
+{
+  "name": "spa-comprehensive",
+  "description": "Comprehensive validation profile for Symphonic Plugin Architecture (SPA) - validates all aspects of SPA plugins",
+  "version": "1.0.0",
+  "author": "Valence SPA Validation System",
+  "tags": ["spa", "comprehensive", "plugin-architecture", "validation"],
+  "validators": [
+    "SPA/structure",
+    "SPA/sequence-contract", 
+    "SPA/handler-mapping",
+    "SPA/hooks-mapping",
+    "SPA/logic-contract",
+    "SPA/visual-schema",
+    "SPA/test-coverage",
+    "SPA/index-manifest-sync",
+    "SPA/dependency-scope",
+    "SPA/ai-annotation"
+  ],
+  "validationLevels": {
+    "critical": [
+      "SPA/structure",
+      "SPA/sequence-contract",
+      "SPA/handler-mapping",
+      "SPA/index-manifest-sync"
+    ],
+    "important": [
+      "SPA/test-coverage",
+      "SPA/dependency-scope"
+    ],
+    "recommended": [
+      "SPA/hooks-mapping",
+      "SPA/logic-contract",
+      "SPA/visual-schema",
+      "SPA/ai-annotation"
+    ]
+  },
+  "executionOrder": [
+    "SPA/structure",
+    "SPA/sequence-contract",
+    "SPA/handler-mapping",
+    "SPA/index-manifest-sync",
+    "SPA/hooks-mapping",
+    "SPA/logic-contract",
+    "SPA/dependency-scope",
+    "SPA/test-coverage",
+    "SPA/visual-schema",
+    "SPA/ai-annotation"
+  ],
+  "configuration": {
+    "failFast": false,
+    "verbose": true,
+    "generateReport": true,
+    "reportFormat": ["json", "html", "markdown"]
+  },
+  "documentation": {
+    "purpose": "Complete validation suite for SPA plugins ensuring architectural compliance, quality, and maintainability",
+    "scope": "All SPA plugin directories and files",
+    "coverage": {
+      "structure": "Directory layout and required files",
+      "contracts": "Sequence definitions and handler mappings", 
+      "quality": "Test coverage and code quality",
+      "modularity": "Dependency isolation and scope",
+      "ai": "Agent annotations for LLM tooling"
+    },
+    "usage": {
+      "development": "Run during development for immediate feedback",
+      "ci": "Include in CI/CD pipeline for quality gates",
+      "migration": "Use when migrating to SPA architecture"
+    }
+  }
+}

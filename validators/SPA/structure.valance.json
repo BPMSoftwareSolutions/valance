@@ -1,0 +1,52 @@
+{
+  "name": "spa-structure",
+  "description": "Validates Symphonic Plugin Architecture (SPA) directory structure - ensures all required components exist",
+  "type": "structure",
+  "filePattern": ".*",
+  "confidenceThreshold": 0.95,
+  "version": "1.0.0",
+  "author": "Valence SPA Validation System",
+  "tags": ["spa", "structure", "directory", "plugin-architecture"],
+  "rules": [
+    {
+      "plugin": "validateSpaDirectoryStructure",
+      "checkRequiredFiles": true,
+      "checkOptionalDirectories": true,
+      "validatePluginLayout": true,
+      "enforceNamingConventions": true,
+      "verbose": false
+    }
+  ],
+  "requiredFiles": [
+    "manifest.json",
+    "sequence.ts", 
+    "index.ts"
+  ],
+  "requiredDirectories": [
+    "handlers/"
+  ],
+  "optionalDirectories": [
+    "hooks/",
+    "logic/", 
+    "visuals/",
+    "tests/"
+  ],
+  "documentation": {
+    "purpose": "Ensures SPA plugins follow the standardized directory structure for modularity and scalability",
+    "scope": "All SPA plugin directories",
+    "validationTypes": [
+      "Required file existence (manifest.json, sequence.ts, index.ts)",
+      "Required directory existence (handlers/)",
+      "Optional directory recognition (hooks/, logic/, visuals/, tests/)",
+      "Plugin layout consistency",
+      "Naming convention enforcement"
+    ],
+    "commonIssues": [
+      "Missing manifest.json file",
+      "Missing sequence.ts definition",
+      "Missing index.ts entry point", 
+      "Empty or missing handlers/ directory",
+      "Incorrect directory naming conventions"
+    ]
+  }
+}

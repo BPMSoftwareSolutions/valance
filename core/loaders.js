@@ -24,12 +24,21 @@ export async function loadProfile(profileName) {
 }
 
 export async function loadValidator(validatorName) {
-  const validatorPath = path.join('validators', `${validatorName}.json`);
+  // Try new architecture-based structure first (.valance.json)
+  let validatorPath = path.join('validators', `${validatorName}.valance.json`);
+
   try {
     const content = await fs.readFile(validatorPath, 'utf-8');
     return JSON.parse(content);
   } catch (error) {
-    throw new Error(`Failed to load validator ${validatorName}: ${error.message}`);
+    // Fallback to legacy structure (.json)
+    validatorPath = path.join('validators', `${validatorName}.json`);
+    try {
+      const content = await fs.readFile(validatorPath, 'utf-8');
+      return JSON.parse(content);
+    } catch (legacyError) {
+      throw new Error(`Failed to load validator ${validatorName}: ${legacyError.message}`);
+    }
   }
 }
 

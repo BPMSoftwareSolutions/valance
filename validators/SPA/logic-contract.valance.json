@@ -1,0 +1,55 @@
+{
+  "name": "spa-logic-contract",
+  "description": "Validates shared business logic layer in SPA plugins - ensures testable and pure functions",
+  "type": "content",
+  "filePattern": "**/logic/.*\\.(ts|js)$",
+  "confidenceThreshold": 0.85,
+  "version": "1.0.0",
+  "author": "Valence SPA Validation System",
+  "tags": ["spa", "logic", "business-logic", "pure-functions"],
+  "rules": [
+    {
+      "plugin": "validateSpaLogicContract",
+      "validateExports": true,
+      "checkPureFunctions": true,
+      "validateTestability": true,
+      "enforceNamingConventions": true,
+      "verbose": false
+    }
+  ],
+  "logicConstraints": {
+    "exportPatterns": [
+      "export function",
+      "export const",
+      "export default"
+    ],
+    "pureFunctionIndicators": [
+      "no side effects",
+      "deterministic",
+      "no external dependencies"
+    ],
+    "namingConventions": {
+      "functions": "camelCase",
+      "constants": "UPPER_SNAKE_CASE",
+      "files": "camelCase"
+    }
+  },
+  "documentation": {
+    "purpose": "Ensures business logic is modular, testable, and follows functional programming principles",
+    "scope": "All files in logic/ directories within SPA plugins",
+    "validationTypes": [
+      "Function export validation",
+      "Pure function pattern detection",
+      "Testability assessment",
+      "Naming convention enforcement",
+      "Side effect detection"
+    ],
+    "commonIssues": [
+      "Logic files not exporting functions",
+      "Functions with side effects in logic layer",
+      "Non-testable function patterns",
+      "Inconsistent naming conventions",
+      "Missing function documentation"
+    ]
+  }
+}
