@@ -1,0 +1,7 @@
+{
+  "id": "component-drag-symphony",
+  "version": "1.0.0",
+  "entry": "index.ts",
+  "category": "interaction",
+  "keywords": ["drag", "component", "orchestration"]
+}

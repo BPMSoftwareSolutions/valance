@@ -1,0 +1,28 @@
+{
+  "name": "renderx-plugin-validator",
+  "type": "structure",
+  "filePattern": "**/*.ts",
+  "rules": [
+    {
+      "operator": "mustExist",
+      "value": "sequence.ts"
+    },
+    {
+      "operator": "mustExist",
+      "value": "manifest.json"
+    },
+    {
+      "operator": "mustExist",
+      "value": "index.ts"
+    },
+    {
+      "operator": "mustContain",
+      "value": "registerSequence",
+      "message": "Must register sequence in index.ts"
+    },
+    {
+      "plugin": "validateSequenceMovementsMatchHandlers",
+      "message": "Each movement must have a matching handler file"
+    }
+  ]
+}
