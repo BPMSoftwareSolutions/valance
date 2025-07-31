@@ -1,0 +1,21 @@
+{
+  "id": "canvas-component-drag-symphony",
+  "version": "1.0.0",
+  "entry": "index.ts",
+  "category": "canvas-operations",
+  "keywords": ["drag", "component", "canvas", "orchestration", "symphony"],
+  "description": "Dynamic Movement - Canvas component drag symphony for real-time element positioning",
+  "author": "RenderX Team",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^18.0.0"
+  },
+  "metadata": {
+    "symphonyName": "Canvas Component Drag Symphony No. 4",
+    "musicalKey": "D Minor",
+    "tempo": 140,
+    "timeSignature": "4/4",
+    "movements": 4,
+    "originalPath": "src/communication/sequences/canvas-sequences/CanvasSequences.component-drag-symphony"
+  }
+}
