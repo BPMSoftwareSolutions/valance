@@ -1,8 +1,8 @@
 {
   "name": "spa-test-coverage",
   "description": "Validates test coverage for SPA plugins - ensures all critical components have corresponding tests",
-  "type": "structure",
-  "filePattern": "**/tests/.*\\.(test|spec)\\.(ts|js)$",
+  "type": "content",
+  "filePattern": ".*/tests/.*\\.(test|spec)\\.(ts|js)$",
   "confidenceThreshold": 0.9,
   "version": "1.0.0",
   "author": "Valence SPA Validation System",
