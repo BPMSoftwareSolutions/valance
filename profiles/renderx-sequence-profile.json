@@ -1,6 +1,6 @@
 {
   "name": "renderx-sequence-profile",
-  "description": "Comprehensive validation profile for RenderX sequence definitions",
+  "description": "Comprehensive validation profile for RenderX sequence definitions and naming consistency",
   "validators": [
     "sequence-required-fields",
     "sequence-musical-properties",
@@ -9,6 +9,8 @@
     "sequence-event-types",
     "sequence-naming-conventions",
     "sequence-documentation",
-    "sequence-complexity"
+    "sequence-complexity",
+    "sequence-registration-validation",
+    "sequence-name-consistency-validation"
   ]
 }

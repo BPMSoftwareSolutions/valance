@@ -1,6 +1,6 @@
 {
   "name": "renderx-comprehensive-profile",
-  "description": "Comprehensive validation profile for RenderX codebase including sequence validation and import path validation",
+  "description": "Comprehensive validation profile for RenderX codebase including sequence validation, naming consistency, and import path validation",
   "validators": [
     "sequence-required-fields",
     "sequence-musical-properties",
@@ -14,6 +14,7 @@
     "import-path-validation",
     "integration-flow-validation",
     "runtime-binding-validation",
-    "sequence-registration-validation"
+    "sequence-registration-validation",
+    "sequence-name-consistency-validation"
   ]
 }
