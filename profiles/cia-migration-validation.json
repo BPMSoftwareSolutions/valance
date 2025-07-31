@@ -1,0 +1,53 @@
+{
+  "name": "cia-migration-validation",
+  "description": "Validates CIA migration from basic conductor to CIA-compliant conductor",
+  "version": "1.0.0",
+  "author": "Valence CIA Migration System",
+  "tags": ["cia", "migration", "conductor", "validation"],
+  "validators": [
+    "CIA/cia-fixed-test"
+  ],
+  "validationLevels": {
+    "critical": [
+      "CIA/cia-fixed-test"
+    ],
+    "important": [],
+    "recommended": []
+  },
+  "executionOrder": [
+    "CIA/cia-fixed-test"
+  ],
+  "configuration": {
+    "failFast": false,
+    "verbose": true,
+    "generateReport": true,
+    "reportFormat": ["json", "markdown"]
+  },
+  "migrationValidation": {
+    "expectedResults": {
+      "MusicalConductor.ts": "FAIL - Not CIA-compliant",
+      "CIAMusicalConductor.ts": "PASS - CIA-compliant"
+    },
+    "migrationSteps": [
+      "1. Validate original conductor fails CIA validation",
+      "2. Create CIA-compliant extension",
+      "3. Validate new conductor passes CIA validation",
+      "4. Update integration points",
+      "5. Test plugin mounting safety"
+    ]
+  },
+  "documentation": {
+    "purpose": "Validates the migration from basic conductor to CIA-compliant conductor",
+    "scope": "All conductor files in the migration process",
+    "usage": {
+      "beforeMigration": "Run against original conductor - should FAIL",
+      "afterMigration": "Run against CIA conductor - should PASS",
+      "validation": "Ensures proper CIA compliance during migration"
+    },
+    "examples": {
+      "testOriginal": "node cli/cli.js --profile cia-migration-validation --files 'src/MusicalConductor.ts'",
+      "testMigrated": "node cli/cli.js --profile cia-migration-validation --files 'src/CIAMusicalConductor.ts'",
+      "testBoth": "node cli/cli.js --profile cia-migration-validation --files 'src/*Conductor.ts'"
+    }
+  }
+}

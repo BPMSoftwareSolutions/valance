@@ -1,0 +1,16 @@
+{
+  "name": "cia-fixed-test",
+  "description": "Fixed CIA validation test",
+  "type": "content",
+  "filePattern": ".*\\.(ts|js)$",
+  "confidenceThreshold": 0.9,
+  "version": "1.0.0",
+  "author": "CIA Fixed Test",
+  "tags": ["cia", "fixed"],
+  "rules": [
+    {
+      "plugin": "validateCiaPluginFixed",
+      "verbose": true
+    }
+  ]
+}

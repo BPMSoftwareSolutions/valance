@@ -1,0 +1,76 @@
+{
+  "name": "cia-mount-call-safety",
+  "description": "Validates that all plugin mounting follows safe signature patterns",
+  "type": "content",
+  "filePattern": ".*\\.(ts|js)$",
+  "confidenceThreshold": 0.85,
+  "version": "1.0.0",
+  "author": "Valence CIA Validation System",
+  "tags": ["cia", "mount-safety", "plugin-mounting", "signature-validation"],
+  "rules": [
+    {
+      "plugin": "validateCiaMountCallSafety",
+      "checkMountSignature": true,
+      "validateParameterOrder": true,
+      "checkParameterValidation": true,
+      "enforceConsistency": true,
+      "verbose": false
+    }
+  ],
+  "mountSignatures": {
+    "safeMountPatterns": [
+      "conductor\\.mount\\s*\\(\\s*sequence\\s*,\\s*handlers\\s*\\)",
+      "conductor\\.registerSequence\\s*\\(\\s*sequence\\s*,\\s*handlers\\s*\\)",
+      "conductor\\.loadPlugin\\s*\\(\\s*sequence\\s*,\\s*handlers\\s*\\)",
+      "mount\\s*\\(\\s*sequence\\s*,\\s*handlers\\s*\\)",
+      "registerSequence\\s*\\(\\s*sequence\\s*[,\\s]*handlers\\s*\\)"
+    ],
+    "unsafeMountPatterns": [
+      "mount\\s*\\(\\s*handlers\\s*,\\s*sequence\\s*\\)",
+      "mount\\s*\\(\\s*[^,]*\\s*\\)(?!.*,)",
+      "registerSequence\\s*\\(\\s*handlers\\s*,\\s*sequence\\s*\\)"
+    ],
+    "requiredParameters": [
+      "sequence",
+      "handlers"
+    ],
+    "parameterValidation": [
+      "sequence\\s*&&",
+      "handlers\\s*&&",
+      "typeof\\s+sequence",
+      "typeof\\s+handlers"
+    ]
+  },
+  "consistencyChecks": {
+    "parameterOrder": "sequence first, handlers second",
+    "namingConventions": [
+      "sequence",
+      "handlers",
+      "pluginSequence",
+      "pluginHandlers"
+    ],
+    "validationBeforeMount": [
+      "validate sequence before mount",
+      "validate handlers before mount",
+      "check parameter types"
+    ]
+  },
+  "documentation": {
+    "purpose": "Ensures consistent and safe plugin mounting signatures across the codebase",
+    "scope": "All files that mount or register SPA plugins",
+    "validationTypes": [
+      "Mount function signature consistency",
+      "Parameter order validation (sequence, handlers)",
+      "Parameter validation before mounting",
+      "Safe mounting pattern enforcement",
+      "Consistent naming conventions"
+    ],
+    "commonIssues": [
+      "Inconsistent parameter order in mount calls",
+      "Missing parameter validation before mounting",
+      "Unsafe mounting patterns without checks",
+      "Inconsistent naming conventions",
+      "Mount calls with wrong number of parameters"
+    ]
+  }
+}

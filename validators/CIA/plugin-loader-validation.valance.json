@@ -1,0 +1,82 @@
+{
+  "name": "cia-plugin-loader-validation",
+  "description": "Validates plugin loader handles dynamic imports, catches errors, and logs failures",
+  "type": "content",
+  "filePattern": ".*pluginLoader\\.(ts|js)$",
+  "confidenceThreshold": 0.9,
+  "version": "1.0.0",
+  "author": "Valence CIA Validation System",
+  "tags": ["cia", "plugin-loader", "dynamic-imports", "error-handling"],
+  "rules": [
+    {
+      "plugin": "validateCiaPluginLoaderValidation",
+      "checkDynamicImports": true,
+      "checkErrorCatching": true,
+      "checkMissingPluginLogging": true,
+      "checkLoadFailureHandling": true,
+      "validateImportPatterns": true,
+      "verbose": false
+    }
+  ],
+  "loaderRequirements": {
+    "dynamicImportPatterns": [
+      "import\\s*\\(",
+      "await\\s+import\\s*\\(",
+      "dynamic\\s+import",
+      "require\\s*\\("
+    ],
+    "errorHandlingPatterns": [
+      "try\\s*\\{[^}]*import",
+      "catch\\s*\\([^)]*\\)\\s*\\{[^}]*console\\.(warn|error)",
+      "catch\\s*\\([^)]*\\)\\s*\\{[^}]*log",
+      "\\.catch\\s*\\([^)]*\\)"
+    ],
+    "loggingPatterns": [
+      "console\\.warn.*[Ff]ailed.*load.*plugin",
+      "console\\.error.*[Pp]lugin.*not.*found",
+      "console\\.log.*[Mm]issing.*plugin",
+      "Failed to load plugin",
+      "Plugin not found",
+      "Module not found"
+    ],
+    "gracefulFailurePatterns": [
+      "continue",
+      "return\\s+null",
+      "return\\s+false",
+      "skip",
+      "ignore"
+    ]
+  },
+  "importSafety": {
+    "requiredChecks": [
+      "plugin existence before import",
+      "import error handling",
+      "module validation after import",
+      "graceful failure on missing plugins"
+    ],
+    "validationAfterImport": [
+      "plugin\\.evaluate",
+      "typeof\\s+plugin",
+      "plugin\\s*&&",
+      "plugin\\.operators"
+    ]
+  },
+  "documentation": {
+    "purpose": "Ensures plugin loader safely handles dynamic imports and gracefully fails on missing plugins",
+    "scope": "All plugin loader files that dynamically import SPA plugins",
+    "validationTypes": [
+      "Dynamic import error handling",
+      "Missing plugin logging",
+      "Load failure graceful handling",
+      "Import pattern validation",
+      "Module validation after import"
+    ],
+    "commonIssues": [
+      "No error handling for failed dynamic imports",
+      "Missing logging for plugin load failures",
+      "No graceful failure when plugins are missing",
+      "Unsafe import patterns without validation",
+      "No module validation after successful import"
+    ]
+  }
+}

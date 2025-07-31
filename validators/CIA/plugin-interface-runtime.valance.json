@@ -1,0 +1,67 @@
+{
+  "name": "cia-plugin-interface-runtime",
+  "description": "Validates that conductor performs runtime checks on plugin shape before mounting",
+  "type": "content",
+  "filePattern": ".*conductor\\.(ts|js)$",
+  "confidenceThreshold": 0.9,
+  "version": "1.0.0",
+  "author": "Valence CIA Validation System",
+  "tags": ["cia", "runtime", "plugin-interface", "conductor"],
+  "rules": [
+    {
+      "plugin": "validateCiaPluginInterfaceRuntime",
+      "checkSequenceValidation": true,
+      "checkHandlersValidation": true,
+      "checkErrorHandling": true,
+      "checkEarlyReturn": true,
+      "validateMountFunction": true,
+      "verbose": false
+    }
+  ],
+  "runtimeChecks": {
+    "requiredValidations": [
+      "sequence is defined",
+      "sequence.movements exists",
+      "handlers is object",
+      "error logging present",
+      "graceful failure handling"
+    ],
+    "mountFunctionPatterns": [
+      "mount\\s*\\(",
+      "registerSequence\\s*\\(",
+      "loadPlugin\\s*\\("
+    ],
+    "validationPatterns": [
+      "if\\s*\\(!\\s*sequence\\s*\\)",
+      "if\\s*\\(!\\s*sequence\\.movements\\s*\\)",
+      "if\\s*\\(!\\s*handlers\\s*\\)",
+      "typeof\\s+handlers\\s*===\\s*['\"]object['\"]",
+      "Array\\.isArray\\s*\\(\\s*sequence\\.movements\\s*\\)"
+    ],
+    "errorHandlingPatterns": [
+      "console\\.error",
+      "console\\.warn",
+      "throw\\s+new\\s+Error",
+      "return\\s+false",
+      "return\\s+null"
+    ]
+  },
+  "documentation": {
+    "purpose": "Ensures conductor validates plugin shape before mounting to prevent runtime failures",
+    "scope": "All conductor files that mount or register SPA plugins",
+    "validationTypes": [
+      "Plugin shape validation before mounting",
+      "Sequence structure validation",
+      "Handlers object validation",
+      "Error handling and logging",
+      "Graceful failure mechanisms"
+    ],
+    "commonIssues": [
+      "Missing sequence validation before mounting",
+      "No handlers object type checking",
+      "Lack of error handling for malformed plugins",
+      "No graceful failure when plugin is invalid",
+      "Missing early return on validation failure"
+    ]
+  }
+}

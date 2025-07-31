@@ -1,0 +1,92 @@
+{
+  "name": "cia-conductor-test-harness",
+  "description": "Validates presence of unit tests for conductor mounting, plugin loading, and handler validation",
+  "type": "content",
+  "filePattern": ".*(conductor|pluginLoader).*\\.(test|spec)\\.(ts|js)$",
+  "confidenceThreshold": 0.85,
+  "version": "1.0.0",
+  "author": "Valence CIA Validation System",
+  "tags": ["cia", "testing", "conductor", "plugin-loader", "test-harness"],
+  "rules": [
+    {
+      "plugin": "validateCiaConductorTestHarness",
+      "checkMountTests": true,
+      "checkPluginLoaderTests": true,
+      "checkHandlerValidationTests": true,
+      "checkErrorScenarioTests": true,
+      "validateTestCoverage": true,
+      "verbose": false
+    }
+  ],
+  "testRequirements": {
+    "conductorMountTests": [
+      "should reject malformed plugin",
+      "should validate sequence before mounting",
+      "should validate handlers before mounting",
+      "should handle missing sequence gracefully",
+      "should handle invalid handlers gracefully"
+    ],
+    "pluginLoaderTests": [
+      "should log errors if plugins fail to load",
+      "should handle missing plugin files",
+      "should catch dynamic import errors",
+      "should continue loading other plugins on failure",
+      "should validate plugin structure after import"
+    ],
+    "handlerValidationTests": [
+      "should validate handlers before invocation",
+      "should check movement-to-handler mapping",
+      "should handle missing handlers gracefully",
+      "should log warnings for undefined handlers",
+      "should not execute invalid handlers"
+    ],
+    "errorScenarioTests": [
+      "malformed sequence structure",
+      "missing handlers object",
+      "invalid handler functions",
+      "plugin load failures",
+      "runtime execution errors"
+    ]
+  },
+  "testPatterns": {
+    "testStructure": [
+      "describe\\s*\\([^)]*conductor",
+      "describe\\s*\\([^)]*plugin.*load",
+      "describe\\s*\\([^)]*mount",
+      "it\\s*\\([^)]*should.*reject.*malformed",
+      "it\\s*\\([^)]*should.*log.*error"
+    ],
+    "mockPatterns": [
+      "jest\\.mock",
+      "sinon\\.stub",
+      "mockImplementation",
+      "mockReturnValue",
+      "spy"
+    ],
+    "assertionPatterns": [
+      "expect\\s*\\([^)]*\\)\\.toThrow",
+      "expect\\s*\\([^)]*\\)\\.toHaveBeenCalledWith",
+      "expect\\s*\\([^)]*\\)\\.toBe\\(false\\)",
+      "expect\\s*\\([^)]*\\)\\.toBeNull",
+      "toHaveBeenCalledWith.*error"
+    ]
+  },
+  "documentation": {
+    "purpose": "Ensures comprehensive test coverage for conductor mounting and plugin loading safety",
+    "scope": "All test files for conductor and plugin loader functionality",
+    "validationTypes": [
+      "Conductor mount function testing",
+      "Plugin loader error handling testing",
+      "Handler validation testing",
+      "Error scenario coverage",
+      "Test harness completeness"
+    ],
+    "commonIssues": [
+      "Missing tests for malformed plugin rejection",
+      "No tests for plugin load error handling",
+      "Insufficient error scenario coverage",
+      "Missing handler validation tests",
+      "No tests for graceful failure mechanisms"
+    ]
+  }
+}
