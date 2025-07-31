@@ -75,7 +75,7 @@ export const startCanvasComponentDragFlow = (
   setElements?: (updater: (prev: any[]) => any[]) => void,
   syncElementCSS?: (element: any, cssData: any) => void
 ) => {
-  return conductorEventBus.startSequence('canvas-component-drag-symphony', {
+  return conductorEventBus.startSequence('Canvas Component Drag Symphony No. 4', {
     element,
     elementId: element?.id,
     changes: eventData?.changes || {},

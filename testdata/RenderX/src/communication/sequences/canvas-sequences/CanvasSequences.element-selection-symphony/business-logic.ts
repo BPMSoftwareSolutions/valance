@@ -127,7 +127,7 @@ export const VisualToolsUtils = {
    * Generate visual tools configuration
    */
   generateVisualToolsConfig: (element: any): any => {
-    const baseConfig = {
+    const baseConfig: any = {
       selectionIndicators: {
         enabled: true,
         type: 'border-highlight',

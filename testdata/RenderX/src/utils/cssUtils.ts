@@ -22,9 +22,9 @@ const camelToKebab = (str: string): string => {
  */
 export const injectCSSRule = (selector: string, styles: Record<string, string | number>): void => {
   // Find or create style element
-  let styleElement = document.getElementById('renderx-evolution-dynamic-styles');
+  let styleElement = document.getElementById('renderx-evolution-dynamic-styles') as HTMLStyleElement;
   if (!styleElement) {
-    styleElement = document.createElement('style');
+    styleElement = document.createElement('style') as HTMLStyleElement;
     styleElement.id = 'renderx-evolution-dynamic-styles';
     styleElement.type = 'text/css';
     document.head.appendChild(styleElement);

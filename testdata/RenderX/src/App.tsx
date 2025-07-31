@@ -13,7 +13,7 @@ import {
   injectSelectionStyles,
 } from "./utils/cssUtils";
 import { jsonComponentLoader } from "./services/JsonComponentLoader";
-import { LoadedJsonComponent } from "./types/JsonComponent";
+import type { LoadedJsonComponent } from "./types/JsonComponent";
 import {
   initializeCommunicationSystem,
   eventBus,
@@ -21,6 +21,7 @@ import {
   MusicalConductor,
   MusicalSequences,
 } from "./communication";
+import { startCanvasComponentDragFlow } from "./communication/sequences/canvas-sequences/CanvasSequences.component-drag-symphony";
 
 // Types
 interface AppState {
@@ -233,18 +234,22 @@ const ElementLibrary: React.FC = () => {
     if (communicationSystem && communicationSystem.conductor) {
       console.log("🎼 Starting Component Drag Symphony for library element drag...");
 
-      communicationSystem.conductor.startSequence('canvas-component-drag-symphony', {
-        elementId: component.id,
-        changes: { dragStart: true, dragData },
-        source: 'element-library-drag',
-        elements: [], // Library drag doesn't have canvas elements yet
-        eventData: {
+      // Use the convenience function instead of direct conductor call
+      startCanvasComponentDragFlow(
+        communicationSystem.conductor,
+        component, // The element being dragged
+        {
+          changes: { dragStart: true, dragData },
+          source: 'element-library-drag',
+          timestamp: Date.now(),
           eventType: 'drag-start',
-          component,
           dragData,
-          timestamp: Date.now()
-        }
-      });
+          component
+        },
+        [], // elements array (empty for library drag)
+        undefined, // setElements function (not needed for library drag)
+        undefined  // syncElementCSS function (not needed for library drag)
+      );
     }
   };
 
@@ -262,16 +267,20 @@ const ElementLibrary: React.FC = () => {
     if (communicationSystem && communicationSystem.conductor) {
       console.log("🎼 Starting Component Drag Symphony for drag end...");
 
-      communicationSystem.conductor.startSequence('canvas-component-drag-symphony', {
-        elementId: 'drag-end-operation',
-        changes: { dragEnd: true },
-        source: 'element-library-drag-end',
-        elements: [], // Library drag end doesn't have canvas elements
-        eventData: {
-          eventType: 'drag-end',
-          timestamp: Date.now()
-        }
-      });
+      // Use the convenience function instead of direct conductor call
+      startCanvasComponentDragFlow(
+        communicationSystem.conductor,
+        { id: 'drag-end-operation', type: 'drag-end' }, // element
+        {
+          changes: { dragEnd: true },
+          source: 'element-library-drag-end',
+          timestamp: Date.now(),
+          eventType: 'drag-end'
+        },
+        [], // elements array (empty for library drag end)
+        undefined, // setElements function
+        undefined  // syncElementCSS function
+      );
     }
   };
 
@@ -459,47 +468,18 @@ const Canvas: React.FC<{ mode: string }> = ({ mode }) => {
     e.dataTransfer.dropEffect = "copy";
     setIsDragOver(true);
 
-    // 🎼 Start Component Drag Symphony for drag over
-    const communicationSystem = (window as any).renderxCommunicationSystem;
-    if (communicationSystem && communicationSystem.conductor) {
-      console.log("🎼 Starting Component Drag Symphony for drag over...");
-
-      communicationSystem.conductor.startSequence('canvas-component-drag-symphony', {
-        elementId: 'canvas-drag-over',
-        changes: { dragOver: true, isDragOver: true },
-        source: 'canvas-drag-over',
-        elements: canvasElements,
-        setElements: setCanvasElements,
-        eventData: {
-          eventType: 'drag-over',
-          canvasPosition: { x: e.clientX, y: e.clientY },
-          timestamp: Date.now()
-        }
-      });
-    }
+    // Note: No symphony needed for simple canvas hover state changes
+    // This is just visual feedback, not an actual drag operation
+    console.log("🎨 Canvas drag over - visual state updated");
   };
 
   const handleDragLeave = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
 
-    // 🎼 Start Component Drag Symphony for drag leave
-    const communicationSystem = (window as any).renderxCommunicationSystem;
-    if (communicationSystem && communicationSystem.conductor) {
-      console.log("🎼 Starting Component Drag Symphony for drag leave...");
-
-      communicationSystem.conductor.startSequence('canvas-component-drag-symphony', {
-        elementId: 'canvas-drag-leave',
-        changes: { dragLeave: true, isDragOver: false },
-        source: 'canvas-drag-leave',
-        elements: canvasElements,
-        setElements: setCanvasElements,
-        eventData: {
-          eventType: 'drag-leave',
-          timestamp: Date.now()
-        }
-      });
-    }
+    // Note: No symphony needed for simple canvas hover state changes
+    // This is just visual feedback, not an actual drag operation
+    console.log("🎨 Canvas drag leave - visual state updated");
   };
 
   // Canvas element drag start handler for Component Drag Symphony
@@ -531,19 +511,22 @@ const Canvas: React.FC<{ mode: string }> = ({ mode }) => {
     if (communicationSystem && communicationSystem.conductor) {
       console.log("🎼 Starting Component Drag Symphony for canvas element drag...");
 
-      communicationSystem.conductor.startSequence('canvas-component-drag-symphony', {
-        elementId: element.id,
-        changes: { dragStart: true, dragData },
-        source: 'canvas-element-drag-start',
-        elements: canvasElements,
-        setElements: setCanvasElements,
-        eventData: {
+      // Use the convenience function instead of direct conductor call
+      startCanvasComponentDragFlow(
+        communicationSystem.conductor,
+        element, // The canvas element being dragged
+        {
+          changes: { dragStart: true, dragData },
+          source: 'canvas-element-drag-start',
+          timestamp: Date.now(),
           eventType: 'canvas-element-drag-start',
           element,
-          dragData,
-          timestamp: Date.now()
-        }
-      });
+          dragData
+        },
+        canvasElements, // elements array
+        setCanvasElements, // setElements function
+        undefined  // syncElementCSS function
+      );
     }
   };
 
@@ -584,31 +567,6 @@ const Canvas: React.FC<{ mode: string }> = ({ mode }) => {
           )
         );
 
-        // Trigger component drag symphony for coordination
-        const communicationSystem = (window as any).renderxCommunicationSystem;
-        if (communicationSystem && communicationSystem.conductor) {
-          console.log("🎼 Starting Canvas Component Drag Symphony for element move...");
-
-          // Create event data for the symphony
-          const eventData = {
-            eventType: 'canvas-element-moved',
-            elementId: dragData.elementData.id,
-            changes: { position: dropCoordinates },
-            source: 'canvas-element-drag',
-            timestamp: Date.now()
-          };
-
-          // Start the musical sequence for coordination
-          communicationSystem.conductor.startSequence('canvas-component-drag-symphony', {
-            elementId: dragData.elementData.id,
-            changes: { position: dropCoordinates },
-            source: 'canvas-element-drag',
-            elements: canvasElements,
-            setElements: setCanvasElements,
-            eventData,
-            timestamp: Date.now()
-          });
-        }
         return;
       }
 

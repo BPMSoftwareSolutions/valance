@@ -15,12 +15,14 @@
  * @date 2025-07-29
  */
 
-import { 
-  EVENT_TYPES, 
-  MUSICAL_DYNAMICS, 
-  MUSICAL_TIMING, 
-  SEQUENCE_CATEGORIES,
+import type {
   MusicalSequence
+} from '../../SequenceTypes';
+import {
+  EVENT_TYPES,
+  MUSICAL_DYNAMICS,
+  MUSICAL_TIMING,
+  SEQUENCE_CATEGORIES
 } from '../../SequenceTypes';
 
 /**
@@ -35,7 +37,7 @@ export const CANVAS_ELEMENT_SELECTION_SEQUENCE: MusicalSequence = {
   key: "F Major",
   tempo: 120,
   timeSignature: "4/4",
-  category: SEQUENCE_CATEGORIES.LAYOUT_ELEMENT,
+  category: SEQUENCE_CATEGORIES.CANVAS_OPERATIONS,
   movements: [{
     name: "Selection Harmony Allegro",
     description: "4-beat dynamic theme for element selection",
@@ -156,7 +158,7 @@ export const registerCanvasElementSelectionSequence = (conductor: any): void => 
   console.log('🎼 Registering Canvas Element Selection Musical Sequence');
 
   // Register sequence with proper sequence name
-  conductor.defineSequence('Canvas Element Selection Symphony No. 37', CANVAS_ELEMENT_SELECTION_SEQUENCE);
+  conductor.registerSequence(CANVAS_ELEMENT_SELECTION_SEQUENCE);
 
   console.log('✅ Canvas Element Selection sequence registered successfully');
 };

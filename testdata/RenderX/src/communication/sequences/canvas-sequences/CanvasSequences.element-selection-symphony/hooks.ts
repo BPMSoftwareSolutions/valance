@@ -50,7 +50,7 @@ export const useCanvasElementSelectionSymphony = (
     }
 
     console.log('🎼 Registering Canvas Element Selection Musical Sequence');
-    conductor.defineSequence('canvas-element-selection-symphony', CANVAS_ELEMENT_SELECTION_SEQUENCE);
+    conductor.registerSequence(CANVAS_ELEMENT_SELECTION_SEQUENCE);
 
     return () => {
       console.log('🎼 Unregistering Canvas Element Selection Musical Sequence');
@@ -100,8 +100,8 @@ export const useCanvasElementSelectionSymphony = (
     const finalSelectionContext = {
       selectionType,
       clearPrevious,
-      source: 'click',
-      ...selectionContext
+      ...selectionContext,
+      source: (selectionContext?.source || 'click') as 'click' | 'keyboard' | 'programmatic'
     };
 
     // Start the element selection sequence

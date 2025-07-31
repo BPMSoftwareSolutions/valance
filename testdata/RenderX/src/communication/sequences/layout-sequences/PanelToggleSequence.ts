@@ -8,8 +8,10 @@
  * tools/docs/01-ARCHITECTURE/01-arch-canvas-anti-pattern-resolution-implementation-strategy.md
  */
 
+import type {
+  MusicalSequence
+} from '../SequenceTypes';
 import {
-  MusicalSequence,
   SEQUENCE_CATEGORIES,
   MUSICAL_DYNAMICS,
   MUSICAL_TIMING
@@ -319,8 +321,8 @@ export const registerPanelToggleSequences = (conductor: any): void => {
   console.log('🎼 Registering Panel Toggle Musical Sequences');
 
   // Register both sequences with proper sequence names matching the startSequence calls
-  conductor.defineSequence('Panel Toggle Symphony No. 1', PANEL_TOGGLE_SEQUENCE);
-  conductor.defineSequence('Layout Mode Change Symphony No. 2', LAYOUT_MODE_CHANGE_SEQUENCE);
+  conductor.registerSequence(PANEL_TOGGLE_SEQUENCE);
+  conductor.registerSequence(LAYOUT_MODE_CHANGE_SEQUENCE);
 
   console.log('✅ Panel Toggle sequences registered successfully');
 };

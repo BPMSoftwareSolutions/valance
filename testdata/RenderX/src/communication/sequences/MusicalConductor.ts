@@ -11,14 +11,16 @@
  */
 
 import { EventBus } from '../EventBus';
-import {
+import type {
   MusicalSequence,
   SequenceExecutionContext,
   ConductorStatistics,
   SequenceRequest,
   SequencePriority,
   SequenceBeat,
-  SequenceMovement,
+  SequenceMovement
+} from './SequenceTypes';
+import {
   MUSICAL_TIMING,
   MUSICAL_DYNAMICS,
   MUSICAL_CONDUCTOR_EVENT_TYPES,

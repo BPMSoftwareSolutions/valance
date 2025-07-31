@@ -83,15 +83,21 @@ export const handleCanvasElementMoved = async (data: HandlerData): Promise<any> 
  * Beat 3 handler for CANVAS_DROP_VALIDATION
  */
 export const handleCanvasDropValidation = (data: HandlerData): boolean => {
-    console.log('🎼 Handler: Canvas Drop Validation', data);
+    console.log('🎼 Component Drag Handler: Canvas Drop Validation', data);
 
     try {
-        const { elementId, changes, source, elements } = data;
+        const { elementId, changes, source, elements, dragData } = data;
 
         // Check if this event is meant for Component Drag Symphony
         // If elementId is missing, this is likely from Library Drop Symphony
         if (!elementId || !changes || !source) {
-            console.log('🎼 Handler: Canvas Drop Validation - Not a component drag event, skipping');
+            console.log('🎼 Component Drag Handler: Not a component drag event, skipping');
+            return true; // Return true to not block other handlers
+        }
+
+        // If this has dragData but no elementId, it's likely a library drop event
+        if (dragData && !elementId) {
+            console.log('🎼 Component Drag Handler: Library drop event detected, skipping');
             return true; // Return true to not block other handlers
         }
 

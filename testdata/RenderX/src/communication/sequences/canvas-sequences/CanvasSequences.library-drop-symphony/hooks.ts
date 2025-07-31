@@ -40,7 +40,7 @@ export const useCanvasLibraryDropSymphony = (
     }
 
     console.log('🎼 Registering Canvas Library Drop Musical Sequence');
-    conductor.defineSequence('canvas-library-drop-symphony', CANVAS_LIBRARY_DROP_SEQUENCE);
+    conductor.registerSequence(CANVAS_LIBRARY_DROP_SEQUENCE);
 
     return () => {
       console.log('🎼 Unregistering Canvas Library Drop Musical Sequence');

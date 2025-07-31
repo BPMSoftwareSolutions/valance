@@ -8,8 +8,10 @@
  * tools/docs/01-ARCHITECTURE/01-arch-canvas-anti-pattern-resolution-implementation-strategy.md
  */
 
+import type {
+  MusicalSequence
+} from '../SequenceTypes';
 import {
-  MusicalSequence,
   SEQUENCE_CATEGORIES,
   MUSICAL_DYNAMICS,
   MUSICAL_TIMING,
@@ -279,8 +281,8 @@ export const registerJsonComponentLoadingSequences = (conductor: any): void => {
   console.log('🎼 Registering JSON Component Loading Musical Sequences');
 
   // Register both sequences with proper sequence names matching the startSequence calls
-  conductor.defineSequence('JSON Component Loading Symphony No. 1', JSON_COMPONENT_LOADING_SEQUENCE);
-  conductor.defineSequence('JSON Component Error Handling Symphony No. 2', JSON_COMPONENT_ERROR_SEQUENCE);
+  conductor.registerSequence(JSON_COMPONENT_LOADING_SEQUENCE);
+  conductor.registerSequence(JSON_COMPONENT_ERROR_SEQUENCE);
 
   console.log('✅ JSON Component Loading sequences registered successfully');
 };

@@ -88,8 +88,8 @@ export const CANVAS_ELEMENT_SELECTION_HANDLERS = {
     try {
       // Process selection based on type
       const processedSelection = {
-        selectedElements: [],
-        deselectedElements: [],
+        selectedElements: [] as string[],
+        deselectedElements: [] as string[],
         selectionMode: selectionState?.selectionType || 'single'
       };
       

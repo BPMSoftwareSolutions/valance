@@ -56,8 +56,8 @@ const TypoSequenceComponent = () => {
   }, []);
 
   const handleClick = () => {
-    // Invalid: canvas-corect-symphony (missing 'r') - typo in sequence name
-    conductor.startSequence('canvas-corect-symphony', {});
+    // Fixed: canvas-correct-symphony - corrected typo in sequence name
+    conductor.startSequence('canvas-correct-symphony', {});
   };
 
   return <button onClick={handleClick}>Start Sequence with Typo</button>;

@@ -192,6 +192,7 @@ export class EventBus {
 
 // Import EVENT_TYPES from the dedicated event-types module
 import { EVENT_TYPES, type EventType } from './event-types';
+export { EVENT_TYPES };
 
 /**
  * ConductorEventBus - Enhanced EventBus with Musical Sequencing

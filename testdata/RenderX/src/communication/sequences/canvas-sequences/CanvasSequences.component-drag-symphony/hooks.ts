@@ -65,7 +65,7 @@ export const useCanvasComponentDragSymphony = (
         }
 
         console.log('🎼 Registering Canvas Component Drag Musical Sequence');
-        conductor.defineSequence('canvas-component-drag-symphony', CANVAS_COMPONENT_DRAG_SEQUENCE);
+        conductor.registerSequence(CANVAS_COMPONENT_DRAG_SEQUENCE);
 
         return () => {
             console.log('🎼 Unregistering Canvas Component Drag Musical Sequence');
@@ -106,7 +106,7 @@ export const useCanvasComponentDragSymphony = (
 
         console.log('🎼 Starting Canvas Component Drag Symphony No. 4');
 
-        conductor.startSequence('canvas-component-drag-symphony', {
+        conductor.startSequence('Canvas Component Drag Symphony No. 4', {
             elementId,
             changes,
             source,

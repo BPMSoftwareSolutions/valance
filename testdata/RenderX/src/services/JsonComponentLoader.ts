@@ -11,7 +11,7 @@
  * 3. Verifies all discovered files are actually loadable
  */
 
-import { JsonComponent, LoadedJsonComponent, JsonComponentLoadResult } from '../types/JsonComponent';
+import type { JsonComponent, LoadedJsonComponent, JsonComponentLoadResult } from '../types/JsonComponent';
 import { MusicalSequences } from '../communication';
 
 export class JsonComponentLoader {

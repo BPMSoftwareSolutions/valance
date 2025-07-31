@@ -61,10 +61,23 @@ export const validateDragContext = (elementId: string, changes: any, source: str
         return false;
     }
 
-    // Find the element in the current elements array
+    // Handle different element types
+    if (source === 'element-library-drag' || source === 'element-library-drag-end') {
+        // Library drag operations don't need existing canvas elements
+        console.log('🎯 Library drag operation - skipping canvas element validation');
+        return true;
+    }
+
+    if (elementId.startsWith('canvas-drag-') || elementId.startsWith('drag-end-')) {
+        // Synthetic drag operations (drag-over, drag-leave, etc.)
+        console.log('🎯 Synthetic drag operation - skipping canvas element validation');
+        return true;
+    }
+
+    // Find the element in the current elements array (for canvas element operations)
     const element = elements.find(el => el.id === elementId);
     if (!element) {
-        console.warn('🎯 Drag validation failed: Element not found', elementId);
+        console.warn('🎯 Drag validation failed: Canvas element not found', elementId);
         return false;
     }
 
@@ -151,10 +164,23 @@ export const coordinateDragState = (elementId: string, changes: any, source: str
         return false;
     }
 
-    // Find the element being dragged
+    // Handle different element types
+    if (source === 'element-library-drag' || source === 'element-library-drag-end') {
+        // Library drag operations don't need existing canvas elements
+        console.log('🎯 Library drag coordination - no canvas element needed');
+        return true;
+    }
+
+    if (elementId.startsWith('canvas-drag-') || elementId.startsWith('drag-end-')) {
+        // Synthetic drag operations (drag-over, drag-leave, etc.)
+        console.log('🎯 Synthetic drag coordination - no canvas element needed');
+        return true;
+    }
+
+    // Find the element being dragged (for canvas element operations)
     const element = elements.find(el => el.id === elementId);
     if (!element) {
-        console.warn('🎯 Drag coordination failed: Element not found', elementId);
+        console.warn('🎯 Drag coordination failed: Canvas element not found', elementId);
         return false;
     }
 
@@ -185,8 +211,21 @@ export const syncDragChanges = (
 ): boolean => {
     console.log('🎯 Business Logic: Sync Drag Changes');
 
+    // Handle different element types
+    if (source === 'element-library-drag' || source === 'element-library-drag-end') {
+        // Library drag operations don't need captured element data
+        console.log('🎯 Library drag sync - no captured element needed');
+        return true;
+    }
+
+    if (elementId.startsWith('canvas-drag-') || elementId.startsWith('drag-end-')) {
+        // Synthetic drag operations don't need captured element data
+        console.log('🎯 Synthetic drag sync - no captured element needed');
+        return true;
+    }
+
     if (!capturedElement) {
-        console.warn('🎯 Drag sync failed: No captured element data');
+        console.warn('🎯 Drag sync failed: No captured element data for canvas element', elementId);
         return false;
     }
 

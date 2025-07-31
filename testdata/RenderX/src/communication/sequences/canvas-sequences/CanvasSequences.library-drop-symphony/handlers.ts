@@ -24,11 +24,24 @@ export const CANVAS_LIBRARY_DROP_HANDLERS = {
    */
   [EVENT_TYPES.CANVAS_DROP_VALIDATION]: (eventData: any) => {
     console.log('🎼 Canvas Library Drop Symphony - Beat 1: Drop Context Validation', eventData);
-    
-    const { dragData, dropCoordinates, containerContext } = eventData;
-    
-    // Validate drag data
-    if (!dragData || !dragData.type || !dragData.componentId) {
+
+    const { dragData, dropCoordinates, containerContext, source, elementId } = eventData;
+
+    // Filter: Only handle library drop events, not component drag events
+    // If this event has elementId/changes/source but no dragData, it's from component drag symphony
+    if (elementId && !dragData && (source === 'canvas-drag-over' || source === 'canvas-drag-leave')) {
+      console.log('🎼 Library Drop Handler: Component drag event detected, skipping');
+      return { success: true, skipped: true, reason: 'Not a library drop event' };
+    }
+
+    // If no dragData at all, this is likely not a library drop operation
+    if (!dragData) {
+      console.log('🎼 Library Drop Handler: No dragData found, skipping');
+      return { success: true, skipped: true, reason: 'No dragData present' };
+    }
+
+    // Validate drag data for library drops
+    if (!dragData.type || !dragData.componentId) {
       console.error('Invalid drag data for library drop:', dragData);
       return {
         success: false,

@@ -15,12 +15,14 @@
  * @date 2025-07-29
  */
 
-import { 
-  EVENT_TYPES, 
-  MUSICAL_DYNAMICS, 
-  MUSICAL_TIMING, 
-  SEQUENCE_CATEGORIES,
+import type {
   MusicalSequence
+} from '../../SequenceTypes';
+import {
+  EVENT_TYPES,
+  MUSICAL_DYNAMICS,
+  MUSICAL_TIMING,
+  SEQUENCE_CATEGORIES
 } from '../../SequenceTypes';
 
 /**
@@ -35,7 +37,7 @@ export const CANVAS_LIBRARY_DROP_SEQUENCE: MusicalSequence = {
   key: "A Major",
   tempo: 120,
   timeSignature: "4/4",
-  category: SEQUENCE_CATEGORIES.LAYOUT_ELEMENT,
+  category: SEQUENCE_CATEGORIES.CANVAS_OPERATIONS,
   movements: [{
     name: "Library Drop Allegro",
     description: "4-beat energetic theme for library drop operations",
@@ -86,29 +88,7 @@ export const CANVAS_LIBRARY_DROP_SEQUENCE: MusicalSequence = {
     version: "1.0.0",
     author: "RenderX Evolution System",
     created: new Date(),
-    tags: ["canvas", "library-drop", "element-creation", "drag-drop"],
-    dataContracts: {
-      [EVENT_TYPES.CANVAS_DROP_VALIDATION]: {
-        input: ['dragData', 'dropCoordinates', 'containerContext'],
-        output: ['validation', 'processedData'],
-        description: 'Validates drop context and prepares data for element creation'
-      },
-      [EVENT_TYPES.LIBRARY_DRAG_ENDED]: {
-        input: ['dragData', 'dropCoordinates', 'containerContext'],
-        output: ['element', 'operation', 'phase'],
-        description: 'Creates element from library component data'
-      },
-      [EVENT_TYPES.CANVAS_ELEMENT_CREATED]: {
-        input: ['dragData', 'dropCoordinates', 'containerContext', 'element?'],
-        output: ['cssClasses', 'positionStyles', 'element'],
-        description: 'Synchronizes CSS for newly created element'
-      },
-      [EVENT_TYPES.DROP_ZONE_CLEANUP]: {
-        input: ['dragData', 'dropCoordinates', 'containerContext', 'element?'],
-        output: ['cleanupOperations', 'finalizedElement'],
-        description: 'Cleans up drop state and finalizes element'
-      }
-    }
+    tags: ["canvas", "library-drop", "element-creation", "drag-drop"]
   }
 };
 
@@ -176,7 +156,7 @@ export const registerCanvasLibraryDropSequence = (conductor: any): void => {
   console.log('🎼 Registering Canvas Library Drop Musical Sequence');
 
   // Register sequence with proper sequence name
-  conductor.defineSequence('Canvas Library Drop Symphony No. 33', CANVAS_LIBRARY_DROP_SEQUENCE);
+  conductor.registerSequence(CANVAS_LIBRARY_DROP_SEQUENCE);
 
   console.log('✅ Canvas Library Drop sequence registered successfully');
 };
