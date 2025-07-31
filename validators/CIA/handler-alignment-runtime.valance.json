@@ -1,0 +1,65 @@
+{
+  "name": "cia-handler-alignment-runtime",
+  "description": "Validates that conductor checks movement-to-handler alignment before execution",
+  "type": "content",
+  "filePattern": ".*conductor\\.(ts|js)$",
+  "confidenceThreshold": 0.9,
+  "version": "1.0.0",
+  "author": "Valence CIA Validation System",
+  "tags": ["cia", "runtime", "handler-alignment", "movement-mapping"],
+  "rules": [
+    {
+      "plugin": "validateCiaHandlerAlignmentRuntime",
+      "checkMovementHandlerMapping": true,
+      "checkMissingHandlerWarnings": true,
+      "checkGracefulFailure": true,
+      "validateExecutionSafety": true,
+      "verbose": false
+    }
+  ],
+  "alignmentChecks": {
+    "requiredValidations": [
+      "movement.label exists in handlers",
+      "handler function is callable",
+      "missing handler warnings",
+      "execution safety checks"
+    ],
+    "mappingPatterns": [
+      "movement\\.label\\s+in\\s+handlers",
+      "handlers\\[\\s*movement\\.label\\s*\\]",
+      "handlers\\.hasOwnProperty\\s*\\(\\s*movement\\.label\\s*\\)",
+      "Object\\.keys\\s*\\(\\s*handlers\\s*\\)",
+      "typeof\\s+handlers\\[.*\\]\\s*===\\s*['\"]function['\"]"
+    ],
+    "warningPatterns": [
+      "console\\.warn.*missing.*handler",
+      "console\\.warn.*movement.*not.*found",
+      "console\\.error.*handler.*undefined",
+      "Missing handler for movement"
+    ],
+    "safetyPatterns": [
+      "if\\s*\\(\\s*handlers\\[.*\\]\\s*\\)",
+      "handlers\\[.*\\]\\s*&&",
+      "try\\s*\\{[^}]*handlers\\[.*\\]",
+      "catch.*handler.*error"
+    ]
+  },
+  "documentation": {
+    "purpose": "Ensures conductor validates movement-to-handler alignment before execution to prevent runtime errors",
+    "scope": "All conductor files that execute movement handlers",
+    "validationTypes": [
+      "Movement label to handler key mapping",
+      "Handler function existence validation",
+      "Missing handler warning mechanisms",
+      "Safe handler execution patterns",
+      "Graceful failure on missing handlers"
+    ],
+    "commonIssues": [
+      "No validation that movement.label exists in handlers",
+      "Missing warnings for undefined handlers",
+      "Unsafe handler execution without existence checks",
+      "No graceful failure when handlers are missing",
+      "Runtime errors from calling undefined functions"
+    ]
+  }
+}

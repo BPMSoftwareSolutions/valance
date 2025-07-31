@@ -12,7 +12,8 @@ export async function loadPlugins() {
       'plugins/SPA/*.js',
       'plugins/AppCore/*.js',
       'plugins/Backend/*.js',
-      'plugins/Shared/*.js'
+      'plugins/Shared/*.js',
+      'plugins/CIA/*.js'
     ];
 
     for (const pattern of pluginPatterns) {

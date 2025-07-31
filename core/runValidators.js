@@ -75,6 +75,7 @@ async function executePluginRule(content, rule, context) {
       `plugins/AppCore/${pluginName.replace('validateAppCore', 'validate')}.js`,
       `plugins/Backend/${pluginName.replace('validateBackend', 'validate')}.js`,
       `plugins/Shared/${pluginName.replace('validateShared', 'validate')}.js`,
+      `plugins/CIA/${pluginName.replace('validateCia', 'validate')}.js`,
       `plugins/${pluginName}.js` // Fallback to legacy path
     ];
 
