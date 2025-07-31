@@ -1,13 +1,17 @@
 /**
- * Enhanced Musical Conductor Class (TypeScript)
- * Manages the execution and coordination of musical sequences
- * 
+ * CIA-Compliant Musical Conductor Class (TypeScript)
+ * Manages the execution and coordination of musical sequences with CIA compliance
+ *
  * Features:
  * - Sequential orchestration with queue-based system
  * - Priority-based sequence execution
  * - Comprehensive error handling
  * - Performance metrics and statistics
  * - TypeScript support with proper typing
+ * - CIA (Conductor Integration Architecture) compliance for safe SPA plugin mounting
+ * - Runtime plugin shape validation
+ * - Graceful failure handling for malformed plugins
+ * - Movement-to-handler contract verification
  */
 
 import { EventBus } from '../EventBus';
@@ -27,15 +31,37 @@ import {
   SEQUENCE_PRIORITIES
 } from './SequenceTypes';
 
+// CIA (Conductor Integration Architecture) interfaces for SPA plugin mounting
+export interface SPAPlugin {
+  sequence: MusicalSequence;
+  handlers: Record<string, Function>;
+  metadata?: {
+    id: string;
+    version: string;
+    author?: string;
+  };
+}
+
+export interface PluginMountResult {
+  success: boolean;
+  pluginId: string;
+  message: string;
+  warnings?: string[];
+}
+
 export class MusicalConductor {
   private eventBus: EventBus;
   private sequences: Map<string, MusicalSequence> = new Map();
-  
+
   // Sequential Orchestration: Replace concurrent execution with queue-based system
   private activeSequence: SequenceExecutionContext | null = null;
   private sequenceQueue: SequenceRequest[] = [];
   private sequenceHistory: SequenceExecutionContext[] = [];
   private priorities: Map<string, string> = new Map();
+
+  // CIA (Conductor Integration Architecture) properties for SPA plugin mounting
+  private mountedPlugins: Map<string, SPAPlugin> = new Map();
+  private pluginHandlers: Map<string, Record<string, Function>> = new Map();
 
   // Enhanced statistics for queue management
   private statistics: ConductorStatistics = {
@@ -54,7 +80,7 @@ export class MusicalConductor {
 
   constructor(eventBus: EventBus) {
     this.eventBus = eventBus;
-    console.log('🎼 MusicalConductor: Enhanced conductor with Sequential Orchestration initialized');
+    console.log('🎼 MusicalConductor: CIA-compliant conductor with Sequential Orchestration initialized');
   }
 
   /**
@@ -99,6 +125,237 @@ export class MusicalConductor {
    */
   getSequenceNames(): string[] {
     return Array.from(this.sequences.keys());
+  }
+
+  // ===== CIA (Conductor Integration Architecture) Methods =====
+
+  /**
+   * Mount an SPA plugin with comprehensive validation (CIA-compliant)
+   * @param sequence - The sequence definition from the plugin
+   * @param handlers - The handlers object from the plugin
+   * @param pluginId - Optional plugin ID (defaults to sequence.name)
+   * @returns Plugin mount result
+   */
+  mount(sequence: any, handlers: any, pluginId?: string): PluginMountResult {
+    const id = pluginId || sequence?.name || 'unknown-plugin';
+
+    try {
+      console.log(`🧠 MusicalConductor: Attempting to mount plugin: ${id}`);
+
+      // Validate sequence
+      if (!sequence) {
+        console.error('🧠 Mount failed: sequence is required');
+        return {
+          success: false,
+          pluginId: id,
+          message: 'Mount failed: sequence is required'
+        };
+      }
+
+      if (!sequence.movements || !Array.isArray(sequence.movements)) {
+        console.error('🧠 Mount failed: sequence.movements must be an array');
+        return {
+          success: false,
+          pluginId: id,
+          message: 'Mount failed: sequence.movements must be an array'
+        };
+      }
+
+      // Validate handlers
+      if (!handlers || typeof handlers !== 'object') {
+        console.error('🧠 Mount failed: handlers must be an object');
+        return {
+          success: false,
+          pluginId: id,
+          message: 'Mount failed: handlers must be an object'
+        };
+      }
+
+      // Validate movement-to-handler mapping
+      const warnings: string[] = [];
+      for (const movement of sequence.movements) {
+        if (!movement.name) {
+          console.warn('🧠 Movement missing name, skipping validation');
+          warnings.push('Movement missing name, skipping validation');
+          continue;
+        }
+
+        if (!(movement.name in handlers)) {
+          console.warn(`🧠 Missing handler for movement: ${movement.name}`);
+          warnings.push(`Missing handler for movement: ${movement.name}`);
+        }
+
+        if (handlers[movement.name] && typeof handlers[movement.name] !== 'function') {
+          console.error(`🧠 Handler for ${movement.name} is not a function`);
+          return {
+            success: false,
+            pluginId: id,
+            message: `Handler for ${movement.name} is not a function`
+          };
+        }
+      }
+
+      // Create plugin object
+      const plugin: SPAPlugin = {
+        sequence,
+        handlers,
+        metadata: {
+          id,
+          version: sequence.metadata?.version || '1.0.0',
+          author: sequence.metadata?.author
+        }
+      };
+
+      // Mount the plugin
+      this.mountedPlugins.set(id, plugin);
+      this.pluginHandlers.set(id, handlers);
+
+      // Register the sequence with the existing conductor system
+      this.registerSequence(sequence);
+
+      console.log(`🧠 MusicalConductor: Successfully mounted plugin: ${id}`);
+
+      return {
+        success: true,
+        pluginId: id,
+        message: `Successfully mounted plugin: ${id}`,
+        warnings: warnings.length > 0 ? warnings : undefined
+      };
+
+    } catch (error) {
+      console.error('🧠 MusicalConductor: Mount failed with error:', error);
+      return {
+        success: false,
+        pluginId: id,
+        message: `Mount failed with error: ${(error as Error).message}`
+      };
+    }
+  }
+
+  /**
+   * Execute movement with handler validation (CIA-compliant)
+   * @param sequenceId - Sequence identifier
+   * @param movementName - Movement name
+   * @param data - Data to pass to handler
+   * @returns Handler execution result
+   */
+  executeMovementHandler(sequenceId: string, movementName: string, data: any): any {
+    try {
+      const handlers = this.pluginHandlers.get(sequenceId);
+
+      if (!handlers) {
+        console.warn(`🧠 No handlers found for sequence: ${sequenceId}`);
+        return null;
+      }
+
+      if (!(movementName in handlers)) {
+        console.warn(`🧠 Missing handler for movement: ${movementName}`);
+        return null;
+      }
+
+      const handler = handlers[movementName];
+      if (typeof handler !== 'function') {
+        console.error(`🧠 Handler for ${movementName} is not a function`);
+        return null;
+      }
+
+      console.log(`🧠 MusicalConductor: Executing handler for movement: ${movementName}`);
+      return handler(data);
+
+    } catch (error) {
+      console.error(`🧠 MusicalConductor: Handler execution failed for ${movementName}:`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Load plugin from dynamic import with error handling (CIA-compliant)
+   * @param pluginPath - Path to the plugin module
+   * @returns Plugin load result
+   */
+  async loadPlugin(pluginPath: string): Promise<PluginMountResult> {
+    try {
+      console.log(`🧠 MusicalConductor: Loading plugin from: ${pluginPath}`);
+
+      const plugin = await import(pluginPath);
+
+      // Validate plugin structure after import
+      if (!plugin || typeof plugin !== 'object') {
+        console.warn(`🧠 Failed to load plugin: invalid plugin structure at ${pluginPath}`);
+        return {
+          success: false,
+          pluginId: 'unknown',
+          message: `Failed to load plugin: invalid plugin structure at ${pluginPath}`
+        };
+      }
+
+      if (!plugin.sequence || !plugin.handlers) {
+        console.warn(`🧠 Plugin missing required exports (sequence, handlers): ${pluginPath}`);
+        return {
+          success: false,
+          pluginId: plugin.sequence?.name || 'unknown',
+          message: `Plugin missing required exports (sequence, handlers): ${pluginPath}`
+        };
+      }
+
+      // Mount the plugin
+      return this.mount(plugin.sequence, plugin.handlers);
+
+    } catch (error) {
+      console.warn(`🧠 MusicalConductor: Failed to load plugin from ${pluginPath}:`, (error as Error).message);
+      return {
+        success: false,
+        pluginId: 'unknown',
+        message: `Failed to load plugin from ${pluginPath}: ${(error as Error).message}`
+      };
+    }
+  }
+
+  /**
+   * Unmount a plugin (CIA-compliant)
+   * @param pluginId - Plugin identifier
+   * @returns Success status
+   */
+  unmountPlugin(pluginId: string): boolean {
+    try {
+      if (!this.mountedPlugins.has(pluginId)) {
+        console.warn(`🧠 Plugin not found for unmounting: ${pluginId}`);
+        return false;
+      }
+
+      const plugin = this.mountedPlugins.get(pluginId)!;
+
+      // Unregister the sequence
+      this.unregisterSequence(plugin.sequence.name);
+
+      // Remove from mounted plugins
+      this.mountedPlugins.delete(pluginId);
+      this.pluginHandlers.delete(pluginId);
+
+      console.log(`🧠 MusicalConductor: Successfully unmounted plugin: ${pluginId}`);
+      return true;
+
+    } catch (error) {
+      console.error(`🧠 MusicalConductor: Failed to unmount plugin ${pluginId}:`, error);
+      return false;
+    }
+  }
+
+  /**
+   * Get mounted plugin information
+   * @param pluginId - Plugin identifier
+   * @returns Plugin information or undefined
+   */
+  getPluginInfo(pluginId: string): SPAPlugin | undefined {
+    return this.mountedPlugins.get(pluginId);
+  }
+
+  /**
+   * Get all mounted plugin IDs
+   * @returns Array of plugin IDs
+   */
+  getMountedPluginIds(): string[] {
+    return Array.from(this.mountedPlugins.keys());
   }
 
   /**
@@ -242,10 +499,13 @@ export class MusicalConductor {
   }
 
   /**
-   * Get current statistics
+   * Get current statistics (enhanced with CIA plugin information)
    */
-  getStatistics(): ConductorStatistics {
-    return { ...this.statistics };
+  getStatistics(): ConductorStatistics & { mountedPlugins: number } {
+    return {
+      ...this.statistics,
+      mountedPlugins: this.mountedPlugins.size
+    };
   }
 
   /**
