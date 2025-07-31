@@ -1,0 +1,60 @@
+{
+  "name": "appcore-import-paths",
+  "description": "Validates import path conventions across the application - ensures consistent module resolution",
+  "type": "content",
+  "filePattern": ".*\\.(ts|tsx|js|jsx)$",
+  "confidenceThreshold": 0.9,
+  "version": "1.0.0",
+  "author": "Valence AppCore Validation System",
+  "tags": ["appcore", "imports", "paths", "module-resolution"],
+  "rules": [
+    {
+      "plugin": "validateAppCoreImportPaths",
+      "checkAliasUsage": true,
+      "validateRelativePaths": true,
+      "enforcePathConventions": true,
+      "detectCircularDependencies": true,
+      "verbose": false
+    }
+  ],
+  "importConstraints": {
+    "allowedAliases": [
+      "@/components",
+      "@/services",
+      "@/utils",
+      "@/types",
+      "@/hooks",
+      "@/registry"
+    ],
+    "pathConventions": {
+      "components": "Use @/components for UI components",
+      "services": "Use @/services for business logic",
+      "utils": "Use @/utils for utility functions",
+      "types": "Use @/types for TypeScript definitions"
+    },
+    "forbiddenPatterns": [
+      "^\\.\\./\\.\\./\\.\\./",
+      "^src/",
+      "^app/"
+    ],
+    "maxRelativeDepth": 3
+  },
+  "documentation": {
+    "purpose": "Ensures consistent import patterns across the application for maintainability and clarity",
+    "scope": "All TypeScript/JavaScript files in the application",
+    "validationTypes": [
+      "Alias usage validation",
+      "Relative path depth checking",
+      "Path convention enforcement",
+      "Circular dependency detection",
+      "Import pattern consistency"
+    ],
+    "commonIssues": [
+      "Deep relative import paths",
+      "Inconsistent alias usage",
+      "Circular import dependencies",
+      "Non-standard import patterns",
+      "Missing path aliases"
+    ]
+  }
+}

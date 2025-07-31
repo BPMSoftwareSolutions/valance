@@ -1,0 +1,50 @@
+{
+  "name": "spa-hooks-mapping",
+  "description": "Validates React/event-driven hooks in SPA plugins - ensures proper naming, exports, and usage",
+  "type": "content",
+  "filePattern": ".*/hooks/.*\\.(ts|js)$",
+  "confidenceThreshold": 0.9,
+  "version": "1.0.0",
+  "author": "Valence SPA Validation System",
+  "tags": ["spa", "hooks", "react", "naming-conventions"],
+  "rules": [
+    {
+      "plugin": "validateSpaHooksMapping",
+      "validateNaming": true,
+      "checkExports": true,
+      "validateUsage": true,
+      "enforceHookConventions": true,
+      "verbose": false
+    }
+  ],
+  "hookConstraints": {
+    "namingPattern": "^use[A-Z][a-zA-Z]*$",
+    "fileNamingPattern": "^use[A-Z][a-zA-Z]*\\.(ts|js)$",
+    "requiredExports": ["default", "named"],
+    "hookPatterns": [
+      "useState",
+      "useEffect", 
+      "useCallback",
+      "useMemo",
+      "useRef"
+    ]
+  },
+  "documentation": {
+    "purpose": "Ensures hooks follow React conventions and are properly exported and used in SPA plugins",
+    "scope": "All files in hooks/ directories within SPA plugins",
+    "validationTypes": [
+      "Hook naming convention (must start with 'use')",
+      "File naming consistency with hook name",
+      "Function export validation",
+      "Cross-reference usage in handlers",
+      "React hook pattern compliance"
+    ],
+    "commonIssues": [
+      "Hook files not starting with 'use' prefix",
+      "Missing function exports in hook files",
+      "Hook defined but not used in handlers",
+      "Non-standard hook patterns",
+      "File name doesn't match hook name"
+    ]
+  }
+}

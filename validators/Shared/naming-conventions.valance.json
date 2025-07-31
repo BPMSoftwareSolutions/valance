@@ -1,0 +1,67 @@
+{
+  "name": "shared-naming-conventions",
+  "description": "Validates naming conventions across all code - ensures consistent naming patterns for maintainability",
+  "type": "content",
+  "filePattern": ".*\\.(ts|tsx|js|jsx)$",
+  "confidenceThreshold": 0.85,
+  "version": "1.0.0",
+  "author": "Valence Shared Validation System",
+  "tags": ["shared", "naming", "conventions", "consistency"],
+  "rules": [
+    {
+      "plugin": "validateSharedNamingConventions",
+      "checkFileNaming": true,
+      "validateFunctionNaming": true,
+      "validateVariableNaming": true,
+      "validateClassNaming": true,
+      "validateConstantNaming": true,
+      "verbose": false
+    }
+  ],
+  "namingConstraints": {
+    "files": {
+      "components": "PascalCase.tsx",
+      "hooks": "use*.ts",
+      "utils": "camelCase.ts",
+      "types": "camelCase.types.ts",
+      "constants": "UPPER_SNAKE_CASE.ts"
+    },
+    "functions": {
+      "pattern": "camelCase",
+      "handlers": "on* or handle*",
+      "utilities": "descriptive verbs"
+    },
+    "variables": {
+      "pattern": "camelCase",
+      "booleans": "is*, has*, can*, should*",
+      "arrays": "plural nouns"
+    },
+    "classes": {
+      "pattern": "PascalCase",
+      "interfaces": "I* prefix optional",
+      "types": "PascalCase"
+    },
+    "constants": {
+      "pattern": "UPPER_SNAKE_CASE",
+      "enums": "PascalCase"
+    }
+  },
+  "documentation": {
+    "purpose": "Ensures consistent naming patterns across the entire codebase for improved readability and maintainability",
+    "scope": "All TypeScript/JavaScript files in the project",
+    "validationTypes": [
+      "File naming convention validation",
+      "Function naming pattern checking",
+      "Variable naming consistency",
+      "Class and interface naming",
+      "Constant naming validation"
+    ],
+    "commonIssues": [
+      "Inconsistent file naming patterns",
+      "Non-descriptive function names",
+      "Incorrect variable naming conventions",
+      "Mixed case patterns in constants",
+      "Non-standard class naming"
+    ]
+  }
+}

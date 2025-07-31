@@ -1,0 +1,58 @@
+{
+  "name": "spa-dependency-scope",
+  "description": "Validates dependency scope isolation in SPA plugins - prevents external leakage and enforces modularity",
+  "type": "content",
+  "filePattern": ".*\\.(ts|tsx|js|jsx)$",
+  "confidenceThreshold": 0.9,
+  "version": "1.0.0",
+  "author": "Valence SPA Validation System",
+  "tags": ["spa", "dependencies", "modularity", "isolation"],
+  "rules": [
+    {
+      "plugin": "validateSpaDependencyScope",
+      "checkExternalImports": true,
+      "enforcePluginBoundaries": true,
+      "validateRelativeImports": true,
+      "allowedExternalDeps": ["@/registry", "react", "lodash"],
+      "verbose": false
+    }
+  ],
+  "scopeConstraints": {
+    "allowedImportPatterns": [
+      "^\\./",
+      "^\\.\\./"
+    ],
+    "allowedExternalLibraries": [
+      "@/registry",
+      "react",
+      "react-dom",
+      "lodash",
+      "uuid"
+    ],
+    "forbiddenPatterns": [
+      "^@/components/",
+      "^@/services/",
+      "^@/utils/",
+      "^\\.\\./\\.\\./\\.\\./"
+    ],
+    "maxRelativeDepth": 2
+  },
+  "documentation": {
+    "purpose": "Ensures SPA plugins remain modular and don't create tight coupling with external application code",
+    "scope": "All TypeScript/JavaScript files within SPA plugins",
+    "validationTypes": [
+      "External import restriction",
+      "Plugin boundary enforcement",
+      "Relative import depth validation",
+      "Allowed dependency checking",
+      "Cross-plugin import detection"
+    ],
+    "commonIssues": [
+      "Importing from outside plugin directory",
+      "Deep relative import paths",
+      "Unauthorized external dependencies",
+      "Cross-plugin imports",
+      "Tight coupling with app internals"
+    ]
+  }
+}

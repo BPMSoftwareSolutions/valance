@@ -1,0 +1,56 @@
+{
+  "name": "spa-ai-annotation",
+  "description": "Validates AI agent annotations in SPA plugins - ensures helpful tags for code generation and LLM tooling",
+  "type": "content",
+  "filePattern": ".*\\.(ts|tsx|js|jsx)$",
+  "confidenceThreshold": 0.8,
+  "version": "1.0.0",
+  "author": "Valence SPA Validation System",
+  "tags": ["spa", "ai", "annotations", "llm", "code-generation"],
+  "rules": [
+    {
+      "plugin": "validateSpaAiAnnotation",
+      "checkAgentContext": true,
+      "validateAnnotationFormat": true,
+      "enforceHandlerAnnotations": true,
+      "checkSequenceDocumentation": true,
+      "verbose": false
+    }
+  ],
+  "annotationConstraints": {
+    "requiredAnnotations": {
+      "handlers": "@agent-context",
+      "hooks": "@agent-context",
+      "sequence": "@agent-context"
+    },
+    "annotationFormats": [
+      "@agent-context: {description}",
+      "@agent-purpose: {purpose}",
+      "@agent-dependencies: {deps}",
+      "@agent-output: {output}"
+    ],
+    "contextPatterns": {
+      "handlers": "handler movement \"{movementName}\"",
+      "hooks": "hook for {functionality}",
+      "logic": "business logic for {purpose}"
+    }
+  },
+  "documentation": {
+    "purpose": "Ensures SPA plugins have proper AI agent annotations for enhanced code generation and LLM understanding",
+    "scope": "All TypeScript/JavaScript files within SPA plugins",
+    "validationTypes": [
+      "Agent context annotation presence",
+      "Annotation format validation",
+      "Handler-specific annotations",
+      "Sequence documentation checking",
+      "AI-friendly comment structure"
+    ],
+    "commonIssues": [
+      "Missing @agent-context annotations",
+      "Malformed annotation syntax",
+      "Handlers without movement context",
+      "Insufficient AI documentation",
+      "Inconsistent annotation patterns"
+    ]
+  }
+}

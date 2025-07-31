@@ -1,0 +1,48 @@
+{
+  "name": "spa-handler-mapping",
+  "description": "Validates that each movement has a corresponding handler file and proper exports",
+  "type": "content",
+  "filePattern": ".*sequence\\.(ts|js)$",
+  "confidenceThreshold": 0.95,
+  "version": "1.0.0",
+  "author": "Valence SPA Validation System",
+  "tags": ["spa", "handlers", "movements", "mapping"],
+  "rules": [
+    {
+      "plugin": "validateSpaHandlerMapping",
+      "checkHandlerFiles": true,
+      "validateExports": true,
+      "checkAgentContext": true,
+      "enforceNamingConventions": true,
+      "verbose": false
+    }
+  ],
+  "handlerConstraints": {
+    "fileExtensions": [".ts", ".js"],
+    "exportPatterns": [
+      "export const {handlerName}",
+      "export function {handlerName}",
+      "export default"
+    ],
+    "agentContextPattern": "@agent-context",
+    "namingConvention": "camelCase"
+  },
+  "documentation": {
+    "purpose": "Ensures each movement in sequence.ts has a corresponding handler file with proper exports",
+    "scope": "All SPA plugins with sequence.ts files",
+    "validationTypes": [
+      "Movement to handler file mapping",
+      "Handler function export validation",
+      "Agent context annotation checking",
+      "Handler naming convention enforcement",
+      "File existence verification"
+    ],
+    "commonIssues": [
+      "Movement label has no corresponding handler file",
+      "Handler file exists but doesn't export expected function",
+      "Missing @agent-context annotations for AI clarity",
+      "Incorrect handler file naming conventions",
+      "Handler files in wrong directory"
+    ]
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "name": "spa-test-coverage",
+  "description": "Validates test coverage for SPA plugins - ensures all critical components have corresponding tests",
+  "type": "structure",
+  "filePattern": "**/tests/.*\\.(test|spec)\\.(ts|js)$",
+  "confidenceThreshold": 0.9,
+  "version": "1.0.0",
+  "author": "Valence SPA Validation System",
+  "tags": ["spa", "testing", "coverage", "quality"],
+  "rules": [
+    {
+      "plugin": "validateSpaTestCoverage",
+      "checkHandlerTests": true,
+      "checkLogicTests": true,
+      "checkSequenceTests": true,
+      "enforceNamingConventions": true,
+      "validateTestStructure": true,
+      "verbose": false
+    }
+  ],
+  "testConstraints": {
+    "requiredTestFiles": [
+      "sequence.test.ts",
+      "handlers/*.test.ts",
+      "logic/*.test.ts"
+    ],
+    "testNamingPattern": ".*\\.(test|spec)\\.(ts|js)$",
+    "coverageTargets": {
+      "handlers": "1:1 mapping",
+      "logic": "1:1 mapping",
+      "sequence": "required"
+    },
+    "testStructure": {
+      "requiredSections": ["describe", "it", "expect"],
+      "testTypes": ["unit", "integration"]
+    }
+  },
+  "documentation": {
+    "purpose": "Ensures comprehensive test coverage for all SPA plugin components to maintain quality and reliability",
+    "scope": "All SPA plugins and their test directories",
+    "validationTypes": [
+      "Handler test coverage (1:1 mapping)",
+      "Logic function test coverage",
+      "Sequence definition testing",
+      "Test file naming conventions",
+      "Test structure validation"
+    ],
+    "commonIssues": [
+      "Missing test files for handlers",
+      "Logic functions without tests",
+      "Sequence not tested",
+      "Incorrect test file naming",
+      "Malformed test structure"
+    ]
+  }
+}
