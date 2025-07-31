@@ -34,7 +34,7 @@ export interface EventDebugInfo {
  */
 export class EventBus {
   private events: Record<string, EventCallback[]> = {};
-  private debugMode: boolean = process.env.NODE_ENV === 'development';
+  private debugMode: boolean = false; // Set to true for development debugging
   private subscriptionCounter: number = 0;
   private eventCounts: Record<string, number> = {};
 
@@ -285,8 +285,8 @@ export class ConductorEventBus extends EventBus {
         break;
 
       case 'next-measure':
-        // Wait for next event loop tick
-        setImmediate(() => this.executeEvent(eventName, data, priority));
+        // Wait for next event loop tick (browser-compatible)
+        setTimeout(() => this.executeEvent(eventName, data, priority), 0);
         break;
 
       case 'delayed':
