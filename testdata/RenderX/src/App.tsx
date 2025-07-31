@@ -199,25 +199,22 @@ const ElementLibrary: React.FC = () => {
       div: "🔲",
     };
 
-    return iconMap[component.metadata.type] || "🧩";
+    // App should not know component types - use generic icon
+    return "🧩"; // Generic component icon
   };
 
-  // Drag handlers for Canvas Library Drop Symphony
+  // Drag handlers - decoupled from component specifics
   const handleDragStart = (
     e: React.DragEvent,
     component: LoadedJsonComponent
   ) => {
-    console.log(
-      "🎼 Starting drag operation for component:",
-      component.metadata.name
-    );
+    console.log("🎼 Starting drag operation for component ID:", component.id);
 
-    // Set drag data - include full component data for data-driven styling
+    // Set minimal drag data - app doesn't need component internals
     const dragData = {
-      type: component.metadata.type,
       componentId: component.id,
-      metadata: component.metadata,
-      componentData: component, // Full component data for data-driven approach
+      source: "element-library",
+      timestamp: Date.now(),
     };
 
     e.dataTransfer.setData("application/json", JSON.stringify(dragData));
@@ -229,22 +226,18 @@ const ElementLibrary: React.FC = () => {
     // Add visual feedback
     e.currentTarget.classList.add("dragging");
 
-    // 🎼 Start Component Drag Symphony for library element drag using CIA conductor.play()
+    // 🎼 Start library drag sequence - generic interaction, no component knowledge
     const communicationSystem = (window as any).renderxCommunicationSystem;
     if (communicationSystem && communicationSystem.conductor) {
-      console.log("🎼 Starting Component Drag Symphony for library element drag via conductor.play()...");
+      console.log("🎼 Starting library drag sequence...");
 
-      // CIA-compliant trigger using conductor.play()
-      communicationSystem.conductor.play('component-drag-symphony', 'onDragStart', {
-        element: component,
+      // CIA-compliant trigger - pass only interaction data, not component details
+      communicationSystem.conductor.play('library-drag-symphony', 'onDragStart', {
+        componentId: component.id,
         dragData,
-        source: 'element-library-drag',
+        source: 'element-library',
         timestamp: Date.now(),
-        eventType: 'drag-start',
-        changes: { dragStart: true, dragData },
-        elements: [], // elements array (empty for library drag)
-        setElements: undefined, // setElements function (not needed for library drag)
-        syncElementCSS: undefined  // syncElementCSS function (not needed for library drag)
+        interactionType: 'drag-start'
       });
     }
   };
@@ -258,21 +251,16 @@ const ElementLibrary: React.FC = () => {
     // Remove visual feedback
     e.currentTarget.classList.remove("dragging");
 
-    // 🎼 Start Component Drag Symphony for drag end using CIA conductor.play()
+    // 🎼 Start drag end sequence - generic interaction
     const communicationSystem = (window as any).renderxCommunicationSystem;
     if (communicationSystem && communicationSystem.conductor) {
-      console.log("🎼 Starting Component Drag Symphony for drag end via conductor.play()...");
+      console.log("🎼 Starting drag end sequence...");
 
-      // CIA-compliant trigger using conductor.play()
-      communicationSystem.conductor.play('component-drag-symphony', 'onDragEnd', {
-        element: { id: 'drag-end-operation', type: 'drag-end' },
-        changes: { dragEnd: true },
-        source: 'element-library-drag-end',
+      // CIA-compliant trigger - generic drag end, no component specifics
+      communicationSystem.conductor.play('library-drag-symphony', 'onDragEnd', {
+        source: 'element-library',
         timestamp: Date.now(),
-        eventType: 'drag-end',
-        elements: [], // elements array (empty for library drag end)
-        setElements: undefined, // setElements function
-        syncElementCSS: undefined  // syncElementCSS function
+        interactionType: 'drag-end'
       });
     }
   };
@@ -326,10 +314,10 @@ const ElementLibrary: React.FC = () => {
                         {getComponentIcon(component)}
                       </span>
                       <span className="element-name">
-                        {component.metadata.name}
+                        Component {component.id}
                       </span>
                       <span className="element-type">
-                        ({component.metadata.type})
+                        (Generic Component)
                       </span>
                     </div>
                   ))}
@@ -414,39 +402,20 @@ const CanvasElement: React.FC<{
   // Get default properties from component definition
   const defaultProperties = componentData.integration?.properties?.defaultValues || {};
 
-  // Simple template rendering (for now, just handle basic button case)
-  // In a full implementation, this would use a proper template engine
-  if (element.type === 'button') {
-    const content = defaultProperties.content || element.metadata?.name || 'Click me';
-    const variant = defaultProperties.variant || 'primary';
-    const size = defaultProperties.size || 'medium';
-    const disabled = defaultProperties.disabled || false;
-
-    return (
-      <button
-        id={elementId}
-        data-component-id={elementId}
-        className={`${cssClass} rx-button rx-button--${variant} rx-button--${size} rx-selected`}
-        draggable="true"
-        type="button"
-        disabled={disabled}
-        onDragStart={onDragStart ? (e) => onDragStart(e, element) : undefined}
-      >
-        {content}
-      </button>
-    );
-  }
-
-  // Generic fallback for other component types
+  // Generic component rendering - app doesn't know component specifics
+  // Component rendering is handled by the JsonComponentLoader at runtime
   return (
     <div
       id={elementId}
       data-component-id={elementId}
-      className={`${cssClass} rx-selected`}
+      className={`${cssClass} rx-generic-component rx-selected`}
       draggable="true"
-      onDragStart={onDragStart ? (e) => onDragStart(e, element) : undefined}
+        onDragStart={onDragStart ? (e) => onDragStart(e, element) : undefined}
     >
-      {element.metadata?.name || element.type}
+      {/* Generic component placeholder - actual rendering handled by JsonComponentLoader */}
+      <span className="rx-component-placeholder">
+        Component {element.id}
+      </span>
     </div>
   );
 };
@@ -475,20 +444,19 @@ const Canvas: React.FC<{ mode: string }> = ({ mode }) => {
     console.log("🎨 Canvas drag leave - visual state updated");
   };
 
-  // Canvas element drag start handler for Component Drag Symphony
+  // Canvas element interaction handler - decoupled from component specifics
   const handleCanvasElementDragStart = (
     e: React.DragEvent,
     element: any
   ) => {
-    console.log("🎼 Starting canvas element drag operation for:", element.id);
+    console.log("🎼 Starting canvas element interaction for ID:", element.id);
 
-    // Set drag data for canvas element movement
+    // Set minimal drag data - app only knows about the interaction, not element internals
     const dragData = {
-      type: element.type,
-      componentId: element.id,
-      isCanvasElement: true, // Flag to distinguish from library drops
-      elementData: element, // Current element data
-      source: 'canvas-element-drag'
+      elementId: element.id,
+      isCanvasElement: true,
+      source: 'canvas-interaction',
+      timestamp: Date.now()
     };
 
     e.dataTransfer.setData("application/json", JSON.stringify(dragData));
@@ -497,24 +465,17 @@ const Canvas: React.FC<{ mode: string }> = ({ mode }) => {
     // Add visual feedback
     e.currentTarget.classList.add("dragging");
 
-    console.log("🎼 Canvas element drag data set:", dragData);
-
-    // 🎼 Start Component Drag Symphony for canvas element drag using CIA conductor.play()
+    // 🎼 Start canvas interaction sequence - generic element interaction
     const communicationSystem = (window as any).renderxCommunicationSystem;
     if (communicationSystem && communicationSystem.conductor) {
-      console.log("🎼 Starting Component Drag Symphony for canvas element drag via conductor.play()...");
+      console.log("🎼 Starting canvas interaction sequence...");
 
-      // CIA-compliant trigger using conductor.play()
-      communicationSystem.conductor.play('component-drag-symphony', 'onDragStart', {
-        element, // The canvas element being dragged
-        changes: { dragStart: true, dragData },
-        source: 'canvas-element-drag-start',
-        timestamp: Date.now(),
-        eventType: 'canvas-element-drag-start',
-        dragData,
-        elements: canvasElements, // elements array
-        setElements: setCanvasElements, // setElements function
-        syncElementCSS: undefined  // syncElementCSS function
+      // CIA-compliant trigger - pass only interaction data, not element specifics
+      communicationSystem.conductor.play('canvas-interaction-symphony', 'onInteractionStart', {
+        elementId: element.id,
+        interactionType: 'drag-start',
+        source: 'canvas',
+        timestamp: Date.now()
       });
     }
   };
@@ -567,36 +528,32 @@ const Canvas: React.FC<{ mode: string }> = ({ mode }) => {
         // Import the sequence function
         const { MusicalSequences } = await import("./communication/sequences");
 
-        // Start the Canvas Library Drop Symphony using CIA conductor.play()
-        console.log("🎼 Starting Canvas Library Drop Symphony via conductor.play()...");
+        // Start the Canvas Drop Symphony - generic drop interaction
+        console.log("🎼 Starting canvas drop sequence...");
 
-        // CIA-compliant trigger using conductor.play()
-        const result = communicationSystem.conductor.play('library-drop-symphony', 'onDropValidation', {
-          dragData,
+        // CIA-compliant trigger - pass only interaction data, not component specifics
+        const result = communicationSystem.conductor.play('canvas-drop-symphony', 'onDropValidation', {
+          componentId: dragData.componentId,
           dropCoordinates,
-          dropZone: { isValidDropZone: true },
+          source: "canvas-drop",
           timestamp: Date.now(),
-          source: "canvas-drop"
+          interactionType: 'library-drop'
         });
 
         console.log(
-          `🎼 Canvas Library Drop Symphony triggered via conductor.play(): ${result ? 'SUCCESS' : 'FAILED'}`
+          `🎼 Canvas drop sequence triggered: ${result ? 'SUCCESS' : 'FAILED'}`
         );
 
-        // Create element with proper ID and CSS class generation
+        // Create canvas element - app only manages placement, not component internals
         const timestamp = Date.now();
         const randomHash = Math.random().toString(36).substr(2, 9);
-        const cssHash = Math.random().toString(36).substr(2, 6);
 
         const newElement = {
           id: `element-${timestamp}`,
-          elementId: `${dragData.type}-${timestamp}-${randomHash}`,
-          cssClass: `rx-comp-${dragData.type}-${cssHash}`,
-          type: dragData.type,
+          elementId: `comp-${timestamp}-${randomHash}`,
           componentId: dragData.componentId,
           position: dropCoordinates,
-          metadata: dragData.metadata,
-          componentData: dragData.componentData, // Store full component data for data-driven rendering
+          timestamp: timestamp
         };
 
         // Generate and inject CSS for the component (data-driven approach)

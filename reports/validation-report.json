@@ -34,5 +34,11 @@
     "passed": true,
     "message": "All checks passed",
     "details": []
+  },
+  {
+    "validator": "cia-component-decoupling",
+    "passed": true,
+    "message": "All checks passed",
+    "details": []
   }
 ]

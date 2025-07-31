@@ -1,0 +1,148 @@
+{
+  "name": "cia-component-decoupling",
+  "description": "Validates that the app remains decoupled from specific component knowledge and only knows about architectural containers",
+  "type": "content",
+  "filePattern": ".*\\.(tsx|ts|js|jsx)$",
+  "confidenceThreshold": 0.95,
+  "version": "1.0.0",
+  "author": "Valence CIA Validation System",
+  "tags": ["cia", "decoupling", "architecture", "component-isolation"],
+  "rules": [
+    {
+      "plugin": "validateComponentDecoupling",
+      "allowedArchitecturalComponents": [
+        "element-library",
+        "JsonComponentLoader",
+        "canvas",
+        "control-panel",
+        "elementLibrary",
+        "controlPanel"
+      ],
+      "forbiddenComponentReferences": [
+        "button",
+        "input",
+        "paragraph",
+        "div",
+        "span",
+        "img",
+        "text",
+        "heading",
+        "link",
+        "form",
+        "textarea",
+        "select",
+        "checkbox",
+        "radio"
+      ],
+      "forbiddenPatterns": [
+        "component\\.metadata\\.(type|name|properties)",
+        "component\\.data\\.(props|attributes|style)",
+        "componentData\\.(type|name|properties)",
+        "element\\.(type|name|properties)\\s*===\\s*['\"](?:button|input|paragraph|div|span)",
+        "dragData\\.(type|componentName|metadata)",
+        "\\.(componentType|elementType)\\s*===",
+        "switch\\s*\\(.*\\.(type|componentType)\\)",
+        "if\\s*\\(.*\\.(type|componentType)\\s*===",
+        "component\\.metadata\\.type",
+        "element\\.metadata\\.name"
+      ],
+      "allowedInteractionPatterns": [
+        "componentId",
+        "elementId", 
+        "interactionType",
+        "source",
+        "timestamp",
+        "position",
+        "coordinates"
+      ],
+      "strictMode": true,
+      "verbose": false
+    }
+  ],
+  "decouplingRules": {
+    "appFiles": [
+      ".*App\\.(tsx|ts|js|jsx)$",
+      ".*main\\.(tsx|ts|js|jsx)$",
+      ".*index\\.(tsx|ts|js|jsx)$"
+    ],
+    "allowedKnowledge": {
+      "architecturalContainers": [
+        "ElementLibrary",
+        "JsonComponentLoader", 
+        "Canvas",
+        "ControlPanel"
+      ],
+      "interactionData": [
+        "componentId",
+        "elementId",
+        "position",
+        "coordinates",
+        "timestamp",
+        "source",
+        "interactionType"
+      ],
+      "genericProperties": [
+        "id",
+        "className",
+        "style",
+        "position",
+        "coordinates"
+      ]
+    },
+    "forbiddenKnowledge": {
+      "componentSpecifics": [
+        "component.metadata.type",
+        "component.data.props",
+        "element.type === 'button'",
+        "componentData.properties",
+        "metadata.attributes"
+      ],
+      "componentTypes": [
+        "button",
+        "input", 
+        "paragraph",
+        "div",
+        "span",
+        "img",
+        "text",
+        "heading"
+      ],
+      "componentInternals": [
+        "props",
+        "attributes", 
+        "componentData.data",
+        "metadata.properties",
+        "element.metadata.name"
+      ]
+    }
+  },
+  "documentation": {
+    "purpose": "Ensures the app remains lean and decoupled from specific component knowledge",
+    "principle": "App should only know about architectural containers (element library, canvas, control panel) and generic interaction data (IDs, positions, timestamps)",
+    "scope": "Main app files (App.tsx, main.tsx, index.tsx) and core interaction handlers",
+    "validationTypes": [
+      "Component reference validation - no direct component type references",
+      "Metadata access validation - no component-specific metadata access",
+      "Interaction data validation - only generic interaction properties allowed",
+      "Architectural boundary validation - only container-level knowledge permitted"
+    ],
+    "commonViolations": [
+      "Accessing component.metadata.type or component.data.props",
+      "Switch statements on component types (button, input, etc.)",
+      "Direct references to specific component names in app logic",
+      "Component-specific styling or behavior in app code",
+      "Metadata property access beyond generic ID/position data"
+    ],
+    "correctPatterns": [
+      "conductor.play('library-drag-symphony', 'onDragStart', { componentId, timestamp })",
+      "const dragData = { componentId: component.id, source: 'element-library' }",
+      "element.id, element.position, element.coordinates (generic properties only)"
+    ],
+    "incorrectPatterns": [
+      "conductor.play('button-click-symphony', ...)",
+      "if (component.metadata.type === 'button') { ... }",
+      "const dragData = { componentName: component.name, componentData: component.data }",
+      "switch (element.type) { case 'button': ... }"
+    ]
+  }
+}

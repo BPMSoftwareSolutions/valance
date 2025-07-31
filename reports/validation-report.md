@@ -1,11 +1,11 @@
 # Validation Report
 
-**Generated:** 7/31/2025, 10:02:22 PM
-**Files Analyzed:** 2
+**Generated:** 7/31/2025, 10:55:53 PM
+**Files Analyzed:** 1
 
 ## 📊 Summary
 
-- ✅ **Passed:** 6 validators
+- ✅ **Passed:** 7 validators
 - ❌ **Failed:** 0 validators
 - 🔍 **Total Violations:** 0
 
@@ -44,6 +44,12 @@
 ---
 
 #### `cia-sequence-trigger-mapping`
+- **Status:** ✅ PASS
+- **Message:** All checks passed
+
+---
+
+#### `cia-component-decoupling`
 - **Status:** ✅ PASS
 - **Message:** All checks passed
 

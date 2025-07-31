@@ -267,19 +267,23 @@ export class MusicalConductor {
     try {
       console.log("🧠 Registering CIA-compliant plugins...");
 
-      // Register component-drag-symphony
-      const componentDragPlugin = await import('../../../public/plugins/component-drag-symphony/index');
-      this.mount(componentDragPlugin.sequence, componentDragPlugin.handlers, 'component-drag-symphony');
+      // Register library-drag-symphony (element library interactions)
+      const libraryDragPlugin = await import('../../../public/plugins/library-drag-symphony/index');
+      this.mount(libraryDragPlugin.sequence, libraryDragPlugin.handlers, 'library-drag-symphony');
 
-      // Register library-drop-symphony
-      const libraryDropPlugin = await import('../../../public/plugins/library-drop-symphony/index');
-      this.mount(libraryDropPlugin.sequence, libraryDropPlugin.handlers, 'library-drop-symphony');
+      // Register canvas-drop-symphony (canvas drop interactions)
+      const canvasDropPlugin = await import('../../../public/plugins/canvas-drop-symphony/index');
+      this.mount(canvasDropPlugin.sequence, canvasDropPlugin.handlers, 'canvas-drop-symphony');
 
-      // Register panel-toggle-symphony
+      // Register canvas-interaction-symphony (canvas element interactions)
+      const canvasInteractionPlugin = await import('../../../public/plugins/canvas-interaction-symphony/index');
+      this.mount(canvasInteractionPlugin.sequence, canvasInteractionPlugin.handlers, 'canvas-interaction-symphony');
+
+      // Register panel-toggle-symphony (control panel interactions)
       const panelTogglePlugin = await import('../../../public/plugins/panel-toggle-symphony/index');
       this.mount(panelTogglePlugin.sequence, panelTogglePlugin.handlers, 'panel-toggle-symphony');
 
-      // Register layout-mode-symphony
+      // Register layout-mode-symphony (layout mode changes)
       const layoutModePlugin = await import('../../../public/plugins/layout-mode-symphony/index');
       this.mount(layoutModePlugin.sequence, layoutModePlugin.handlers, 'layout-mode-symphony');
 
