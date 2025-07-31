@@ -2,7 +2,7 @@
   "name": "spa-logic-contract",
   "description": "Validates shared business logic layer in SPA plugins - ensures testable and pure functions",
   "type": "content",
-  "filePattern": "**/logic/.*\\.(ts|js)$",
+  "filePattern": ".*/logic/.*\\.(ts|js)$",
   "confidenceThreshold": 0.85,
   "version": "1.0.0",
   "author": "Valence SPA Validation System",

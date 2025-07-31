@@ -6,17 +6,32 @@ export async function loadPlugins() {
   const customOperators = {};
   
   try {
-    const pluginFiles = await glob('plugins/*.js');
-    
-    for (const pluginFile of pluginFiles) {
+    // Load plugins from both legacy and architecture-specific directories
+    const pluginPatterns = [
+      'plugins/*.js',
+      'plugins/SPA/*.js',
+      'plugins/AppCore/*.js',
+      'plugins/Backend/*.js',
+      'plugins/Shared/*.js'
+    ];
+
+    for (const pattern of pluginPatterns) {
       try {
-        const pluginPath = path.resolve(pluginFile);
-        const plugin = await import(`file://${pluginPath.replace(/\\/g, '/')}`);
-        if (plugin.operators) {
-          Object.assign(customOperators, plugin.operators);
+        const pluginFiles = await glob(pattern);
+
+        for (const pluginFile of pluginFiles) {
+          try {
+            const pluginPath = path.resolve(pluginFile);
+            const plugin = await import(`file://${pluginPath.replace(/\\/g, '/')}`);
+            if (plugin.operators) {
+              Object.assign(customOperators, plugin.operators);
+            }
+          } catch (error) {
+            console.warn(`Failed to load plugin ${pluginFile}: ${error.message}`);
+          }
         }
       } catch (error) {
-        console.warn(`Failed to load plugin ${pluginFile}: ${error.message}`);
+        // Pattern not found, continue
       }
     }
   } catch (error) {

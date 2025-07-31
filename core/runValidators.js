@@ -65,9 +65,33 @@ async function executePluginRule(content, rule, context) {
       return await plugin.evaluate(content, rule, context);
     }
 
-    // Load plugin dynamically
-    const pluginPath = path.resolve(`plugins/${pluginName}.js`);
-    const plugin = await import(`file://${pluginPath.replace(/\\/g, '/')}`);
+    // Load plugin dynamically - try architecture-specific path first
+    let pluginPath;
+    let plugin;
+
+    // Try architecture-specific paths first (SPA/, AppCore/, etc.)
+    const architecturePaths = [
+      `plugins/SPA/${pluginName.replace('validateSpa', 'validate')}.js`,
+      `plugins/AppCore/${pluginName.replace('validateAppCore', 'validate')}.js`,
+      `plugins/Backend/${pluginName.replace('validateBackend', 'validate')}.js`,
+      `plugins/Shared/${pluginName.replace('validateShared', 'validate')}.js`,
+      `plugins/${pluginName}.js` // Fallback to legacy path
+    ];
+
+    for (const tryPath of architecturePaths) {
+      try {
+        pluginPath = path.resolve(tryPath);
+        plugin = await import(`file://${pluginPath.replace(/\\/g, '/')}`);
+        break;
+      } catch (error) {
+        // Continue to next path
+        continue;
+      }
+    }
+
+    if (!plugin) {
+      throw new Error(`Plugin ${pluginName} not found in any architecture directory`);
+    }
 
     if (!plugin.evaluate || typeof plugin.evaluate !== 'function') {
       throw new Error(`Plugin ${pluginName} must export an 'evaluate' function`);

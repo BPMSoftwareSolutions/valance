@@ -2,7 +2,7 @@
   "name": "spa-index-manifest-sync",
   "description": "Validates synchronization between index.ts, manifest.json, and sequence.ts - ensures consistent plugin contracts",
   "type": "content",
-  "filePattern": "**/index\\.(ts|js)$",
+  "filePattern": ".*index\\.(ts|js)$",
   "confidenceThreshold": 0.95,
   "version": "1.0.0",
   "author": "Valence SPA Validation System",

@@ -2,7 +2,7 @@
   "name": "spa-visual-schema",
   "description": "Validates animation configuration schemas in SPA plugins - ensures proper timeline and easing definitions",
   "type": "content",
-  "filePattern": "**/visuals/.*\\.json$",
+  "filePattern": ".*/visuals/.*\\.json$",
   "confidenceThreshold": 0.9,
   "version": "1.0.0",
   "author": "Valence SPA Validation System",
