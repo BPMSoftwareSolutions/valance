@@ -10,128 +10,95 @@
     "tags": ["button", "interactive", "ui", "action"],
     "icon": "🔘"
   },
-  "structure": {
-    "type": "button",
-    "props": {
-      "className": "btn btn-primary",
-      "onClick": "handleClick",
-      "type": "button"
-    },
-    "children": [
-      {
-        "type": "text",
-        "content": "Click Me"
+  "ui": {
+    "template": "<button class=\"btn btn-primary\" type=\"button\" onclick=\"handleClick\">Click Me</button>",
+    "styles": {
+      "css": ".btn { padding: 8px 16px; border: 1px solid #007bff; border-radius: 4px; background-color: #007bff; color: white; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s ease; } .btn:hover { background-color: #0056b3; border-color: #0056b3; } .btn:active { background-color: #004085; border-color: #004085; }",
+      "variables": {
+        "primary-color": "#007bff",
+        "primary-hover": "#0056b3",
+        "primary-active": "#004085"
       }
-    ]
-  },
-  "styling": {
-    "defaultStyles": {
-      "padding": "8px 16px",
-      "border": "1px solid #007bff",
-      "borderRadius": "4px",
-      "backgroundColor": "#007bff",
-      "color": "white",
-      "cursor": "pointer",
-      "fontSize": "14px",
-      "fontWeight": "500",
-      "transition": "all 0.2s ease"
-    },
-    "hoverStyles": {
-      "backgroundColor": "#0056b3",
-      "borderColor": "#0056b3"
-    },
-    "activeStyles": {
-      "backgroundColor": "#004085",
-      "borderColor": "#004085"
     }
   },
-  "behavior": {
+  "integration": {
+    "properties": {
+      "schema": {
+        "text": {
+          "type": "string",
+          "default": "Click Me",
+          "description": "Button text content",
+          "required": true
+        },
+        "variant": {
+          "type": "string",
+          "default": "primary",
+          "description": "Button style variant",
+          "enum": ["primary", "secondary", "success"]
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the button is disabled"
+        },
+        "loading": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the button is in loading state"
+        }
+      },
+      "defaultValues": {
+        "text": "Click Me",
+        "variant": "primary",
+        "disabled": false,
+        "loading": false
+      }
+    },
+    "canvasIntegration": {
+      "resizable": true,
+      "draggable": true,
+      "selectable": true,
+      "minWidth": 80,
+      "minHeight": 32,
+      "maxWidth": 400,
+      "maxHeight": 60,
+      "defaultWidth": 120,
+      "defaultHeight": 40,
+      "snapToGrid": true,
+      "allowChildElements": false
+    },
     "events": {
       "onClick": {
-        "type": "function",
         "description": "Handles button click events",
-        "defaultAction": "console.log('Button clicked')"
+        "parameters": ["event"]
       },
       "onHover": {
-        "type": "function",
         "description": "Handles button hover events",
-        "defaultAction": "console.log('Button hovered')"
-      }
-    },
-    "states": {
-      "disabled": {
-        "type": "boolean",
-        "default": false,
-        "description": "Whether the button is disabled"
-      },
-      "loading": {
-        "type": "boolean",
-        "default": false,
-        "description": "Whether the button is in loading state"
+        "parameters": ["event"]
       }
     }
   },
-  "variants": [
-    {
-      "name": "Primary",
-      "props": {
-        "className": "btn btn-primary"
-      },
-      "styling": {
-        "backgroundColor": "#007bff",
-        "borderColor": "#007bff"
-      }
-    },
-    {
-      "name": "Secondary",
-      "props": {
-        "className": "btn btn-secondary"
-      },
-      "styling": {
-        "backgroundColor": "#6c757d",
-        "borderColor": "#6c757d"
-      }
-    },
-    {
-      "name": "Success",
-      "props": {
-        "className": "btn btn-success"
-      },
-      "styling": {
-        "backgroundColor": "#28a745",
-        "borderColor": "#28a745"
-      }
-    }
-  ],
-  "accessibility": {
-    "ariaLabel": "Interactive button",
-    "role": "button",
-    "tabIndex": 0,
-    "keyboardSupport": {
-      "Enter": "trigger click",
-      "Space": "trigger click"
-    }
-  },
-  "spa": {
-    "pluginType": "component",
-    "mountable": true,
-    "sequence": {
-      "id": "button-interaction-symphony",
+  "musicalSequences": {
+    "componentInteraction": {
+      "sequenceName": "Button Interaction Symphony",
+      "description": "Handles button interaction events",
+      "key": "C Major",
+      "tempo": 120,
       "movements": [
         {
-          "name": "onMount",
-          "beat": 1,
-          "event": "COMPONENT_MOUNTED"
-        },
-        {
-          "name": "onClick",
-          "beat": 2,
-          "event": "BUTTON_CLICKED"
-        },
-        {
-          "name": "onUnmount",
-          "beat": 3,
-          "event": "COMPONENT_UNMOUNTED"
+          "name": "Button Click Movement",
+          "measures": [
+            {
+              "beat": 1,
+              "event": "BUTTON_CLICKED",
+              "dynamics": "forte"
+            },
+            {
+              "beat": 2,
+              "event": "COMPONENT_UPDATED",
+              "dynamics": "mezzo-forte"
+            }
+          ]
         }
       ]
     }

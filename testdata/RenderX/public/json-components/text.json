@@ -1,0 +1,89 @@
+{
+  "id": "text-component-001",
+  "metadata": {
+    "name": "Text",
+    "type": "Text",
+    "description": "Simple text display component",
+    "version": "1.0.0",
+    "author": "RenderX Team",
+    "category": "content",
+    "tags": ["text", "content", "display"],
+    "icon": "📝"
+  },
+  "ui": {
+    "template": "<span class=\"text-component\">Sample Text</span>",
+    "styles": {
+      "css": ".text-component { font-size: 14px; color: #333; line-height: 1.4; }",
+      "variables": {
+        "text-color": "#333",
+        "font-size": "14px"
+      }
+    }
+  },
+  "integration": {
+    "properties": {
+      "schema": {
+        "text": {
+          "type": "string",
+          "default": "Sample Text",
+          "description": "Text content to display",
+          "required": true
+        },
+        "fontSize": {
+          "type": "string",
+          "default": "14px",
+          "description": "Font size"
+        },
+        "color": {
+          "type": "string",
+          "default": "#333",
+          "description": "Text color"
+        }
+      },
+      "defaultValues": {
+        "text": "Sample Text",
+        "fontSize": "14px",
+        "color": "#333"
+      }
+    },
+    "canvasIntegration": {
+      "resizable": true,
+      "draggable": true,
+      "selectable": true,
+      "minWidth": 50,
+      "minHeight": 20,
+      "maxWidth": 800,
+      "maxHeight": 100,
+      "defaultWidth": 200,
+      "defaultHeight": 24,
+      "snapToGrid": true,
+      "allowChildElements": false
+    },
+    "events": {
+      "onClick": {
+        "description": "Handles text click events",
+        "parameters": ["event"]
+      }
+    }
+  },
+  "musicalSequences": {
+    "componentInteraction": {
+      "sequenceName": "Text Display Symphony",
+      "description": "Handles text component display and interaction",
+      "key": "F Major",
+      "tempo": 80,
+      "movements": [
+        {
+          "name": "Text Render Movement",
+          "measures": [
+            {
+              "beat": 1,
+              "event": "TEXT_RENDERED",
+              "dynamics": "piano"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

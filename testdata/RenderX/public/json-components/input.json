@@ -10,61 +10,99 @@
     "tags": ["input", "form", "text", "data-entry"],
     "icon": "📝"
   },
-  "structure": {
-    "type": "input",
-    "props": {
-      "className": "form-input",
-      "type": "text",
-      "placeholder": "Enter text...",
-      "onChange": "handleChange"
-    }
-  },
-  "styling": {
-    "defaultStyles": {
-      "padding": "8px 12px",
-      "border": "1px solid #ccc",
-      "borderRadius": "4px",
-      "fontSize": "14px",
-      "width": "200px",
-      "outline": "none",
-      "transition": "border-color 0.2s ease"
-    },
-    "focusStyles": {
-      "borderColor": "#007bff",
-      "boxShadow": "0 0 0 2px rgba(0, 123, 255, 0.25)"
-    }
-  },
-  "behavior": {
-    "events": {
-      "onChange": {
-        "type": "function",
-        "description": "Handles input value changes"
-      },
-      "onFocus": {
-        "type": "function",
-        "description": "Handles input focus events"
-      },
-      "onBlur": {
-        "type": "function",
-        "description": "Handles input blur events"
+  "ui": {
+    "template": "<input class=\"form-input\" type=\"text\" placeholder=\"Enter text...\" onchange=\"handleChange\" />",
+    "styles": {
+      "css": ".form-input { padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; width: 200px; outline: none; transition: border-color 0.2s ease; } .form-input:focus { border-color: #007bff; box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25); }",
+      "variables": {
+        "border-color": "#ccc",
+        "focus-color": "#007bff",
+        "focus-shadow": "rgba(0, 123, 255, 0.25)"
       }
     }
   },
-  "spa": {
-    "pluginType": "component",
-    "mountable": true,
-    "sequence": {
-      "id": "input-interaction-symphony",
+  "integration": {
+    "properties": {
+      "schema": {
+        "placeholder": {
+          "type": "string",
+          "default": "Enter text...",
+          "description": "Input placeholder text",
+          "required": false
+        },
+        "value": {
+          "type": "string",
+          "default": "",
+          "description": "Input value",
+          "required": false
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the input is disabled"
+        },
+        "required": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the input is required"
+        }
+      },
+      "defaultValues": {
+        "placeholder": "Enter text...",
+        "value": "",
+        "disabled": false,
+        "required": false
+      }
+    },
+    "canvasIntegration": {
+      "resizable": true,
+      "draggable": true,
+      "selectable": true,
+      "minWidth": 100,
+      "minHeight": 32,
+      "maxWidth": 500,
+      "maxHeight": 40,
+      "defaultWidth": 200,
+      "defaultHeight": 36,
+      "snapToGrid": true,
+      "allowChildElements": false
+    },
+    "events": {
+      "onChange": {
+        "description": "Handles input value changes",
+        "parameters": ["event", "value"]
+      },
+      "onFocus": {
+        "description": "Handles input focus events",
+        "parameters": ["event"]
+      },
+      "onBlur": {
+        "description": "Handles input blur events",
+        "parameters": ["event"]
+      }
+    }
+  },
+  "musicalSequences": {
+    "componentInteraction": {
+      "sequenceName": "Input Interaction Symphony",
+      "description": "Handles input field interaction events",
+      "key": "D Major",
+      "tempo": 100,
       "movements": [
         {
-          "name": "onMount",
-          "beat": 1,
-          "event": "COMPONENT_MOUNTED"
-        },
-        {
-          "name": "onChange",
-          "beat": 2,
-          "event": "INPUT_CHANGED"
+          "name": "Input Change Movement",
+          "measures": [
+            {
+              "beat": 1,
+              "event": "INPUT_CHANGED",
+              "dynamics": "mezzo-forte"
+            },
+            {
+              "beat": 2,
+              "event": "COMPONENT_UPDATED",
+              "dynamics": "piano"
+            }
+          ]
         }
       ]
     }
