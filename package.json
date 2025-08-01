@@ -19,10 +19,12 @@
     "migration-status": "node scripts/check-migration-status.js"
   },
   "dependencies": {
-    "yargs": "^17.7.2",
-    "glob": "^10.3.10"
+    "@types/react": "^19.1.9",
+    "@types/react-dom": "^19.1.7",
+    "glob": "^10.3.10",
+    "typescript": "^5.9.2",
+    "yargs": "^17.7.2"
   },
-  "devDependencies": {},
   "keywords": [
     "architecture",
     "validation",
@@ -33,4 +35,3 @@
   "author": "",
   "license": "MIT"
 }
-

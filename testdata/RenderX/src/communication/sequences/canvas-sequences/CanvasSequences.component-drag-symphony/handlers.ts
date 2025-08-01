@@ -18,6 +18,7 @@ interface HandlerData {
     changes: any;
     source: string;
     elements: any[];
+    dragData?: any;
     setElements?: (updater: (prev: any[]) => any[]) => void;
     capturedElement?: any;
     syncElementCSS?: (element: any, cssData: any) => void;

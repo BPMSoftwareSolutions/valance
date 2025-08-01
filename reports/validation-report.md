@@ -1,21 +1,57 @@
 # Validation Report
 
-**Generated:** 7/30/2025, 2:56:12 PM
+**Generated:** 8/1/2025, 1:35:51 AM
 **Files Analyzed:** 1
 
 ## 📊 Summary
 
-- ✅ **Passed:** 0 validators
-- ❌ **Failed:** 1 validators
+- ✅ **Passed:** 7 validators
+- ❌ **Failed:** 0 validators
 - 🔍 **Total Violations:** 0
 
 ## 📋 Validation Results
 
-### ❌ FAILED VALIDATORS
+### ✅ PASSED VALIDATORS
 
-#### `architecture-violation-detection`
-- **Status:** ❌ FAIL
-- **Message:** Some checks failed
+#### `cia-plugin-interface-runtime`
+- **Status:** ✅ PASS
+- **Message:** All checks passed
+
+---
+
+#### `cia-handler-alignment-runtime`
+- **Status:** ✅ PASS
+- **Message:** All checks passed
+
+---
+
+#### `cia-mount-call-safety`
+- **Status:** ✅ PASS
+- **Message:** All checks passed
+
+---
+
+#### `cia-plugin-loader-validation`
+- **Status:** ✅ PASS
+- **Message:** All checks passed
+
+---
+
+#### `cia-conductor-test-harness`
+- **Status:** ✅ PASS
+- **Message:** All checks passed
+
+---
+
+#### `cia-sequence-trigger-mapping`
+- **Status:** ✅ PASS
+- **Message:** All checks passed
+
+---
+
+#### `cia-component-decoupling`
+- **Status:** ✅ PASS
+- **Message:** All checks passed
 
 ---
 
