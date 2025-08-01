@@ -26,6 +26,23 @@ import {
   DomainEventSystem,
 } from "./communication/DomainEventSystem";
 
+// Import ThemeProvider from Theme Management Symphony Plugin
+// Note: In production, this would be dynamically loaded by the plugin system
+// For now, we'll use a placeholder that gets replaced by the plugin
+let ThemeProvider = ({ children }: { children: React.ReactNode }) => (
+  <>{children}</>
+);
+
+// This will be replaced by the plugin system when Theme.theme-management-symphony loads
+if (
+  typeof window !== "undefined" &&
+  (window as any).renderxPlugins?.["Theme.theme-management-symphony"]
+) {
+  ThemeProvider = (window as any).renderxPlugins[
+    "Theme.theme-management-symphony"
+  ].ThemeProvider;
+}
+
 // Types
 interface AppState {
   layoutMode: "editor" | "preview" | "fullscreen-preview";
@@ -36,85 +53,21 @@ interface AppState {
   hasUnsavedChanges: boolean;
 }
 
-interface ThemeContextType {
-  theme: "light" | "dark" | "system";
-  resolvedTheme: "light" | "dark";
-  toggleTheme: () => void;
+// Theme management now handled by Theme.theme-management-symphony plugin
+// Plugin provides ThemeProvider and useTheme hook globally
+
+// ThemeToggleButton now provided by Theme.theme-management-symphony plugin
+let ThemeToggleButton = () => <button>🎨</button>; // Fallback
+
+// This will be replaced by the plugin system when Theme.theme-management-symphony loads
+if (
+  typeof window !== "undefined" &&
+  (window as any).renderxPlugins?.["Theme.theme-management-symphony"]
+) {
+  ThemeToggleButton = (window as any).renderxPlugins[
+    "Theme.theme-management-symphony"
+  ].ThemeToggleButton;
 }
-
-// Mock Theme Provider
-const ThemeContext = React.createContext<ThemeContextType>({
-  theme: "system",
-  resolvedTheme: "light",
-  toggleTheme: () => {},
-});
-
-const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  const [theme, setTheme] = useState<"light" | "dark" | "system">("system");
-  const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("light");
-
-  const toggleTheme = () => {
-    const themes: Array<"light" | "dark" | "system"> = [
-      "light",
-      "dark",
-      "system",
-    ];
-    const currentIndex = themes.indexOf(theme);
-    const nextTheme = themes[(currentIndex + 1) % themes.length];
-    setTheme(nextTheme);
-
-    // Simple resolution logic
-    if (nextTheme === "system") {
-      setResolvedTheme(
-        window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light"
-      );
-    } else {
-      setResolvedTheme(nextTheme);
-    }
-  };
-
-  return (
-    <ThemeContext.Provider value={{ theme, resolvedTheme, toggleTheme }}>
-      <div className={`theme-${resolvedTheme}`}>{children}</div>
-    </ThemeContext.Provider>
-  );
-};
-
-const useTheme = () => React.useContext(ThemeContext);
-
-// Theme Toggle Button Component
-const ThemeToggleButton: React.FC = () => {
-  const { theme, resolvedTheme, toggleTheme } = useTheme();
-
-  const getThemeIcon = () => {
-    if (theme === "system") {
-      return "🌓"; // System theme icon
-    }
-    return resolvedTheme === "dark" ? "🌙" : "☀️";
-  };
-
-  const getThemeLabel = () => {
-    if (theme === "system") {
-      return `System (${resolvedTheme})`;
-    }
-    return resolvedTheme === "dark" ? "Dark" : "Light";
-  };
-
-  return (
-    <button
-      className="theme-toggle-button"
-      onClick={toggleTheme}
-      title={`Current theme: ${getThemeLabel()}. Click to toggle.`}
-      aria-label={`Toggle theme. Current: ${getThemeLabel()}`}
-    >
-      <span className="theme-icon">{getThemeIcon()}</span>
-    </button>
-  );
-};
 
 // Element Library Component with JSON Component Loading
 interface ElementLibraryProps {

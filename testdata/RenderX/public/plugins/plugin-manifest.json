@@ -5,39 +5,31 @@
   "domains": {
     "App": {
       "description": "Application-level functionality and shell management",
-      "plugins": [
-        "App.app-shell-symphony"
-      ]
+      "plugins": ["App.app-shell-symphony"]
     },
     "Canvas": {
       "description": "Canvas-related operations including component manipulation",
-      "plugins": [
-        "Canvas.component-drag-symphony"
-      ]
+      "plugins": ["Canvas.component-drag-symphony"]
     },
     "Component": {
       "description": "Individual component operations and selection management",
-      "plugins": [
-        "Component.element-selection-symphony"
-      ]
+      "plugins": ["Component.element-selection-symphony"]
     },
     "JsonLoader": {
       "description": "JSON-based component loading and parsing",
-      "plugins": [
-        "JsonLoader.json-component-symphony"
-      ]
+      "plugins": ["JsonLoader.json-component-symphony"]
     },
     "ElementLibrary": {
       "description": "Component library and element management",
-      "plugins": [
-        "ElementLibrary.library-drop-symphony"
-      ]
+      "plugins": ["ElementLibrary.library-drop-symphony"]
     },
     "ControlPanel": {
       "description": "Control panel and UI panel management",
-      "plugins": [
-        "ControlPanel.panel-toggle-symphony"
-      ]
+      "plugins": ["ControlPanel.panel-toggle-symphony"]
+    },
+    "Theme": {
+      "description": "Theme management and UI theming operations",
+      "plugins": ["Theme.theme-management-symphony"]
     }
   },
   "pluginNamingConvention": {
@@ -58,21 +50,9 @@
     }
   },
   "validationRules": {
-    "requiredFiles": [
-      "manifest.json",
-      "index.ts",
-      "sequence.ts"
-    ],
-    "optionalDirectories": [
-      "handlers/",
-      "hooks/",
-      "logic/",
-      "components/"
-    ],
-    "requiredExports": [
-      "sequence",
-      "handlers"
-    ]
+    "requiredFiles": ["manifest.json", "index.ts", "sequence.ts"],
+    "optionalDirectories": ["handlers/", "hooks/", "logic/", "components/"],
+    "requiredExports": ["sequence", "handlers"]
   },
   "plugins": [
     {
@@ -140,12 +120,23 @@
       "isCore": true,
       "priority": 6,
       "autoMount": true
+    },
+    {
+      "name": "Theme.theme-management-symphony",
+      "domain": "Theme",
+      "functionality": "theme-management",
+      "description": "Comprehensive theme management with light/dark/system modes",
+      "version": "1.0.0",
+      "path": "./Theme.theme-management-symphony/",
+      "isCore": true,
+      "priority": 0,
+      "autoMount": true
     }
   ],
   "statistics": {
-    "totalPlugins": 6,
-    "totalDomains": 6,
-    "corePlugins": 6,
+    "totalPlugins": 7,
+    "totalDomains": 7,
+    "corePlugins": 7,
     "optionalPlugins": 0
   }
 }

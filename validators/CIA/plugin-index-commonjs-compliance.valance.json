@@ -1,0 +1,72 @@
+{
+  "name": "cia-plugin-index-commonjs-compliance",
+  "description": "Validates that plugin index.js files use CommonJS format, not ES6 modules",
+  "type": "content",
+  "filePattern": ".*plugins.*symphony.*index\\.js$",
+  "enforcementLevel": "strict",
+  "confidenceThreshold": 0.95,
+  "version": "1.0.0",
+  "author": "Valence CIA Validation System",
+  "tags": ["cia", "plugin", "commonjs", "runtime-compatibility", "module-format"],
+  "rules": [
+    {
+      "plugin": "validatePluginIndexCommonJSCompliance",
+      "checkES6Exports": true,
+      "checkCommonJSExports": true,
+      "checkModuleFormat": true,
+      "validateRuntimeCompatibility": true,
+      "verbose": true
+    }
+  ],
+  "moduleFormatRequirements": {
+    "forbidden": [
+      "export {",
+      "export const",
+      "export default",
+      "export function",
+      "export class",
+      "import {",
+      "import *",
+      "import default"
+    ],
+    "required": [
+      "module.exports",
+      "__toCommonJS",
+      "__export"
+    ],
+    "patterns": {
+      "commonjsBundled": "var __.*= Object\\.",
+      "es6Module": "^\\s*(export|import)\\s+",
+      "moduleExports": "module\\.exports\\s*="
+    }
+  },
+  "architecturalChecks": {
+    "runtimeCompatibility": [
+      "index.js must be CommonJS format for MusicalConductor loading",
+      "No ES6 export/import statements in runtime index.js",
+      "Must have proper CommonJS bundled structure"
+    ],
+    "moduleFormat": [
+      "index.js should be bundled CommonJS version",
+      "ES6 source files should be in separate development directories",
+      "Runtime files must be compatible with Node.js require()"
+    ]
+  },
+  "documentation": {
+    "purpose": "Ensures plugin index.js files are in CommonJS format for runtime compatibility",
+    "scope": "All plugin index.js files in symphony directories",
+    "validationApproach": "Content analysis to detect ES6 vs CommonJS module format",
+    "keyPrinciples": [
+      "Runtime compatibility - index.js must be loadable by require()",
+      "Module format consistency - all plugins use same format",
+      "Bundled structure - index.js should be compiled/bundled version",
+      "ES6 separation - development ES6 files separate from runtime files"
+    ],
+    "commonIssues": [
+      "ES6 export statements in index.js",
+      "Missing CommonJS module.exports",
+      "Unbundled ES6 modules in runtime directory",
+      "Mixed module formats across plugins"
+    ]
+  }
+}

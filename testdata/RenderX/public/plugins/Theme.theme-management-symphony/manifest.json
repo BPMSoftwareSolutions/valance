@@ -1,0 +1,59 @@
+{
+  "name": "Theme Management Symphony",
+  "version": "1.0.0",
+  "description": "Comprehensive theme management system with light/dark/system modes and context provider",
+  "domain": "Theme",
+  "type": "symphony",
+  "author": "RenderX Architecture Team",
+  "tags": ["theme", "ui", "context", "provider", "dark-mode", "light-mode"],
+  "capabilities": [
+    "theme-provider",
+    "theme-toggle",
+    "theme-context",
+    "system-theme-detection",
+    "theme-persistence"
+  ],
+  "dependencies": {
+    "react": "^18.0.0"
+  },
+  "exports": {
+    "sequence": "./sequence.js",
+    "handlers": "./handlers/",
+    "components": "./components/",
+    "context": "./context/"
+  },
+  "mountPoints": [
+    {
+      "name": "theme-provider",
+      "type": "wrapper",
+      "description": "Wraps the entire app with theme context"
+    },
+    {
+      "name": "theme-toggle",
+      "type": "component",
+      "description": "Theme toggle button component"
+    }
+  ],
+  "events": {
+    "emits": [
+      "theme.changed",
+      "theme.system-detected",
+      "theme.toggle-requested"
+    ],
+    "listens": [
+      "app.initialized",
+      "ui.theme-toggle-clicked"
+    ]
+  },
+  "architecture": {
+    "pattern": "context-provider",
+    "responsibilities": [
+      "Provide theme context to entire application",
+      "Handle theme switching (light/dark/system)",
+      "Detect system theme preferences",
+      "Persist theme selection",
+      "Render theme toggle UI component"
+    ],
+    "integration": "Wraps App component and provides theme context globally"
+  }
+}
