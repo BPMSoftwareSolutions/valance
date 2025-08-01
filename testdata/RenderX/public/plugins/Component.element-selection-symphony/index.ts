@@ -7,33 +7,33 @@
 export {
   CANVAS_ELEMENT_SELECTION_SEQUENCE,
   startCanvasElementSelectionFlow,
-} from "./sequence";
+} from "./sequence.ts";
 
 // Individual handlers
-export { default as handleCanvasElementSelected } from "./handlers/onSelectionStart";
-export { default as handleCanvasSelectionChanged } from "./handlers/onSelectionChange";
+export { default as handleCanvasElementSelected } from "./handlers/onSelectionStart.ts";
+export { default as handleCanvasSelectionChanged } from "./handlers/onSelectionChange.ts";
 export {
   default as handleCanvasSelectionVisualUpdate,
   handleCanvasSelectionStateSync,
-} from "./handlers/onSelectionEnd";
+} from "./handlers/onSelectionEnd.ts";
 
 // Business logic
 export {
   validateSelectionContext,
   canElementBeSelected,
   getSelectionConstraints,
-} from "./logic/selectionValidation";
-export { processElementSelection } from "./logic/selectionProcessing";
+} from "./logic/selectionValidation.ts";
+export { processElementSelection } from "./logic/selectionProcessing.ts";
 export {
   updateSelectionVisuals,
   syncSelectionState,
-} from "./logic/selectionCoordination";
+} from "./logic/selectionCoordination.ts";
 
 // React hooks
 export {
   useCanvasElementSelection,
   default as useCanvasElementSelectionDefault,
-} from "./hooks";
+} from "./hooks/index.ts";
 
 // Plugin metadata
 export const PLUGIN_INFO = {
@@ -77,7 +77,7 @@ export const CIAPlugin = {
     }
   },
 
-  unmount: (conductor: any, eventBus: any) => {
+  unmount: (conductor, eventBus) => {
     console.log("🎼 ElementSelection Plugin: Unmounting...");
 
     try {

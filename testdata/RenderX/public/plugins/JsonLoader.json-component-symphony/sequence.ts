@@ -13,58 +13,61 @@ import {
   MUSICAL_DYNAMICS,
   MUSICAL_TIMING,
   SEQUENCE_CATEGORIES,
-  type MusicalSequence
-} from '../../../src/communication/sequences/SequenceTypes';
+  MusicalSequence,
+} from "../../../src/communication/sequences/SequenceTypes";
 
 export const JSON_COMPONENT_LOADING_SEQUENCE: MusicalSequence = {
   name: "JSON Component Loading Symphony No. 1",
-  description: "Component Loading - Dynamic JSON component loading and error handling",
+  description:
+    "Component Loading - Dynamic JSON component loading and error handling",
   key: "C Major",
   tempo: 110,
   timeSignature: "4/4",
   category: SEQUENCE_CATEGORIES.COMPONENT_UI,
-  movements: [{
-    name: "Component Discovery Movement",
-    description: "Discovers and validates JSON component files",
-    beats: [
-      {
-        beat: 1,
-        event: EVENT_TYPES.COMPONENT_LOADING_STARTED,
-        title: "Initiate Component Loading",
-        description: "Starts the JSON component loading process",
-        dynamics: MUSICAL_DYNAMICS.FORTE,
-        timing: MUSICAL_TIMING.IMMEDIATE,
-        dependencies: []
-      },
-      {
-        beat: 2,
-        event: EVENT_TYPES.COMPONENT_LOADING_PROGRESS,
-        title: "Component Loading Progress",
-        description: "Tracks component loading progress",
-        dynamics: MUSICAL_DYNAMICS.MEZZO_FORTE,
-        timing: MUSICAL_TIMING.SYNCHRONIZED,
-        dependencies: [EVENT_TYPES.COMPONENT_LOADING_STARTED]
-      },
-      {
-        beat: 3,
-        event: EVENT_TYPES.COMPONENT_LOADING_COMPLETED,
-        title: "Component Discovery Complete",
-        description: "Completes the component file discovery phase",
-        dynamics: MUSICAL_DYNAMICS.MEZZO_FORTE,
-        timing: MUSICAL_TIMING.SYNCHRONIZED,
-        dependencies: [EVENT_TYPES.COMPONENT_LOADING_PROGRESS]
-      },
-      {
-        beat: 4,
-        event: EVENT_TYPES.COMPONENT_LOADING_ERROR,
-        title: "Component Loading Error Handling",
-        description: "Handles any errors during component loading",
-        dynamics: MUSICAL_DYNAMICS.FORTE,
-        timing: MUSICAL_TIMING.IMMEDIATE,
-        dependencies: []
-      }
-    ]
-  }]
+  movements: [
+    {
+      name: "Component Discovery Movement",
+      description: "Discovers and validates JSON component files",
+      beats: [
+        {
+          beat: 1,
+          event: EVENT_TYPES.COMPONENT_LOADING_STARTED,
+          title: "Initiate Component Loading",
+          description: "Starts the JSON component loading process",
+          dynamics: MUSICAL_DYNAMICS.FORTE,
+          timing: MUSICAL_TIMING.IMMEDIATE,
+          dependencies: [],
+        },
+        {
+          beat: 2,
+          event: EVENT_TYPES.COMPONENT_LOADING_PROGRESS,
+          title: "Component Loading Progress",
+          description: "Tracks component loading progress",
+          dynamics: MUSICAL_DYNAMICS.MEZZO_FORTE,
+          timing: MUSICAL_TIMING.SYNCHRONIZED,
+          dependencies: [EVENT_TYPES.COMPONENT_LOADING_STARTED],
+        },
+        {
+          beat: 3,
+          event: EVENT_TYPES.COMPONENT_LOADING_COMPLETED,
+          title: "Component Discovery Complete",
+          description: "Completes the component file discovery phase",
+          dynamics: MUSICAL_DYNAMICS.MEZZO_FORTE,
+          timing: MUSICAL_TIMING.SYNCHRONIZED,
+          dependencies: [EVENT_TYPES.COMPONENT_LOADING_PROGRESS],
+        },
+        {
+          beat: 4,
+          event: EVENT_TYPES.COMPONENT_LOADING_ERROR,
+          title: "Component Loading Error Handling",
+          description: "Handles any errors during component loading",
+          dynamics: MUSICAL_DYNAMICS.FORTE,
+          timing: MUSICAL_TIMING.IMMEDIATE,
+          dependencies: [],
+        },
+      ],
+    },
+  ],
 };
 
 export const JSON_COMPONENT_ERROR_SEQUENCE: MusicalSequence = {
@@ -74,21 +77,23 @@ export const JSON_COMPONENT_ERROR_SEQUENCE: MusicalSequence = {
   tempo: 90,
   timeSignature: "4/4",
   category: SEQUENCE_CATEGORIES.COMPONENT_UI,
-  movements: [{
-    name: "Error Recovery Movement",
-    description: "Handles and recovers from component loading errors",
-    beats: [
-      {
-        beat: 1,
-        event: EVENT_TYPES.COMPONENT_LOADING_ERROR,
-        title: "Error Detection",
-        description: "Detects and categorizes component loading errors",
-        dynamics: MUSICAL_DYNAMICS.FORTE,
-        timing: MUSICAL_TIMING.IMMEDIATE,
-        dependencies: []
-      }
-    ]
-  }]
+  movements: [
+    {
+      name: "Error Recovery Movement",
+      description: "Handles and recovers from component loading errors",
+      beats: [
+        {
+          beat: 1,
+          event: EVENT_TYPES.COMPONENT_LOADING_ERROR,
+          title: "Error Detection",
+          description: "Detects and categorizes component loading errors",
+          dynamics: MUSICAL_DYNAMICS.FORTE,
+          timing: MUSICAL_TIMING.IMMEDIATE,
+          dependencies: [],
+        },
+      ],
+    },
+  ],
 };
 
 /**
@@ -106,12 +111,12 @@ export const startJsonComponentLoadingFlow = (
 ) => {
   // Register sequence (Valance sequence-registration-validation requirement)
   conductor.registerSequence(JSON_COMPONENT_LOADING_SEQUENCE);
-  
-  return conductor.startSequence('JSON Component Loading Symphony No. 1', {
+
+  return conductor.startSequence("JSON Component Loading Symphony No. 1", {
     componentFiles,
     options,
     timestamp: new Date(),
-    sequenceId: `json-loading-${Date.now()}`
+    sequenceId: `json-loading-${Date.now()}`,
   });
 };
 
@@ -122,11 +127,14 @@ export const startJsonComponentErrorFlow = (
 ) => {
   // Register sequence (Valance sequence-registration-validation requirement)
   conductor.registerSequence(JSON_COMPONENT_ERROR_SEQUENCE);
-  
-  return conductor.startSequence('JSON Component Error Handling Symphony No. 2', {
-    error,
-    context,
-    timestamp: new Date(),
-    sequenceId: `json-error-${Date.now()}`
-  });
+
+  return conductor.startSequence(
+    "JSON Component Error Handling Symphony No. 2",
+    {
+      error,
+      context,
+      timestamp: new Date(),
+      sequenceId: `json-error-${Date.now()}`,
+    }
+  );
 };

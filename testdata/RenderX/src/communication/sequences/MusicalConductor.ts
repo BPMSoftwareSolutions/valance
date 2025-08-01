@@ -14,7 +14,7 @@
  * - Movement-to-handler contract verification
  */
 
-import { EventBus } from '../EventBus';
+import { EventBus } from "../EventBus";
 import type {
   MusicalSequence,
   SequenceExecutionContext,
@@ -22,14 +22,14 @@ import type {
   SequenceRequest,
   SequencePriority,
   SequenceBeat,
-  SequenceMovement
-} from './SequenceTypes';
+  SequenceMovement,
+} from "./SequenceTypes";
 import {
   MUSICAL_TIMING,
   MUSICAL_DYNAMICS,
   MUSICAL_CONDUCTOR_EVENT_TYPES,
-  SEQUENCE_PRIORITIES
-} from './SequenceTypes';
+  SEQUENCE_PRIORITIES,
+} from "./SequenceTypes";
 
 // CIA (Conductor Integration Architecture) interfaces for SPA plugin mounting
 export interface SPAPlugin {
@@ -62,6 +62,7 @@ export class MusicalConductor {
   // CIA (Conductor Integration Architecture) properties for SPA plugin mounting
   private mountedPlugins: Map<string, SPAPlugin> = new Map();
   private pluginHandlers: Map<string, Record<string, Function>> = new Map();
+  private pluginsRegistered: boolean = false; // Prevent React StrictMode double execution
 
   // Enhanced statistics for queue management
   private statistics: ConductorStatistics = {
@@ -75,12 +76,14 @@ export class MusicalConductor {
     currentQueueLength: 0,
     averageQueueWaitTime: 0,
     sequenceCompletionRate: 0,
-    chainedSequences: 0
+    chainedSequences: 0,
   };
 
   constructor(eventBus: EventBus) {
     this.eventBus = eventBus;
-    console.log('🎼 MusicalConductor: CIA-compliant conductor with Sequential Orchestration initialized');
+    console.log(
+      "🎼 MusicalConductor: CIA-compliant conductor with Sequential Orchestration initialized"
+    );
   }
 
   /**
@@ -90,10 +93,10 @@ export class MusicalConductor {
   registerSequence(sequence: MusicalSequence): void {
     this.sequences.set(sequence.name, sequence);
     console.log(`🎼 MusicalConductor: Registered sequence "${sequence.name}"`);
-    
+
     this.eventBus.emit(MUSICAL_CONDUCTOR_EVENT_TYPES.SEQUENCE_REGISTERED, {
       sequenceName: sequence.name,
-      category: sequence.category
+      category: sequence.category,
     });
   }
 
@@ -104,10 +107,12 @@ export class MusicalConductor {
   unregisterSequence(sequenceName: string): void {
     if (this.sequences.has(sequenceName)) {
       this.sequences.delete(sequenceName);
-      console.log(`🎼 MusicalConductor: Unregistered sequence "${sequenceName}"`);
-      
+      console.log(
+        `🎼 MusicalConductor: Unregistered sequence "${sequenceName}"`
+      );
+
       this.eventBus.emit(MUSICAL_CONDUCTOR_EVENT_TYPES.SEQUENCE_UNREGISTERED, {
-        sequenceName
+        sequenceName,
       });
     }
   }
@@ -136,22 +141,28 @@ export class MusicalConductor {
    * @param context - Context data to pass to the movement handler
    * @returns Execution result
    */
-  play(pluginId: string, movementName: string, context: any = {}): any {
+  play(pluginId: string, sequenceId: string, context: any = {}): any {
     try {
-      console.log(`🎼 MusicalConductor.play(): ${pluginId} -> ${movementName}`);
+      console.log(`🎼 MusicalConductor.play(): ${pluginId} -> ${sequenceId}`);
 
       // Validate plugin exists
       const plugin = this.mountedPlugins.get(pluginId);
       if (!plugin) {
-        console.warn(`🧠 Plugin not found: ${pluginId}. Available plugins: [${Array.from(this.mountedPlugins.keys()).join(', ')}]`);
+        console.warn(
+          `🧠 Plugin not found: ${pluginId}. Available plugins: [${Array.from(
+            this.mountedPlugins.keys()
+          ).join(", ")}]`
+        );
         return null;
       }
 
-      // Execute the movement handler
-      return this.executeMovementHandler(pluginId, movementName, context);
-
+      // Start the sequence instead of calling handlers directly
+      return this.startSequence(sequenceId, context);
     } catch (error) {
-      console.error(`🧠 MusicalConductor.play() failed for ${pluginId}.${movementName}:`, (error as Error).message);
+      console.error(
+        `🧠 MusicalConductor.play() failed for ${pluginId}.${sequenceId}:`,
+        (error as Error).message
+      );
       return null;
     }
   }
@@ -163,62 +174,66 @@ export class MusicalConductor {
    * @param pluginId - Optional plugin ID (defaults to sequence.name)
    * @returns Plugin mount result
    */
-  mount(sequence: any, handlers: any, pluginId?: string, metadata?: any): PluginMountResult {
-    const id = pluginId || sequence?.name || 'unknown-plugin';
+  mount(
+    sequence: any,
+    handlers: any,
+    pluginId?: string,
+    metadata?: any
+  ): PluginMountResult {
+    const id = pluginId || sequence?.name || "unknown-plugin";
 
     try {
       console.log(`🧠 MusicalConductor: Attempting to mount plugin: ${id}`);
 
       // Validate sequence
       if (!sequence) {
-        console.error('🧠 Mount failed: sequence is required');
+        console.error("🧠 Mount failed: sequence is required");
         return {
           success: false,
           pluginId: id,
-          message: 'Mount failed: sequence is required'
+          message: "Mount failed: sequence is required",
         };
       }
 
       if (!sequence.movements || !Array.isArray(sequence.movements)) {
-        console.error('🧠 Mount failed: sequence.movements must be an array');
+        console.error("🧠 Mount failed: sequence.movements must be an array");
         return {
           success: false,
           pluginId: id,
-          message: 'Mount failed: sequence.movements must be an array'
+          message: "Mount failed: sequence.movements must be an array",
         };
       }
 
-      // Validate handlers
-      if (!handlers || typeof handlers !== 'object') {
-        console.error('🧠 Mount failed: handlers must be an object');
-        return {
-          success: false,
-          pluginId: id,
-          message: 'Mount failed: handlers must be an object'
-        };
-      }
+      // Note: handlers are optional - plugins use event bus for beat execution
+      // Handlers are only needed for legacy direct movement calls
 
       // Validate movement-to-handler mapping
       const warnings: string[] = [];
       for (const movement of sequence.movements) {
         if (!movement.name) {
-          console.warn('🧠 Movement missing name, skipping validation');
-          warnings.push('Movement missing name, skipping validation');
+          console.warn("🧠 Movement missing name, skipping validation");
+          warnings.push("Movement missing name, skipping validation");
           continue;
         }
 
-        if (!(movement.name in handlers)) {
-          console.warn(`🧠 Missing handler for movement: ${movement.name}`);
-          warnings.push(`Missing handler for movement: ${movement.name}`);
-        }
+        // Only validate handlers if they are provided (optional for event-driven plugins)
+        if (handlers && typeof handlers === "object") {
+          if (!(movement.name in handlers)) {
+            console.warn(`🧠 Missing handler for movement: ${movement.name}`);
+            warnings.push(`Missing handler for movement: ${movement.name}`);
+          }
 
-        if (handlers[movement.name] && typeof handlers[movement.name] !== 'function') {
-          console.error(`🧠 Handler for ${movement.name} is not a function`);
-          return {
-            success: false,
-            pluginId: id,
-            message: `Handler for ${movement.name} is not a function`
-          };
+          if (
+            handlers[movement.name] &&
+            typeof handlers[movement.name] !== "function"
+          ) {
+            console.error(`🧠 Handler for ${movement.name} is not a function`);
+            return {
+              success: false,
+              pluginId: id,
+              message: `Handler for ${movement.name} is not a function`,
+            };
+          }
         }
       }
 
@@ -228,14 +243,18 @@ export class MusicalConductor {
         handlers,
         metadata: {
           id,
-          version: sequence.metadata?.version || '1.0.0',
-          author: sequence.metadata?.author
-        }
+          version: sequence.metadata?.version || "1.0.0",
+          author: sequence.metadata?.author,
+        },
       };
 
       // Mount the plugin
       this.mountedPlugins.set(id, plugin);
-      this.pluginHandlers.set(id, handlers);
+
+      // Store handlers only if provided (optional for event-bus driven plugins)
+      if (handlers && typeof handlers === "object") {
+        this.pluginHandlers.set(id, handlers);
+      }
 
       // Register the sequence with the existing conductor system
       this.registerSequence(sequence);
@@ -246,15 +265,14 @@ export class MusicalConductor {
         success: true,
         pluginId: id,
         message: `Successfully mounted plugin: ${id}`,
-        warnings: warnings.length > 0 ? warnings : undefined
+        warnings: warnings.length > 0 ? warnings : undefined,
       };
-
     } catch (error) {
-      console.error('🧠 MusicalConductor: Mount failed with error:', error);
+      console.error("🧠 MusicalConductor: Mount failed with error:", error);
       return {
         success: false,
         pluginId: id,
-        message: `Mount failed with error: ${(error as Error).message}`
+        message: `Mount failed with error: ${(error as Error).message}`,
       };
     }
   }
@@ -265,14 +283,31 @@ export class MusicalConductor {
    */
   async registerCIAPlugins(): Promise<void> {
     try {
+      // Prevent React StrictMode double execution
+      if (this.pluginsRegistered) {
+        console.log(
+          "⚠️ Plugins already registered, skipping duplicate registration"
+        );
+        return;
+      }
+
       console.log("🧠 Registering CIA-compliant plugins...");
 
       // Load plugin manifest - this is the ONLY source of truth
       const pluginManifest = await this.loadPluginManifest();
-      console.log('📋 Plugin manifest loaded with', pluginManifest.statistics.totalPlugins, 'plugins across', pluginManifest.statistics.totalDomains, 'domains');
+      console.log(
+        "📋 Plugin manifest loaded with",
+        pluginManifest.statistics.totalPlugins,
+        "plugins across",
+        pluginManifest.statistics.totalDomains,
+        "domains"
+      );
 
       // Register plugins dynamically based on manifest data (data-driven approach)
       await this.registerPluginsFromManifest(pluginManifest);
+
+      // Mark plugins as registered to prevent duplicate execution
+      this.pluginsRegistered = true;
 
       console.log("✅ CIA-compliant plugins registered successfully");
     } catch (error) {
@@ -284,17 +319,21 @@ export class MusicalConductor {
 
   private async loadPluginManifest() {
     try {
-      console.log('🎼 MusicalConductor: Loading plugin manifest...');
-      const response = await fetch('/plugins/plugin-manifest.json');
+      console.log("🎼 MusicalConductor: Loading plugin manifest...");
+      const response = await fetch("/plugins/plugin-manifest.json");
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
         const text = await response.text();
-        console.error('🎼 MusicalConductor: Expected JSON but got:', contentType, text.substring(0, 100));
+        console.error(
+          "🎼 MusicalConductor: Expected JSON but got:",
+          contentType,
+          text.substring(0, 100)
+        );
         throw new Error(`Expected JSON but got ${contentType}`);
       }
 
@@ -302,33 +341,45 @@ export class MusicalConductor {
 
       // Validate manifest structure
       if (!manifest.domains || !manifest.plugins) {
-        throw new Error('Invalid plugin manifest structure');
+        throw new Error("Invalid plugin manifest structure");
       }
 
-      console.log('✅ Plugin manifest loaded successfully');
+      console.log("✅ Plugin manifest loaded successfully");
       return manifest;
     } catch (error) {
-      console.error('❌ Failed to load plugin manifest:', error);
+      console.error("❌ Failed to load plugin manifest:", error);
       // Return default manifest structure
       return {
         domains: {},
         plugins: [],
-        statistics: { totalPlugins: 0, totalDomains: 0 }
+        statistics: { totalPlugins: 0, totalDomains: 0 },
       };
     }
   }
 
   private async registerPluginsFromManifest(manifest: any) {
-    console.log('🎼 MusicalConductor: Registering plugins from manifest (data-driven)...');
+    console.log(
+      "🎼 MusicalConductor: Registering plugins from manifest (data-driven)..."
+    );
 
     // Iterate through plugins defined in manifest
     for (const plugin of manifest.plugins) {
       try {
         if (plugin.autoMount) {
-          console.log(`🔌 Loading plugin: ${plugin.name} (${plugin.domain} domain)`);
+          // Check if plugin is already mounted (prevents React StrictMode double execution)
+          if (this.mountedPlugins.has(plugin.name)) {
+            console.log(`⚠️ Plugin already mounted, skipping: ${plugin.name}`);
+            continue;
+          }
 
-          // Dynamic import based on manifest data - NO hardcoded paths
-          const pluginModule = await import(/* @vite-ignore */ `/plugins/${plugin.path}index.ts`);
+          console.log(
+            `🔌 Loading plugin: ${plugin.name} (${plugin.domain} domain)`
+          );
+
+          // Dynamic plugin loading using pre-compiled JavaScript files
+          const pluginModule = await this.loadPluginModule(
+            `/plugins/${plugin.path}index.js`
+          );
 
           // Register the plugin using manifest metadata
           this.mount(
@@ -339,7 +390,7 @@ export class MusicalConductor {
               domain: plugin.domain,
               functionality: plugin.functionality,
               priority: plugin.priority,
-              isCore: plugin.isCore
+              isCore: plugin.isCore,
             }
           );
 
@@ -353,28 +404,28 @@ export class MusicalConductor {
       }
     }
 
-    console.log('✅ Data-driven plugin registration completed');
+    console.log("✅ Data-driven plugin registration completed");
   }
 
   private registerFallbackSequences() {
     // Register basic event handlers for core functionality
-    console.log('🎼 MusicalConductor: Registering fallback sequences...');
+    console.log("🎼 MusicalConductor: Registering fallback sequences...");
 
     // Basic drag and drop functionality
-    this.eventBus.subscribe('canvas:element:drag:start', (data: any) => {
-      console.log('🎼 Fallback: Canvas drag start', data);
+    this.eventBus.subscribe("canvas:element:drag:start", (data: any) => {
+      console.log("🎼 Fallback: Canvas drag start", data);
     });
 
-    this.eventBus.subscribe('canvas:element:drag:end', (data: any) => {
-      console.log('🎼 Fallback: Canvas drag end', data);
+    this.eventBus.subscribe("canvas:element:drag:end", (data: any) => {
+      console.log("🎼 Fallback: Canvas drag end", data);
     });
 
     // Basic component loading
-    this.eventBus.subscribe('component:loading:start', (data: any) => {
-      console.log('🎼 Fallback: Component loading start', data);
+    this.eventBus.subscribe("component:loading:start", (data: any) => {
+      console.log("🎼 Fallback: Component loading start", data);
     });
 
-    console.log('✅ MusicalConductor: Fallback sequences registered');
+    console.log("✅ MusicalConductor: Fallback sequences registered");
   }
 
   /**
@@ -384,7 +435,11 @@ export class MusicalConductor {
    * @param data - Data to pass to handler
    * @returns Handler execution result
    */
-  executeMovementHandler(sequenceId: string, movementName: string, data: any): any {
+  executeMovementHandler(
+    sequenceId: string,
+    movementName: string,
+    data: any
+  ): any {
     try {
       const handlers = this.pluginHandlers.get(sequenceId);
 
@@ -399,17 +454,295 @@ export class MusicalConductor {
       }
 
       const handler = handlers[movementName];
-      if (typeof handler !== 'function') {
+      if (typeof handler !== "function") {
         console.error(`🧠 Handler for ${movementName} is not a function`);
         return null;
       }
 
-      console.log(`🧠 MusicalConductor: Executing handler for movement: ${movementName}`);
+      console.log(
+        `🧠 MusicalConductor: Executing handler for movement: ${movementName}`
+      );
       return handler(data);
-
     } catch (error) {
-      console.error(`🧠 MusicalConductor: Handler execution failed for ${movementName}:`, error);
+      console.error(
+        `🧠 MusicalConductor: Handler execution failed for ${movementName}:`,
+        error
+      );
       return null;
+    }
+  }
+
+  /**
+   * Load plugin module - tries bundled ESM first, falls back to complex dependency resolution
+   * @param pluginPath - Path to the plugin module (e.g., "/plugins/App.app-shell-symphony/index.js")
+   * @returns Plugin module with exports
+   */
+  private async loadPluginModule(pluginPath: string): Promise<any> {
+    // Extract plugin directory from path
+    const pluginDir = pluginPath.substring(0, pluginPath.lastIndexOf("/"));
+    const bundledPath = `${pluginDir}/dist/plugin.js`;
+
+    // Try to load bundled ESM version first
+    try {
+      console.log(`🔗 Attempting to load bundled plugin: ${bundledPath}`);
+
+      // Fetch the bundled ESM code
+      const response = await fetch(bundledPath);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const bundledCode = await response.text();
+      console.log(
+        `📦 Bundled plugin code fetched (${bundledCode.length} chars)`
+      );
+
+      // Create a blob URL for the self-contained ESM code
+      const blob = new Blob([bundledCode], {
+        type: "application/javascript",
+      });
+      const blobUrl = URL.createObjectURL(blob);
+
+      try {
+        // Use dynamic import with the blob URL
+        const plugin = await import(/* @vite-ignore */ blobUrl);
+        console.log(`✅ Loaded bundled plugin:`, Object.keys(plugin));
+        return plugin;
+      } finally {
+        // Clean up the blob URL
+        URL.revokeObjectURL(blobUrl);
+      }
+    } catch (bundleError) {
+      console.log(
+        `⚠️ Bundled plugin not found, falling back to complex loading: ${bundleError.message}`
+      );
+      // Fall back to complex dependency resolution
+      return this.loadPluginModuleComplex(pluginPath);
+    }
+  }
+
+  /**
+   * Complex plugin loading with full dependency resolution (fallback method)
+   * @param pluginPath - Path to the plugin module
+   * @returns Plugin module with exports
+   */
+  private async loadPluginModuleComplex(pluginPath: string): Promise<any> {
+    try {
+      console.log(
+        `🔄 Loading plugin module with complex resolution: ${pluginPath}`
+      );
+
+      // Extract plugin directory from path
+      const pluginDir = pluginPath.substring(0, pluginPath.lastIndexOf("/"));
+      const moduleCache = new Map<string, any>();
+
+      // Helper function to load dependencies recursively
+      const loadDependency = async (relativePath: string): Promise<any> => {
+        const absolutePath = `${pluginDir}/${relativePath.replace("./", "")}`;
+        // Handle different file extensions:
+        // - .js files: use as-is
+        // - .ts/.tsx files: convert to .js
+        // - no extension: add .js
+        let fullPath: string;
+        if (absolutePath.endsWith(".js")) {
+          fullPath = absolutePath;
+        } else if (
+          absolutePath.endsWith(".ts") ||
+          absolutePath.endsWith(".tsx")
+        ) {
+          fullPath = absolutePath.replace(/\.tsx?$/, ".js");
+        } else {
+          fullPath = `${absolutePath}.js`;
+        }
+
+        if (moduleCache.has(fullPath)) {
+          return moduleCache.get(fullPath);
+        }
+
+        console.log(`📦 Loading dependency: ${relativePath} -> ${fullPath}`);
+
+        // Fetch dependency code
+        const depResponse = await fetch(fullPath);
+        if (!depResponse.ok) {
+          throw new Error(
+            `HTTP ${depResponse.status}: ${depResponse.statusText}`
+          );
+        }
+
+        const depCode = await depResponse.text();
+        console.log(`📦 Dependency code fetched (${depCode.length} chars)`);
+
+        // Create CommonJS environment for dependency
+        const depModuleExports: any = {};
+        const depModule = { exports: depModuleExports };
+
+        // Nested require function for dependencies
+        const nestedRequire = (nestedPath: string) => {
+          const resolvedPath = `${pluginDir}/${nestedPath.replace("./", "")}`;
+          // Handle different file extensions:
+          // - .js files: use as-is
+          // - .ts/.tsx files: convert to .js
+          // - no extension: add .js
+          let fullResolvedPath: string;
+          if (resolvedPath.endsWith(".js")) {
+            fullResolvedPath = resolvedPath;
+          } else if (
+            resolvedPath.endsWith(".ts") ||
+            resolvedPath.endsWith(".tsx")
+          ) {
+            fullResolvedPath = resolvedPath.replace(/\.tsx?$/, ".js");
+          } else {
+            fullResolvedPath = `${resolvedPath}.js`;
+          }
+
+          if (moduleCache.has(fullResolvedPath)) {
+            return moduleCache.get(fullResolvedPath);
+          }
+          console.warn(
+            `⚠️ Nested dependency not found in cache: ${nestedPath}`
+          );
+          return {};
+        };
+
+        // Execute dependency
+        const depWrappedCode = `
+          (function(exports, require, module, console) {
+            ${depCode}
+            return module.exports;
+          })
+        `;
+
+        const depModuleFactory = eval(depWrappedCode);
+        const depResult = depModuleFactory(
+          depModuleExports,
+          nestedRequire,
+          depModule,
+          console
+        );
+
+        // Cache result
+        moduleCache.set(fullPath, depResult);
+        console.log(
+          `✅ Dependency loaded: ${fullPath}`,
+          Object.keys(depResult)
+        );
+        return depResult;
+      };
+
+      // Load main plugin first to discover dependencies
+      const response = await fetch(pluginPath);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const pluginCode = await response.text();
+      console.log(`📦 Plugin code fetched (${pluginCode.length} chars)`);
+
+      // Extract dependencies from the plugin code
+      const extractDependencies = (code: string): string[] => {
+        const requireRegex = /require\s*\(\s*["']([^"']+)["']\s*\)/g;
+        const dependencies: string[] = [];
+        let match;
+
+        while ((match = requireRegex.exec(code)) !== null) {
+          const dep = match[1];
+          if (dep.startsWith("./") || dep.startsWith("../")) {
+            dependencies.push(dep);
+          }
+        }
+
+        return [...new Set(dependencies)]; // Remove duplicates
+      };
+
+      const dependencies = extractDependencies(pluginCode);
+      console.log("🔍 Discovered dependencies:", dependencies);
+
+      // Pre-load all discovered dependencies
+      console.log("🔄 Pre-loading discovered dependencies...");
+      for (const dep of dependencies) {
+        try {
+          await loadDependency(dep);
+        } catch (e) {
+          console.log(`⚠️ Failed to load dependency ${dep}:`, e);
+        }
+      }
+
+      // Create synchronous require function using pre-loaded modules
+      const require = (relativePath: string) => {
+        const absolutePath = `${pluginDir}/${relativePath.replace("./", "")}`;
+        // Handle different file extensions:
+        // - .js files: use as-is
+        // - .ts/.tsx files: convert to .js
+        // - no extension: add .js
+        let fullPath: string;
+        if (absolutePath.endsWith(".js")) {
+          fullPath = absolutePath;
+        } else if (
+          absolutePath.endsWith(".ts") ||
+          absolutePath.endsWith(".tsx")
+        ) {
+          fullPath = absolutePath.replace(/\.tsx?$/, ".js");
+        } else {
+          fullPath = `${absolutePath}.js`;
+        }
+
+        if (moduleCache.has(fullPath)) {
+          console.log(`📋 Using cached module: ${relativePath}`);
+          return moduleCache.get(fullPath);
+        }
+
+        console.warn(`⚠️ Module not found in cache: ${relativePath}`);
+        return {};
+      };
+
+      // Plugin code already fetched above for dependency discovery
+
+      // Create CommonJS environment for main plugin
+      const moduleExports: any = {};
+      const module = { exports: moduleExports };
+
+      // Execute main plugin
+      const wrappedCode = `
+        (function(exports, require, module, console) {
+          ${pluginCode}
+          return module.exports;
+        })
+      `;
+
+      const moduleFactory = eval(wrappedCode);
+      const pluginModule = moduleFactory(
+        moduleExports,
+        require,
+        module,
+        console
+      );
+
+      console.log(`✅ Plugin module loaded:`, Object.keys(pluginModule));
+      return pluginModule;
+    } catch (error) {
+      console.error(`❌ Failed to load plugin module ${pluginPath}:`, error);
+
+      // Enhanced error handling with specific diagnostics
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
+
+      if (errorMessage.includes("Cannot use import statement")) {
+        throw new Error(
+          `Plugin ${pluginPath} uses ES modules. Please recompile with CommonJS format.`
+        );
+      }
+
+      if (errorMessage.includes("is not a function")) {
+        throw new Error(
+          `Plugin ${pluginPath} has missing dependencies. Check require() calls.`
+        );
+      }
+
+      if (errorMessage.includes("HTTP 404")) {
+        throw new Error(`Plugin file not found: ${pluginPath}`);
+      }
+
+      throw error;
     }
   }
 
@@ -422,36 +755,44 @@ export class MusicalConductor {
     try {
       console.log(`🧠 MusicalConductor: Loading plugin from: ${pluginPath}`);
 
-      const plugin = await import(/* @vite-ignore */ pluginPath);
+      const plugin = await this.loadPluginModule(pluginPath);
 
       // Validate plugin structure after import
-      if (!plugin || typeof plugin !== 'object') {
-        console.warn(`🧠 Failed to load plugin: invalid plugin structure at ${pluginPath}`);
+      if (!plugin || typeof plugin !== "object") {
+        console.warn(
+          `🧠 Failed to load plugin: invalid plugin structure at ${pluginPath}`
+        );
         return {
           success: false,
-          pluginId: 'unknown',
-          message: `Failed to load plugin: invalid plugin structure at ${pluginPath}`
+          pluginId: "unknown",
+          message: `Failed to load plugin: invalid plugin structure at ${pluginPath}`,
         };
       }
 
       if (!plugin.sequence || !plugin.handlers) {
-        console.warn(`🧠 Plugin missing required exports (sequence, handlers): ${pluginPath}`);
+        console.warn(
+          `🧠 Plugin missing required exports (sequence, handlers): ${pluginPath}`
+        );
         return {
           success: false,
-          pluginId: plugin.sequence?.name || 'unknown',
-          message: `Plugin missing required exports (sequence, handlers): ${pluginPath}`
+          pluginId: plugin.sequence?.name || "unknown",
+          message: `Plugin missing required exports (sequence, handlers): ${pluginPath}`,
         };
       }
 
       // Mount the plugin
       return this.mount(plugin.sequence, plugin.handlers);
-
     } catch (error) {
-      console.warn(`🧠 MusicalConductor: Failed to load plugin from ${pluginPath}:`, (error as Error).message);
+      console.warn(
+        `🧠 MusicalConductor: Failed to load plugin from ${pluginPath}:`,
+        (error as Error).message
+      );
       return {
         success: false,
-        pluginId: 'unknown',
-        message: `Failed to load plugin from ${pluginPath}: ${(error as Error).message}`
+        pluginId: "unknown",
+        message: `Failed to load plugin from ${pluginPath}: ${
+          (error as Error).message
+        }`,
       };
     }
   }
@@ -477,11 +818,15 @@ export class MusicalConductor {
       this.mountedPlugins.delete(pluginId);
       this.pluginHandlers.delete(pluginId);
 
-      console.log(`🧠 MusicalConductor: Successfully unmounted plugin: ${pluginId}`);
+      console.log(
+        `🧠 MusicalConductor: Successfully unmounted plugin: ${pluginId}`
+      );
       return true;
-
     } catch (error) {
-      console.error(`🧠 MusicalConductor: Failed to unmount plugin ${pluginId}:`, error);
+      console.error(
+        `🧠 MusicalConductor: Failed to unmount plugin ${pluginId}:`,
+        error
+      );
       return false;
     }
   }
@@ -510,7 +855,9 @@ export class MusicalConductor {
    */
   setPriority(eventType: string, priority: string): void {
     this.priorities.set(eventType, priority);
-    console.log(`🎼 MusicalConductor: Set priority for ${eventType}: ${priority}`);
+    console.log(
+      `🎼 MusicalConductor: Set priority for ${eventType}: ${priority}`
+    );
   }
 
   /**
@@ -520,8 +867,14 @@ export class MusicalConductor {
    * @param priority - Priority level: 'HIGH', 'NORMAL', 'CHAINED'
    * @returns Request ID for tracking
    */
-  startSequence(sequenceName: string, data: Record<string, any> = {}, priority: SequencePriority = SEQUENCE_PRIORITIES.NORMAL): string {
-    const requestId = `${sequenceName}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  startSequence(
+    sequenceName: string,
+    data: Record<string, any> = {},
+    priority: SequencePriority = SEQUENCE_PRIORITIES.NORMAL
+  ): string {
+    const requestId = `${sequenceName}-${Date.now()}-${Math.random()
+      .toString(36)
+      .substr(2, 9)}`;
 
     try {
       const sequence = this.sequences.get(sequenceName);
@@ -534,30 +887,44 @@ export class MusicalConductor {
         data,
         priority,
         requestId,
-        queuedAt: performance.now()
+        queuedAt: performance.now(),
       };
 
       // Update statistics
       this.statistics.totalSequencesQueued++;
       this.statistics.currentQueueLength++;
-      this.statistics.maxQueueLength = Math.max(this.statistics.maxQueueLength, this.statistics.currentQueueLength);
+      this.statistics.maxQueueLength = Math.max(
+        this.statistics.maxQueueLength,
+        this.statistics.currentQueueLength
+      );
 
-      console.log(`🎼 MusicalConductor: Starting sequence "${sequenceName}" with priority ${priority} (Request ID: ${requestId})`);
+      console.log(
+        `🎼 MusicalConductor: Starting sequence "${sequenceName}" with priority ${priority} (Request ID: ${requestId})`
+      );
 
       if (priority === SEQUENCE_PRIORITIES.HIGH) {
         // HIGH priority: Execute immediately, bypassing queue
-        console.log(`🎼 MusicalConductor: HIGH priority sequence - executing immediately`);
+        console.log(
+          `🎼 MusicalConductor: HIGH priority sequence - executing immediately`
+        );
         this.executeSequenceImmediately(sequenceRequest);
-      } else if (priority === SEQUENCE_PRIORITIES.CHAINED && this.activeSequence) {
+      } else if (
+        priority === SEQUENCE_PRIORITIES.CHAINED &&
+        this.activeSequence
+      ) {
         // CHAINED priority: Add to front of queue to execute after current sequence
-        console.log(`🎼 MusicalConductor: CHAINED sequence - adding to front of queue`);
+        console.log(
+          `🎼 MusicalConductor: CHAINED sequence - adding to front of queue`
+        );
         this.sequenceQueue.unshift(sequenceRequest);
         this.statistics.chainedSequences++;
       } else {
         // NORMAL priority: Add to queue
-        console.log(`🎼 MusicalConductor: NORMAL priority sequence - adding to queue`);
+        console.log(
+          `🎼 MusicalConductor: NORMAL priority sequence - adding to queue`
+        );
         this.sequenceQueue.push(sequenceRequest);
-        
+
         // If no active sequence, process queue immediately
         if (!this.activeSequence) {
           this.processSequenceQueue();
@@ -568,13 +935,15 @@ export class MusicalConductor {
         sequenceName,
         requestId,
         priority,
-        queueLength: this.sequenceQueue.length
+        queueLength: this.sequenceQueue.length,
       });
 
       return requestId;
-
     } catch (error) {
-      console.error(`🎼 MusicalConductor: Failed to start sequence: ${sequenceName}`, error);
+      console.error(
+        `🎼 MusicalConductor: Failed to start sequence: ${sequenceName}`,
+        error
+      );
       this.statistics.errorCount++;
       throw error;
     }
@@ -588,7 +957,9 @@ export class MusicalConductor {
     const executionContext = this.createExecutionContext(sequenceRequest);
     this.activeSequence = executionContext;
 
-    console.log(`🎼 MusicalConductor: Starting sequence immediately - ${sequenceRequest.sequenceName}`);
+    console.log(
+      `🎼 MusicalConductor: Starting sequence immediately - ${sequenceRequest.sequenceName}`
+    );
     this.executeSequence(executionContext);
   }
 
@@ -596,9 +967,11 @@ export class MusicalConductor {
    * Create execution context for a sequence
    * @param sequenceRequest - Sequence request
    */
-  private createExecutionContext(sequenceRequest: SequenceRequest): SequenceExecutionContext {
+  private createExecutionContext(
+    sequenceRequest: SequenceRequest
+  ): SequenceExecutionContext {
     const sequence = this.sequences.get(sequenceRequest.sequenceName)!;
-    
+
     return {
       id: sequenceRequest.requestId,
       sequenceName: sequenceRequest.sequenceName,
@@ -610,7 +983,7 @@ export class MusicalConductor {
       completedBeats: [],
       errors: [],
       priority: sequenceRequest.priority,
-      queuedAt: sequenceRequest.queuedAt
+      queuedAt: sequenceRequest.queuedAt,
     };
   }
 
@@ -625,7 +998,11 @@ export class MusicalConductor {
       // Update queue wait time statistics
       this.updateQueueWaitTimeStatistics(waitTime);
 
-      console.log(`🎼 MusicalConductor: Processing queued sequence - ${nextSequence.sequenceName} (waited ${waitTime.toFixed(2)}ms)`);
+      console.log(
+        `🎼 MusicalConductor: Processing queued sequence - ${
+          nextSequence.sequenceName
+        } (waited ${waitTime.toFixed(2)}ms)`
+      );
       this.executeSequenceImmediately(nextSequence);
     } else if (this.sequenceQueue.length === 0) {
       console.log(`🎼 MusicalConductor: Queue is empty - conductor is idle`);
@@ -639,7 +1016,7 @@ export class MusicalConductor {
   private updateQueueWaitTimeStatistics(waitTime: number): void {
     // Simple moving average calculation
     const alpha = 0.1; // Smoothing factor
-    this.statistics.averageQueueWaitTime = 
+    this.statistics.averageQueueWaitTime =
       this.statistics.averageQueueWaitTime * (1 - alpha) + waitTime * alpha;
   }
 
@@ -649,7 +1026,7 @@ export class MusicalConductor {
   getStatistics(): ConductorStatistics & { mountedPlugins: number } {
     return {
       ...this.statistics,
-      mountedPlugins: this.mountedPlugins.size
+      mountedPlugins: this.mountedPlugins.size,
     };
   }
 
@@ -668,10 +1045,10 @@ export class MusicalConductor {
       currentQueueLength: this.sequenceQueue.length,
       averageQueueWaitTime: 0,
       sequenceCompletionRate: 0,
-      chainedSequences: 0
+      chainedSequences: 0,
     };
-    
-    console.log('🎼 MusicalConductor: Statistics reset');
+
+    console.log("🎼 MusicalConductor: Statistics reset");
   }
 
   /**
@@ -680,7 +1057,7 @@ export class MusicalConductor {
   getQueueStatus(): { length: number; activeSequence: string | null } {
     return {
       length: this.sequenceQueue.length,
-      activeSequence: this.activeSequence?.sequenceName || null
+      activeSequence: this.activeSequence?.sequenceName || null,
     };
   }
 
@@ -688,22 +1065,30 @@ export class MusicalConductor {
    * Execute a musical sequence
    * @param executionContext - Execution context
    */
-  private async executeSequence(executionContext: SequenceExecutionContext): Promise<void> {
+  private async executeSequence(
+    executionContext: SequenceExecutionContext
+  ): Promise<void> {
     try {
       const { sequence, data } = executionContext;
 
       this.eventBus.emit(MUSICAL_CONDUCTOR_EVENT_TYPES.SEQUENCE_STARTED, {
         sequenceName: executionContext.sequenceName,
         requestId: executionContext.id,
-        startTime: executionContext.startTime
+        startTime: executionContext.startTime,
       });
 
       // Execute all movements
-      for (let movementIndex = 0; movementIndex < sequence.movements.length; movementIndex++) {
+      for (
+        let movementIndex = 0;
+        movementIndex < sequence.movements.length;
+        movementIndex++
+      ) {
         const movement = sequence.movements[movementIndex];
         executionContext.currentMovement = movementIndex;
 
-        console.log(`🎼 MusicalConductor: Executing movement ${movementIndex}: ${movement.name}`);
+        console.log(
+          `🎼 MusicalConductor: Executing movement ${movementIndex}: ${movement.name}`
+        );
 
         // Execute all beats in the movement
         await this.executeMovement(executionContext, movement);
@@ -711,7 +1096,6 @@ export class MusicalConductor {
 
       // Mark sequence as completed
       this.completeSequence(executionContext);
-
     } catch (error) {
       console.error(`🎼 MusicalConductor: Sequence execution failed:`, error);
       this.failSequence(executionContext, error as Error);
@@ -723,7 +1107,10 @@ export class MusicalConductor {
    * @param executionContext - Execution context
    * @param movement - Movement to execute
    */
-  private async executeMovement(executionContext: SequenceExecutionContext, movement: SequenceMovement): Promise<void> {
+  private async executeMovement(
+    executionContext: SequenceExecutionContext,
+    movement: SequenceMovement
+  ): Promise<void> {
     // Sort beats by beat number to ensure proper order
     const sortedBeats = [...movement.beats].sort((a, b) => a.beat - b.beat);
 
@@ -734,17 +1121,19 @@ export class MusicalConductor {
         await this.executeBeat(executionContext, beat);
         executionContext.completedBeats.push(beat.beat);
         this.statistics.totalBeatsExecuted++;
-
       } catch (error) {
-        console.error(`🎼 MusicalConductor: Error executing beat ${beat.beat}:`, error);
+        console.error(
+          `🎼 MusicalConductor: Error executing beat ${beat.beat}:`,
+          error
+        );
         executionContext.errors.push({
           beat: beat.beat,
           error: (error as Error).message,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
 
         // Decide whether to continue or abort based on error handling strategy
-        if (beat.errorHandling === 'abort-sequence') {
+        if (beat.errorHandling === "abort-sequence") {
           throw error;
         }
         // For other strategies, log and continue
@@ -757,7 +1146,10 @@ export class MusicalConductor {
    * @param executionContext - Execution context
    * @param beat - Beat to execute
    */
-  private async executeBeat(executionContext: SequenceExecutionContext, beat: SequenceBeat): Promise<void> {
+  private async executeBeat(
+    executionContext: SequenceExecutionContext,
+    beat: SequenceBeat
+  ): Promise<void> {
     const { event, data = {}, timing = MUSICAL_TIMING.IMMEDIATE } = beat;
 
     // Merge beat data with execution context data
@@ -768,15 +1160,15 @@ export class MusicalConductor {
       movement: executionContext.currentMovement,
       sequence: {
         id: executionContext.id,
-        name: executionContext.sequenceName
-      }
+        name: executionContext.sequenceName,
+      },
     };
 
     this.eventBus.emit(MUSICAL_CONDUCTOR_EVENT_TYPES.BEAT_STARTED, {
       sequenceName: executionContext.sequenceName,
       beat: beat.beat,
       event,
-      title: beat.title
+      title: beat.title,
     });
 
     // Handle timing for event emission
@@ -794,12 +1186,16 @@ export class MusicalConductor {
       }, 100);
     }
 
-    console.log(`🎼 MusicalConductor: Executed beat ${beat.beat}: ${event} (${beat.title || 'No title'})`);
+    console.log(
+      `🎼 MusicalConductor: Executed beat ${beat.beat}: ${event} (${
+        beat.title || "No title"
+      })`
+    );
 
     this.eventBus.emit(MUSICAL_CONDUCTOR_EVENT_TYPES.BEAT_COMPLETED, {
       sequenceName: executionContext.sequenceName,
       beat: beat.beat,
-      event
+      event,
     });
   }
 
@@ -809,7 +1205,11 @@ export class MusicalConductor {
    * @param eventData - Event data
    * @param executionContext - Execution context
    */
-  private emitEvent(eventType: string, eventData: Record<string, any>, executionContext: SequenceExecutionContext): void {
+  private emitEvent(
+    eventType: string,
+    eventData: Record<string, any>,
+    executionContext: SequenceExecutionContext
+  ): void {
     try {
       // Add sequence context to event
       const contextualEventData = {
@@ -818,17 +1218,21 @@ export class MusicalConductor {
           id: executionContext.id,
           name: executionContext.sequenceName,
           beat: executionContext.currentBeat,
-          movement: executionContext.currentMovement
-        }
+          movement: executionContext.currentMovement,
+        },
       };
 
       // Emit the event
       this.eventBus.emit(eventType, contextualEventData);
 
-      console.log(`🎼 MusicalConductor: Emitted event: ${eventType} (Sequence: ${executionContext.sequenceName}, Beat: ${executionContext.currentBeat})`);
-
+      console.log(
+        `🎼 MusicalConductor: Emitted event: ${eventType} (Sequence: ${executionContext.sequenceName}, Beat: ${executionContext.currentBeat})`
+      );
     } catch (error) {
-      console.error(`🎼 MusicalConductor: Failed to emit event ${eventType}:`, error);
+      console.error(
+        `🎼 MusicalConductor: Failed to emit event ${eventType}:`,
+        error
+      );
       throw error;
     }
   }
@@ -843,16 +1247,21 @@ export class MusicalConductor {
     // Update statistics
     this.statistics.totalSequencesExecuted++;
     this.statistics.lastExecutionTime = executionTime;
-    this.statistics.currentQueueLength = Math.max(0, this.statistics.currentQueueLength - 1);
+    this.statistics.currentQueueLength = Math.max(
+      0,
+      this.statistics.currentQueueLength - 1
+    );
 
     // Update average execution time
     const alpha = 0.1; // Smoothing factor
     this.statistics.averageExecutionTime =
-      this.statistics.averageExecutionTime * (1 - alpha) + executionTime * alpha;
+      this.statistics.averageExecutionTime * (1 - alpha) +
+      executionTime * alpha;
 
     // Calculate completion rate
     this.statistics.sequenceCompletionRate =
-      this.statistics.totalSequencesExecuted / this.statistics.totalSequencesQueued;
+      this.statistics.totalSequencesExecuted /
+      this.statistics.totalSequencesQueued;
 
     // Add to history
     this.sequenceHistory.push(executionContext);
@@ -862,14 +1271,18 @@ export class MusicalConductor {
       this.sequenceHistory.shift();
     }
 
-    console.log(`🎼 MusicalConductor: Sequence completed - ${executionContext.sequenceName} (${executionTime.toFixed(2)}ms)`);
+    console.log(
+      `🎼 MusicalConductor: Sequence completed - ${
+        executionContext.sequenceName
+      } (${executionTime.toFixed(2)}ms)`
+    );
 
     this.eventBus.emit(MUSICAL_CONDUCTOR_EVENT_TYPES.SEQUENCE_COMPLETED, {
       sequenceName: executionContext.sequenceName,
       requestId: executionContext.id,
       executionTime,
       beatsExecuted: executionContext.completedBeats.length,
-      errors: executionContext.errors.length
+      errors: executionContext.errors.length,
     });
 
     // Clear active sequence and process queue
@@ -882,14 +1295,25 @@ export class MusicalConductor {
    * @param executionContext - Execution context
    * @param error - Error that caused the failure
    */
-  private failSequence(executionContext: SequenceExecutionContext, error: Error): void {
+  private failSequence(
+    executionContext: SequenceExecutionContext,
+    error: Error
+  ): void {
     const executionTime = performance.now() - executionContext.startTime;
 
     // Update statistics
     this.statistics.errorCount++;
-    this.statistics.currentQueueLength = Math.max(0, this.statistics.currentQueueLength - 1);
+    this.statistics.currentQueueLength = Math.max(
+      0,
+      this.statistics.currentQueueLength - 1
+    );
 
-    console.error(`🎼 MusicalConductor: Sequence failed - ${executionContext.sequenceName} (${executionTime.toFixed(2)}ms):`, error);
+    console.error(
+      `🎼 MusicalConductor: Sequence failed - ${
+        executionContext.sequenceName
+      } (${executionTime.toFixed(2)}ms):`,
+      error
+    );
 
     this.eventBus.emit(MUSICAL_CONDUCTOR_EVENT_TYPES.SEQUENCE_FAILED, {
       sequenceName: executionContext.sequenceName,
@@ -897,7 +1321,7 @@ export class MusicalConductor {
       executionTime,
       error: error.message,
       beatsExecuted: executionContext.completedBeats.length,
-      totalErrors: executionContext.errors.length
+      totalErrors: executionContext.errors.length,
     });
 
     // Clear active sequence and process queue

@@ -21,8 +21,10 @@ import {
   MusicalConductor,
   MusicalSequences,
 } from "./communication";
-import { initializeDomainEvents, DomainEventSystem } from "./communication/DomainEventSystem";
-
+import {
+  initializeDomainEvents,
+  DomainEventSystem,
+} from "./communication/DomainEventSystem";
 
 // Types
 interface AppState {
@@ -120,62 +122,65 @@ interface ElementLibraryProps {
   onDragEnd?: (e: React.DragEvent) => void;
 }
 
-const ElementLibrary: React.FC<ElementLibraryProps> = ({ onDragStart, onDragEnd }) => {
+const ElementLibrary: React.FC<ElementLibraryProps> = ({
+  onDragStart,
+  onDragEnd,
+}) => {
   const [components, setComponents] = useState<LoadedJsonComponent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [draggedComponent, setDraggedComponent] =
     useState<LoadedJsonComponent | null>(null);
 
-  useEffect(() => {
-    const loadComponents = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        console.log("🔄 Loading JSON components with musical sequences...");
+  // DISABLED: Prevent race condition with plugin loading
+  // useEffect(() => {
+  const loadComponentsAfterPlugins = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      console.log("🔄 Loading JSON components with musical sequences...");
 
-        // Connect to conductor if available (from parent context)
-        const communicationSystem = (window as any).renderxCommunicationSystem;
-        if (communicationSystem) {
-          jsonComponentLoader.connectToConductor(communicationSystem.conductor);
+      // Connect to conductor if available (from parent context)
+      const communicationSystem = (window as any).renderxCommunicationSystem;
+      if (communicationSystem) {
+        jsonComponentLoader.connectToConductor(communicationSystem.conductor);
 
-          // Use musical sequence loading
-          const result = await jsonComponentLoader.loadAllComponentsMusical();
+        // Use musical sequence loading
+        const result = await jsonComponentLoader.loadAllComponentsMusical();
 
-          if (result.failed.length > 0) {
-            console.warn("⚠️ Some components failed to load:", result.failed);
-          }
-
-          setComponents(result.success);
-          console.log(
-            `✅ Loaded ${result.success.length} JSON components via musical sequences`
-          );
-        } else {
-          // Fallback to direct loading
-          console.log("🔄 No conductor available, using direct loading...");
-          const result = await jsonComponentLoader.loadAllComponents();
-
-          if (result.failed.length > 0) {
-            console.warn("⚠️ Some components failed to load:", result.failed);
-          }
-
-          setComponents(result.success);
-          console.log(
-            `✅ Loaded ${result.success.length} JSON components (direct loading)`
-          );
+        if (result.failed.length > 0) {
+          console.warn("⚠️ Some components failed to load:", result.failed);
         }
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : "Unknown error";
-        setError(errorMessage);
-        console.error("❌ Failed to load JSON components:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
 
-    loadComponents();
-  }, []);
+        setComponents(result.success);
+        console.log(
+          `✅ Loaded ${result.success.length} JSON components via musical sequences`
+        );
+      } else {
+        // Fallback to direct loading
+        console.log("🔄 No conductor available, using direct loading...");
+        const result = await jsonComponentLoader.loadAllComponents();
+
+        if (result.failed.length > 0) {
+          console.warn("⚠️ Some components failed to load:", result.failed);
+        }
+
+        setComponents(result.success);
+        console.log(
+          `✅ Loaded ${result.success.length} JSON components (direct loading)`
+        );
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Unknown error";
+      setError(errorMessage);
+      console.error("❌ Failed to load JSON components:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // loadComponents();
+  // }, []);
 
   const getComponentsByCategory = () => {
     const categories: Record<string, LoadedJsonComponent[]> = {};
@@ -207,8 +212,6 @@ const ElementLibrary: React.FC<ElementLibraryProps> = ({ onDragStart, onDragEnd 
 
     return iconMap[component.metadata.type] || "🧩";
   };
-
-
 
   return (
     <div className="element-library">
@@ -252,7 +255,11 @@ const ElementLibrary: React.FC<ElementLibraryProps> = ({ onDragStart, onDragEnd 
                       className="element-item"
                       data-component={component.metadata.type.toLowerCase()}
                       draggable
-                      onDragStart={onDragStart ? (e) => onDragStart(e, component) : undefined}
+                      onDragStart={
+                        onDragStart
+                          ? (e) => onDragStart(e, component)
+                          : undefined
+                      }
                       onDragEnd={onDragEnd}
                       title={`${component.metadata.description}\nVersion: ${component.metadata.version}\nAuthor: ${component.metadata.author}\nDrag to canvas to add`}
                     >
@@ -356,9 +363,7 @@ const CanvasElement: React.FC<{
       onDragStart={onDragStart ? (e) => onDragStart(e, element) : undefined}
     >
       {/* Generic component placeholder - actual rendering handled by JsonComponentLoader */}
-      <span className="rx-component-placeholder">
-        Component {element.id}
-      </span>
+      <span className="rx-component-placeholder">Component {element.id}</span>
     </div>
   );
 };
@@ -392,8 +397,6 @@ const Canvas: React.FC<CanvasProps> = ({ mode, onCanvasElementDragStart }) => {
     console.log("🎨 Canvas drag leave - visual state updated");
   };
 
-
-
   const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
@@ -420,11 +423,14 @@ const Canvas: React.FC<CanvasProps> = ({ mode, onCanvasElementDragStart }) => {
 
       // Handle canvas element movement vs library drop
       if (dragData.isCanvasElement) {
-        console.log("🎼 Canvas element move detected:", dragData.elementData.id);
+        console.log(
+          "🎼 Canvas element move detected:",
+          dragData.elementData.id
+        );
 
         // Update existing element position
-        setCanvasElements(prev =>
-          prev.map(el =>
+        setCanvasElements((prev) =>
+          prev.map((el) =>
             el.id === dragData.elementData.id
               ? { ...el, position: dropCoordinates }
               : el
@@ -443,19 +449,27 @@ const Canvas: React.FC<CanvasProps> = ({ mode, onCanvasElementDragStart }) => {
         const { MusicalSequences } = await import("./communication/sequences");
 
         // Start the Canvas Library Drop Symphony using CIA conductor.play()
-        console.log("🎼 Starting Canvas Library Drop Symphony via conductor.play()...");
+        console.log(
+          "🎼 Starting Canvas Library Drop Symphony via conductor.play()..."
+        );
 
         // CIA-compliant trigger using conductor.play()
-        const result = communicationSystem.conductor.play('library-drop-symphony', 'onDropValidation', {
-          dragData,
-          dropCoordinates,
-          dropZone: { isValidDropZone: true },
-          timestamp: Date.now(),
-          source: "canvas-drop"
-        });
+        const result = communicationSystem.conductor.play(
+          "library-drop-symphony",
+          "onDropValidation",
+          {
+            dragData,
+            dropCoordinates,
+            dropZone: { isValidDropZone: true },
+            timestamp: Date.now(),
+            source: "canvas-drop",
+          }
+        );
 
         console.log(
-          `🎼 Canvas Library Drop Symphony triggered via conductor.play(): ${result ? 'SUCCESS' : 'FAILED'}`
+          `🎼 Canvas Library Drop Symphony triggered via conductor.play(): ${
+            result ? "SUCCESS" : "FAILED"
+          }`
         );
 
         // Create element with proper ID and CSS class generation
@@ -484,7 +498,9 @@ const Canvas: React.FC<CanvasProps> = ({ mode, onCanvasElementDragStart }) => {
             {} // custom styles
           );
         } else {
-          console.warn('No component data available for styling, element may not render correctly');
+          console.warn(
+            "No component data available for styling, element may not render correctly"
+          );
         }
 
         // Ensure selection styles are available
@@ -555,9 +571,9 @@ const Canvas: React.FC<CanvasProps> = ({ mode, onCanvasElementDragStart }) => {
                     .substr(2, 9)}`;
                 const cssClass =
                   element.cssClass ||
-                  `component-${element.type.toLowerCase()} rx-comp-${element.type}-${Math.random()
-                    .toString(36)
-                    .substr(2, 6)}`;
+                  `component-${element.type.toLowerCase()} rx-comp-${
+                    element.type
+                  }-${Math.random().toString(36).substr(2, 6)}`;
 
                 // Render component using data-driven approach
                 return (
@@ -594,7 +610,9 @@ const AppContent: React.FC = () => {
     conductor: MusicalConductor;
   } | null>(null);
 
-  const [domainEvents, setDomainEvents] = useState<DomainEventSystem | null>(null);
+  const [domainEvents, setDomainEvents] = useState<DomainEventSystem | null>(
+    null
+  );
 
   // Drag handlers for ElementLibrary domain events
   const handleDragStart = (
@@ -639,10 +657,7 @@ const AppContent: React.FC = () => {
   };
 
   // Canvas element drag start handler for Canvas domain events
-  const handleCanvasElementDragStart = (
-    e: React.DragEvent,
-    element: any
-  ) => {
+  const handleCanvasElementDragStart = (e: React.DragEvent, element: any) => {
     console.log("🎼 Starting canvas element drag operation for:", element.id);
 
     // Set drag data for canvas element movement
@@ -651,7 +666,7 @@ const AppContent: React.FC = () => {
       componentId: element.id,
       isCanvasElement: true, // Flag to distinguish from library drops
       elementData: element, // Current element data
-      source: 'canvas-element-drag'
+      source: "canvas-element-drag",
     };
 
     e.dataTransfer.setData("application/json", JSON.stringify(dragData));
@@ -680,12 +695,18 @@ const AppContent: React.FC = () => {
       console.log("📡 EventBus:", system.eventBus.getDebugInfo());
       console.log("🎼 Musical Conductor:", system.conductor.getStatistics());
 
-      // Register CIA-compliant plugins
-      system.conductor.registerCIAPlugins().then(() => {
-        console.log("🧠 CIA plugins registration completed");
-      }).catch((error) => {
-        console.error("❌ CIA plugins registration failed:", error);
-      });
+      // Register CIA-compliant plugins first, then load components
+      system.conductor
+        .registerCIAPlugins()
+        .then(() => {
+          console.log("🧠 CIA plugins registration completed");
+
+          // Now load JSON components after plugins are ready
+          loadComponentsAfterPlugins();
+        })
+        .catch((error) => {
+          console.error("❌ CIA plugins registration failed:", error);
+        });
 
       // Initialize domain event system
       const domainEventSystem = initializeDomainEvents(system);
@@ -712,16 +733,22 @@ const AppContent: React.FC = () => {
 
     // Start musical sequence using CIA conductor.play()
     if (communicationSystem) {
-      console.log("🎼 Starting Element Library Panel Toggle via conductor.play()");
-      communicationSystem.conductor.play('panel-toggle-symphony', 'onTogglePanel', {
-        panelType: "elementLibrary",
-        newState,
-        options: {
-          animated: true,
-          updateLayout: true,
-        },
-        timestamp: Date.now()
-      });
+      console.log(
+        "🎼 Starting Element Library Panel Toggle via conductor.play()"
+      );
+      communicationSystem.conductor.play(
+        "panel-toggle-symphony",
+        "onTogglePanel",
+        {
+          panelType: "elementLibrary",
+          newState,
+          options: {
+            animated: true,
+            updateLayout: true,
+          },
+          timestamp: Date.now(),
+        }
+      );
     }
   };
 
@@ -739,15 +766,19 @@ const AppContent: React.FC = () => {
     // Start musical sequence using CIA conductor.play()
     if (communicationSystem) {
       console.log("🎼 Starting Control Panel Toggle via conductor.play()");
-      communicationSystem.conductor.play('panel-toggle-symphony', 'onTogglePanel', {
-        panelType: "controlPanel",
-        newState,
-        options: {
-          animated: true,
-          updateLayout: true,
-        },
-        timestamp: Date.now()
-      });
+      communicationSystem.conductor.play(
+        "panel-toggle-symphony",
+        "onTogglePanel",
+        {
+          panelType: "controlPanel",
+          newState,
+          options: {
+            animated: true,
+            updateLayout: true,
+          },
+          timestamp: Date.now(),
+        }
+      );
     }
   };
 
@@ -758,16 +789,22 @@ const AppContent: React.FC = () => {
 
     // Start musical sequence using CIA conductor.play()
     if (communicationSystem) {
-      console.log("🎼 Starting Layout Mode Change: Preview via conductor.play()");
-      communicationSystem.conductor.play('layout-mode-symphony', 'onModeChange', {
-        previousMode,
-        currentMode: "preview",
-        options: {
-          animated: true,
-          preserveState: true,
-        },
-        timestamp: Date.now()
-      });
+      console.log(
+        "🎼 Starting Layout Mode Change: Preview via conductor.play()"
+      );
+      communicationSystem.conductor.play(
+        "layout-mode-symphony",
+        "onModeChange",
+        {
+          previousMode,
+          currentMode: "preview",
+          options: {
+            animated: true,
+            preserveState: true,
+          },
+          timestamp: Date.now(),
+        }
+      );
     }
   };
 
@@ -780,15 +817,19 @@ const AppContent: React.FC = () => {
       console.log(
         "🎼 Starting Layout Mode Change: Fullscreen Preview via conductor.play()"
       );
-      communicationSystem.conductor.play('layout-mode-symphony', 'onModeChange', {
-        previousMode,
-        currentMode: "fullscreen-preview",
-        options: {
-          animated: true,
-          preserveState: false,
-        },
-        timestamp: Date.now()
-      });
+      communicationSystem.conductor.play(
+        "layout-mode-symphony",
+        "onModeChange",
+        {
+          previousMode,
+          currentMode: "fullscreen-preview",
+          options: {
+            animated: true,
+            preserveState: false,
+          },
+          timestamp: Date.now(),
+        }
+      );
     }
   };
 
@@ -798,16 +839,22 @@ const AppContent: React.FC = () => {
 
     // Start musical sequence using CIA conductor.play()
     if (communicationSystem) {
-      console.log("🎼 Starting Layout Mode Change: Editor via conductor.play()");
-      communicationSystem.conductor.play('layout-mode-symphony', 'onModeChange', {
-        previousMode,
-        currentMode: "editor",
-        options: {
-          animated: true,
-          preserveState: true,
-        },
-        timestamp: Date.now()
-      });
+      console.log(
+        "🎼 Starting Layout Mode Change: Editor via conductor.play()"
+      );
+      communicationSystem.conductor.play(
+        "layout-mode-symphony",
+        "onModeChange",
+        {
+          previousMode,
+          currentMode: "editor",
+          options: {
+            animated: true,
+            preserveState: true,
+          },
+          timestamp: Date.now(),
+        }
+      );
     }
   };
 
@@ -819,7 +866,10 @@ const AppContent: React.FC = () => {
       case "preview":
         return (
           <div className="app-layout app-layout--preview">
-            <Canvas mode="preview" onCanvasElementDragStart={handleCanvasElementDragStart} />
+            <Canvas
+              mode="preview"
+              onCanvasElementDragStart={handleCanvasElementDragStart}
+            />
             <div className="preview-overlay">
               <button
                 className="preview-exit-button"
@@ -835,7 +885,10 @@ const AppContent: React.FC = () => {
       case "fullscreen-preview":
         return (
           <div className="app-layout app-layout--fullscreen-preview">
-            <Canvas mode="fullscreen-preview" onCanvasElementDragStart={handleCanvasElementDragStart} />
+            <Canvas
+              mode="fullscreen-preview"
+              onCanvasElementDragStart={handleCanvasElementDragStart}
+            />
             <div className="preview-overlay">
               <button
                 className="preview-exit-button"
@@ -866,19 +919,37 @@ const AppContent: React.FC = () => {
           <div className={layoutClass}>
             {/* Element Library - Left Panel */}
             {showElementLibrary && (
-              <aside className="app-sidebar left" id="component-library" data-plugin-mounted="true">
-                <ElementLibrary onDragStart={handleDragStart} onDragEnd={handleDragEnd} />
+              <aside
+                className="app-sidebar left"
+                id="component-library"
+                data-plugin-mounted="true"
+              >
+                <ElementLibrary
+                  onDragStart={handleDragStart}
+                  onDragEnd={handleDragEnd}
+                />
               </aside>
             )}
 
             {/* Canvas - Center */}
-            <section className="app-canvas" id="canvas" data-plugin-mounted="true">
-              <Canvas mode="editor" onCanvasElementDragStart={handleCanvasElementDragStart} />
+            <section
+              className="app-canvas"
+              id="canvas"
+              data-plugin-mounted="true"
+            >
+              <Canvas
+                mode="editor"
+                onCanvasElementDragStart={handleCanvasElementDragStart}
+              />
             </section>
 
             {/* Control Panel - Right Panel */}
             {showControlPanel && (
-              <aside className="app-sidebar right" id="control-panel" data-plugin-mounted="true">
+              <aside
+                className="app-sidebar right"
+                id="control-panel"
+                data-plugin-mounted="true"
+              >
                 <ControlPanel />
               </aside>
             )}

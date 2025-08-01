@@ -7,24 +7,24 @@
 export {
   CANVAS_LIBRARY_DROP_SEQUENCE,
   startCanvasLibraryDropFlow,
-} from "./sequence";
+} from "./sequence.ts";
 
 // Individual handlers
-export { default as handleLibraryDragStart } from "./handlers/onLibraryDragStart";
-export { default as handleCanvasDropValidation } from "./handlers/onCanvasDrop";
+export { default as handleLibraryDragStart } from "./handlers/onLibraryDragStart.ts";
+export { default as handleCanvasDropValidation } from "./handlers/onCanvasDrop.ts";
 export {
   default as handleCanvasElementCreated,
   handleCanvasElementPositioned,
-} from "./handlers/onElementCreate";
+} from "./handlers/onElementCreate.ts";
 
 // Business logic
-export { validateDropContext } from "./logic/dropValidation";
+export { validateDropContext } from "./logic/dropValidation.ts";
 
 // React hooks
 export {
   useCanvasLibraryDrop,
   default as useCanvasLibraryDropDefault,
-} from "./hooks";
+} from "./hooks/index.ts";
 
 // Plugin metadata
 export const PLUGIN_INFO = {
@@ -62,7 +62,7 @@ export const CIAPlugin = {
     }
   },
 
-  unmount: (conductor: any, eventBus: any) => {
+  unmount: (conductor, eventBus) => {
     console.log("🎼 LibraryDrop Plugin: Unmounting...");
 
     try {

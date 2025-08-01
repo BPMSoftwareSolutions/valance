@@ -1,243 +1,102 @@
-/**
- * App Shell Symphony Handlers
- * 
- * Movement handlers for the App Shell Symphony plugin.
- * Handles layout changes, panel toggles, theme changes, and shell initialization.
- */
-
-/**
- * Handle layout mode changes
- */
-export const onLayoutChange = (data) => {
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var stdin_exports = {};
+__export(stdin_exports, {
+  onLayoutChange: () => onLayoutChange,
+  onPanelToggle: () => onPanelToggle,
+  onShellReady: () => onShellReady,
+  onThemeChange: () => onThemeChange
+});
+module.exports = __toCommonJS(stdin_exports);
+const onLayoutChange = (data) => {
   try {
     const { layoutMode, timestamp } = data;
-    
-    console.log(`🎼 App Shell Symphony: Layout change to ${layoutMode}`);
-    
-    // Update layout state
-    if (typeof window !== 'undefined' && window.RenderX) {
-      if (!window.RenderX.appShellState) {
-        window.RenderX.appShellState = {};
-      }
-      
-      window.RenderX.appShellState.layoutMode = layoutMode;
-      window.RenderX.appShellState.lastLayoutChange = timestamp;
+    console.log(`\u{1F3BC} App Shell Symphony: Layout change to ${layoutMode}`);
+    if (layoutMode === "fullscreen") {
+      console.log("\u{1F4F1} Switching to fullscreen layout");
+    } else if (layoutMode === "split") {
+      console.log("\u{1F4F1} Switching to split layout");
     }
-    
-    // Emit layout change event
-    if (typeof window !== 'undefined' && window.RenderX?.eventBus) {
-      window.RenderX.eventBus.emit('app-shell:layout:changed', {
-        layoutMode,
-        timestamp
-      });
-    }
-    
     return {
       success: true,
       layoutMode,
       timestamp,
-      metadata: {
-        executionTime: Date.now(),
-        handler: 'onLayoutChange',
-        symphony: 'app-shell-symphony'
-      }
+      message: `Layout changed to ${layoutMode}`
     };
-    
   } catch (error) {
-    console.error('🚨 App Shell Symphony: onLayoutChange failed:', error);
+    console.error("\u274C App Shell Symphony: Layout change failed:", error);
     return {
       success: false,
-      error: error.message,
-      data,
-      metadata: {
-        executionTime: Date.now(),
-        handler: 'onLayoutChange',
-        symphony: 'app-shell-symphony'
-      }
+      error: error.message
     };
   }
 };
-
-/**
- * Handle panel toggle operations
- */
-export const onPanelToggle = (data) => {
+const onPanelToggle = (data) => {
   try {
-    const { panelName, newState, timestamp } = data;
-    
-    console.log(`🎼 App Shell Symphony: Panel ${panelName} ${newState ? 'shown' : 'hidden'}`);
-    
-    // Update panel state
-    if (typeof window !== 'undefined' && window.RenderX) {
-      if (!window.RenderX.appShellState) {
-        window.RenderX.appShellState = {};
-      }
-      if (!window.RenderX.appShellState.panels) {
-        window.RenderX.appShellState.panels = {};
-      }
-      
-      window.RenderX.appShellState.panels[panelName] = newState;
-      window.RenderX.appShellState.lastPanelToggle = timestamp;
-    }
-    
-    // Emit panel toggle event
-    if (typeof window !== 'undefined' && window.RenderX?.eventBus) {
-      window.RenderX.eventBus.emit('app-shell:panel:toggled', {
-        panelName,
-        newState,
-        timestamp
-      });
-    }
-    
+    const { panelId, isVisible, timestamp } = data;
+    console.log(`\u{1F3BC} App Shell Symphony: Panel ${panelId} ${isVisible ? "shown" : "hidden"}`);
     return {
       success: true,
-      panelName,
-      newState,
+      panelId,
+      isVisible,
       timestamp,
-      metadata: {
-        executionTime: Date.now(),
-        handler: 'onPanelToggle',
-        symphony: 'app-shell-symphony'
-      }
+      message: `Panel ${panelId} ${isVisible ? "shown" : "hidden"}`
     };
-    
   } catch (error) {
-    console.error('🚨 App Shell Symphony: onPanelToggle failed:', error);
+    console.error("\u274C App Shell Symphony: Panel toggle failed:", error);
     return {
       success: false,
-      error: error.message,
-      data,
-      metadata: {
-        executionTime: Date.now(),
-        handler: 'onPanelToggle',
-        symphony: 'app-shell-symphony'
-      }
+      error: error.message
     };
   }
 };
-
-/**
- * Handle theme changes
- */
-export const onThemeChange = (data) => {
+const onThemeChange = (data) => {
   try {
-    const { theme, resolvedTheme, timestamp } = data;
-    
-    console.log(`🎼 App Shell Symphony: Theme changed to ${theme} (resolved: ${resolvedTheme})`);
-    
-    // Update theme state
-    if (typeof window !== 'undefined' && window.RenderX) {
-      if (!window.RenderX.appShellState) {
-        window.RenderX.appShellState = {};
-      }
-      
-      window.RenderX.appShellState.theme = theme;
-      window.RenderX.appShellState.resolvedTheme = resolvedTheme;
-      window.RenderX.appShellState.lastThemeChange = timestamp;
-    }
-    
-    // Apply theme to document
-    if (typeof document !== 'undefined') {
-      document.documentElement.setAttribute('data-theme', resolvedTheme);
-      document.body.className = document.body.className.replace(/theme-\w+/g, '') + ` theme-${resolvedTheme}`;
-    }
-    
-    // Emit theme change event
-    if (typeof window !== 'undefined' && window.RenderX?.eventBus) {
-      window.RenderX.eventBus.emit('app-shell:theme:changed', {
-        theme,
-        resolvedTheme,
-        timestamp
-      });
-    }
-    
+    const { theme, timestamp } = data;
+    console.log(`\u{1F3BC} App Shell Symphony: Theme changed to ${theme}`);
     return {
       success: true,
       theme,
-      resolvedTheme,
       timestamp,
-      metadata: {
-        executionTime: Date.now(),
-        handler: 'onThemeChange',
-        symphony: 'app-shell-symphony'
-      }
+      message: `Theme changed to ${theme}`
     };
-    
   } catch (error) {
-    console.error('🚨 App Shell Symphony: onThemeChange failed:', error);
+    console.error("\u274C App Shell Symphony: Theme change failed:", error);
     return {
       success: false,
-      error: error.message,
-      data,
-      metadata: {
-        executionTime: Date.now(),
-        handler: 'onThemeChange',
-        symphony: 'app-shell-symphony'
-      }
+      error: error.message
     };
   }
 };
-
-/**
- * Handle shell initialization and readiness
- */
-export const onShellReady = (data) => {
+const onShellReady = (data) => {
   try {
     const { timestamp } = data;
-    
-    console.log('🎼 App Shell Symphony: Shell ready and initialized');
-    
-    // Initialize shell state
-    if (typeof window !== 'undefined') {
-      if (!window.RenderX) {
-        window.RenderX = {};
-      }
-      
-      window.RenderX.appShellState = {
-        layoutMode: 'editor',
-        panels: {
-          elementLibrary: true,
-          controlPanel: true
-        },
-        theme: 'system',
-        resolvedTheme: 'light',
-        isReady: true,
-        initializedAt: timestamp,
-        lastModified: timestamp
-      };
-    }
-    
-    // Emit shell ready event
-    if (typeof window !== 'undefined' && window.RenderX?.eventBus) {
-      window.RenderX.eventBus.emit('app-shell:ready', {
-        timestamp,
-        state: window.RenderX.appShellState
-      });
-    }
-    
+    console.log("\u{1F3BC} App Shell Symphony: Shell ready");
     return {
       success: true,
-      isReady: true,
       timestamp,
-      state: typeof window !== 'undefined' ? window.RenderX?.appShellState : null,
-      metadata: {
-        executionTime: Date.now(),
-        handler: 'onShellReady',
-        symphony: 'app-shell-symphony'
-      }
+      message: "App shell is ready"
     };
-    
   } catch (error) {
-    console.error('🚨 App Shell Symphony: onShellReady failed:', error);
+    console.error("\u274C App Shell Symphony: Shell ready failed:", error);
     return {
       success: false,
-      error: error.message,
-      data,
-      metadata: {
-        executionTime: Date.now(),
-        handler: 'onShellReady',
-        symphony: 'app-shell-symphony'
-      }
+      error: error.message
     };
   }
 };

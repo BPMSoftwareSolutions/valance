@@ -14,39 +14,39 @@
 export {
   CANVAS_COMPONENT_DRAG_SEQUENCE,
   startCanvasComponentDragFlow,
-} from "./sequence";
+} from "./sequence.ts";
 
 // Individual handlers
-export { default as handleCanvasDragOver } from "./handlers/onDragStart";
-export { default as handleCanvasElementMoved } from "./handlers/onDragging";
+export { default as handleCanvasDragOver } from "./handlers/onDragStart.ts";
+export { default as handleCanvasElementMoved } from "./handlers/onDragging.ts";
 export {
   default as handleCanvasDropValidation,
   handleCanvasElementCSSSync,
-} from "./handlers/onDrop";
+} from "./handlers/onDrop.ts";
 
 // Business logic
 export {
   validateDragContext,
   canElementBeDragged,
   validateDragBoundaries,
-} from "./logic/dragValidation";
+} from "./logic/dragValidation.ts";
 export {
   processElementDrag,
   calculateElementBounds,
   checkElementCollisions,
-} from "./logic/dragProcessing";
+} from "./logic/dragProcessing.ts";
 export {
   coordinateDragState,
   syncDragChanges,
   generateTransform,
   applyDragFeedback,
-} from "./logic/dragCoordination";
+} from "./logic/dragCoordination.ts";
 
 // React hooks
 export {
   useCanvasComponentDrag,
   default as useCanvasComponentDragDefault,
-} from "./hooks";
+} from "./hooks/index.ts";
 
 // Plugin metadata
 export const PLUGIN_INFO = {
@@ -88,7 +88,7 @@ export const CIAPlugin = {
     }
   },
 
-  unmount: (conductor: any, eventBus: any) => {
+  unmount: (conductor, eventBus) => {
     console.log("🎼 ComponentDrag Plugin: Unmounting...");
 
     try {

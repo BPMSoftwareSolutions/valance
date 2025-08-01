@@ -9,22 +9,28 @@ export {
   JSON_COMPONENT_ERROR_SEQUENCE,
   startJsonComponentLoadingFlow,
   startJsonComponentErrorFlow,
-} from "./sequence";
+} from "./sequence.ts";
+
+// Export main sequence as 'sequence' for MusicalConductor compatibility
+export { JSON_COMPONENT_LOADING_SEQUENCE as sequence } from "./sequence.ts";
 
 // Individual handlers
-export { default as handleComponentLoadingStarted } from "./handlers/onLoadStart";
-export { default as handleComponentLoadingProgress } from "./handlers/onLoadProgress";
-export { default as handleComponentLoadingCompleted } from "./handlers/onLoadComplete";
-export { default as handleComponentLoadingError } from "./handlers/onLoadError";
+export { default as handleComponentLoadingStarted } from "./handlers/onLoadStart.ts";
+export { default as handleComponentLoadingProgress } from "./handlers/onLoadProgress.ts";
+export { default as handleComponentLoadingCompleted } from "./handlers/onLoadComplete.ts";
+export { default as handleComponentLoadingError } from "./handlers/onLoadError.ts";
 
 // Business logic
-export { validateComponentStructure, processComponentLoading } from "./logic";
+export {
+  validateComponentStructure,
+  processComponentLoading,
+} from "./logic/index.ts";
 
 // React hooks
 export {
   useJsonComponentLoader,
   default as useJsonComponentLoaderDefault,
-} from "./hooks";
+} from "./hooks/index.ts";
 
 // Plugin metadata
 export const PLUGIN_INFO = {
@@ -67,7 +73,7 @@ export const CIAPlugin = {
     }
   },
 
-  unmount: (conductor: any, eventBus: any) => {
+  unmount: (conductor, eventBus) => {
     console.log("🎼 JsonLoader Plugin: Unmounting...");
 
     try {
@@ -94,5 +100,9 @@ export const CIAPlugin = {
     }
   },
 };
+
+// Note: handlers export removed - JsonLoader is purely event-driven
+// Handlers subscribe to event bus and respond to beat emissions
+// No direct handler calls needed with the new architecture
 
 export default CIAPlugin;

@@ -9,21 +9,24 @@ export {
   LAYOUT_MODE_CHANGE_SEQUENCE,
   startPanelToggleFlow,
   startLayoutModeChangeFlow,
-} from "./sequence";
+} from "./sequence.ts";
 
 // Individual handlers
-export { default as handlePanelToggled } from "./handlers/onPanelToggle";
-export { default as handleLayoutChanged } from "./handlers/onLayoutChange";
+export { default as handlePanelToggled } from "./handlers/onPanelToggle.ts";
+export { default as handleLayoutChanged } from "./handlers/onLayoutChange.ts";
 export {
   default as handlePanelAnimationStart,
   handlePanelAnimationComplete,
-} from "./handlers/onAnimationComplete";
+} from "./handlers/onAnimationComplete.ts";
 
 // Business logic
-export { validatePanelToggle, processPanelToggle } from "./logic";
+export { validatePanelToggle, processPanelToggle } from "./logic/index.ts";
 
 // React hooks
-export { usePanelToggle, default as usePanelToggleDefault } from "./hooks";
+export {
+  usePanelToggle,
+  default as usePanelToggleDefault,
+} from "./hooks/index.ts";
 
 // Plugin metadata
 export const PLUGIN_INFO = {
@@ -63,7 +66,7 @@ export const CIAPlugin = {
     }
   },
 
-  unmount: (conductor: any, eventBus: any) => {
+  unmount: (conductor, eventBus) => {
     console.log("🎼 PanelToggle Plugin: Unmounting...");
 
     try {
