@@ -50,7 +50,10 @@ class TDAImplementationValidator {
     // 7. Run E2E validator
     await this.runE2EValidator();
 
-    // 8. Attempt to run actual E2E tests (TDA enforcement)
+    // 8. Validate build process (TDA enforcement)
+    await this.validateBuildProcess();
+
+    // 9. Attempt to run actual E2E tests (TDA enforcement)
     await this.runActualE2ETests();
 
     // Print summary
@@ -360,6 +363,100 @@ class TDAImplementationValidator {
     this.addValidation(validation);
   }
 
+  async validateBuildProcess() {
+    const validation = {
+      name: 'Build Process Validation (TDA Build-Time Enforcement)',
+      status: 'UNKNOWN',
+      details: []
+    };
+
+    try {
+      const { spawn } = require('child_process');
+
+      validation.details.push('🔨 Testing Vite build process...');
+
+      // Try to run the build process to catch build-time errors
+      const buildProcess = spawn('npm', ['run', 'build'], {
+        cwd: './testdata/RenderX',
+        stdio: ['pipe', 'pipe', 'pipe']
+      });
+
+      let stdout = '';
+      let stderr = '';
+
+      buildProcess.stdout.on('data', (data) => {
+        stdout += data.toString();
+      });
+
+      buildProcess.stderr.on('data', (data) => {
+        stderr += data.toString();
+      });
+
+      const exitCode = await new Promise((resolve) => {
+        buildProcess.on('close', resolve);
+
+        // Kill process after 60 seconds to avoid hanging
+        setTimeout(() => {
+          buildProcess.kill('SIGTERM');
+          resolve(-1);
+        }, 60000);
+      });
+
+      if (exitCode === 0) {
+        validation.status = 'PASSED';
+        validation.details.push('✅ Build process completed successfully');
+        validation.details.push('✅ TDA enforcement: No build-time errors detected');
+        validation.details.push('✅ All TypeScript/ESBuild validations passed');
+      } else if (exitCode === -1) {
+        validation.status = 'FAILED';
+        validation.details.push('❌ Build process timed out (60s limit)');
+        validation.details.push('❌ TDA gap: Build may be hanging due to configuration issues');
+      } else {
+        validation.status = 'FAILED';
+        validation.details.push(`❌ Build process failed with exit code: ${exitCode}`);
+
+        // Parse common build error patterns
+        if (stderr.includes('Multiple exports with the same name') || stdout.includes('Multiple exports with the same name')) {
+          validation.details.push('❌ TDA gap: Duplicate export names detected in symphony plugins');
+          validation.details.push('💡 Check plugin handler files for duplicate exports');
+        }
+
+        if (stderr.includes('Transform failed') || stdout.includes('Transform failed')) {
+          validation.details.push('❌ TDA gap: ESBuild transformation errors in plugin files');
+          validation.details.push('💡 Check TypeScript syntax in symphony plugin files');
+        }
+
+        if (stderr.includes('plugin:vite:esbuild') || stdout.includes('plugin:vite:esbuild')) {
+          validation.details.push('❌ TDA gap: Vite ESBuild plugin errors detected');
+          validation.details.push('💡 Review symphony plugin TypeScript files for syntax errors');
+        }
+
+        if (stderr.includes('Cannot resolve') || stdout.includes('Cannot resolve')) {
+          validation.details.push('❌ TDA gap: Module resolution errors in build');
+          validation.details.push('💡 Check import paths in symphony plugins');
+        }
+
+        // Show first few lines of error for debugging
+        const errorLines = (stderr || stdout).split('\n').slice(0, 5).filter(line => line.trim());
+        if (errorLines.length > 0) {
+          validation.details.push(`📋 Build error preview:`);
+          errorLines.forEach(line => {
+            if (line.trim()) {
+              validation.details.push(`   ${line.trim()}`);
+            }
+          });
+        }
+      }
+
+    } catch (error) {
+      validation.status = 'FAILED';
+      validation.details.push(`❌ Failed to run build validation: ${error.message}`);
+      validation.details.push('❌ TDA gap: Cannot validate build process');
+    }
+
+    this.addValidation(validation);
+  }
+
   async runActualE2ETests() {
     const validation = {
       name: 'Actual E2E Test Execution (TDA Enforcement)',
@@ -535,6 +632,7 @@ class TDAImplementationValidator {
       console.log('✅ RenderX app follows CIA/SPA patterns');
       console.log('✅ DOM elements have required IDs');
       console.log('✅ Drag and drop functionality implemented');
+      console.log('✅ Build process validates successfully');
       console.log('✅ Actual E2E tests execute successfully');
     } else {
       console.log('');
