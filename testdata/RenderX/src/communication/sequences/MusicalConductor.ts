@@ -163,7 +163,7 @@ export class MusicalConductor {
    * @param pluginId - Optional plugin ID (defaults to sequence.name)
    * @returns Plugin mount result
    */
-  mount(sequence: any, handlers: any, pluginId?: string): PluginMountResult {
+  mount(sequence: any, handlers: any, pluginId?: string, metadata?: any): PluginMountResult {
     const id = pluginId || sequence?.name || 'unknown-plugin';
 
     try {
@@ -267,17 +267,80 @@ export class MusicalConductor {
     try {
       console.log("🧠 Registering CIA-compliant plugins...");
 
-      // TODO: Symphony plugins temporarily disabled due to structural issues
-      // Need to fix missing event types, sequence categories, and import/export structure
-      console.log('⚠️  Symphony plugins temporarily disabled - using fallback sequences');
+      // Load plugin manifest - this is the ONLY source of truth
+      const pluginManifest = await this.loadPluginManifest();
+      console.log('📋 Plugin manifest loaded with', pluginManifest.statistics.totalPlugins, 'plugins across', pluginManifest.statistics.totalDomains, 'domains');
 
-      // Register basic fallback sequences for core functionality
-      this.registerFallbackSequences();
+      // Register plugins dynamically based on manifest data (data-driven approach)
+      await this.registerPluginsFromManifest(pluginManifest);
 
       console.log("✅ CIA-compliant plugins registered successfully");
     } catch (error) {
       console.error("❌ Failed to register CIA plugins:", error);
+      // Fallback to basic event handling if plugin loading fails
+      this.registerFallbackSequences();
     }
+  }
+
+  private async loadPluginManifest() {
+    try {
+      const response = await fetch('/plugins/plugin-manifest.json');
+      const manifest = await response.json();
+
+      // Validate manifest structure
+      if (!manifest.domains || !manifest.plugins) {
+        throw new Error('Invalid plugin manifest structure');
+      }
+
+      console.log('✅ Plugin manifest loaded successfully');
+      return manifest;
+    } catch (error) {
+      console.error('❌ Failed to load plugin manifest:', error);
+      // Return default manifest structure
+      return {
+        domains: {},
+        plugins: [],
+        statistics: { totalPlugins: 0, totalDomains: 0 }
+      };
+    }
+  }
+
+  private async registerPluginsFromManifest(manifest: any) {
+    console.log('🎼 MusicalConductor: Registering plugins from manifest (data-driven)...');
+
+    // Iterate through plugins defined in manifest
+    for (const plugin of manifest.plugins) {
+      try {
+        if (plugin.autoMount) {
+          console.log(`🔌 Loading plugin: ${plugin.name} (${plugin.domain} domain)`);
+
+          // Dynamic import based on manifest data - NO hardcoded paths
+          const pluginModule = await import(/* @vite-ignore */ `/plugins/${plugin.path}index.ts`);
+
+          // Register the plugin using manifest metadata
+          this.mount(
+            pluginModule.sequence,
+            pluginModule.handlers,
+            plugin.name,
+            {
+              domain: plugin.domain,
+              functionality: plugin.functionality,
+              priority: plugin.priority,
+              isCore: plugin.isCore
+            }
+          );
+
+          console.log(`✅ Plugin registered: ${plugin.name}`);
+        } else {
+          console.log(`⏭️  Skipping plugin: ${plugin.name} (autoMount: false)`);
+        }
+      } catch (error) {
+        console.error(`❌ Failed to load plugin ${plugin.name}:`, error);
+        // Continue with other plugins - don't fail entire registration
+      }
+    }
+
+    console.log('✅ Data-driven plugin registration completed');
   }
 
   private registerFallbackSequences() {

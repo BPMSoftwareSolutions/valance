@@ -121,14 +121,14 @@ class E2ETestPresenceValidator {
       result.errors.push(`${fileName}: Missing validation for .component-button in canvas`);
     }
 
-    // Check for symphony plugin validation
+    // Check for symphony plugin validation (domain-based naming)
     const symphonyPlugins = [
-      'AppShell.app-shell-symphony',
-      'ComponentDrag.component-drag-symphony',
-      'ElementSelection.element-selection-symphony',
+      'App.app-shell-symphony',
+      'Canvas.component-drag-symphony',
+      'Component.element-selection-symphony',
       'JsonLoader.json-component-symphony',
-      'LibraryDrop.library-drop-symphony',
-      'PanelToggle.panel-toggle-symphony'
+      'ElementLibrary.library-drop-symphony',
+      'ControlPanel.panel-toggle-symphony'
     ];
 
     let symphonyPluginValidationCount = 0;

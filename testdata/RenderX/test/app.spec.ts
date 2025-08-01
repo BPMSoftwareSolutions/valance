@@ -15,14 +15,14 @@ import { test, expect } from '@playwright/test';
  * - Test all symphony plugins during the E2E flow
  */
 
-// Symphony plugins that must be validated
+// Symphony plugins that must be validated (domain-based naming)
 const REQUIRED_SYMPHONY_PLUGINS = [
-  'AppShell.app-shell-symphony',
-  'ComponentDrag.component-drag-symphony',
-  'ElementSelection.element-selection-symphony',
+  'App.app-shell-symphony',
+  'Canvas.component-drag-symphony',
+  'Component.element-selection-symphony',
   'JsonLoader.json-component-symphony',
-  'LibraryDrop.library-drop-symphony',
-  'PanelToggle.panel-toggle-symphony'
+  'ElementLibrary.library-drop-symphony',
+  'ControlPanel.panel-toggle-symphony'
 ];
 
 test.describe('RenderX Application E2E Tests with Symphony Plugin Validation', () => {
@@ -127,20 +127,20 @@ test.describe('RenderX Application E2E Tests with Symphony Plugin Validation', (
 
   test('should validate ALL symphony plugins are functional in complete E2E flow', async ({ page }) => {
     const pluginValidation = {
-      'AppShell.app-shell-symphony': false,
+      'App.app-shell-symphony': false,
       'JsonLoader.json-component-symphony': false,
-      'LibraryDrop.library-drop-symphony': false,
-      'ComponentDrag.component-drag-symphony': false,
-      'ElementSelection.element-selection-symphony': false,
-      'PanelToggle.panel-toggle-symphony': false
+      'ElementLibrary.library-drop-symphony': false,
+      'Canvas.component-drag-symphony': false,
+      'Component.element-selection-symphony': false,
+      'ControlPanel.panel-toggle-symphony': false
     };
 
-    // 1. Validate AppShell symphony plugin (layout and theme management)
+    // 1. Validate App symphony plugin (layout and theme management)
     await expect(page.locator('#component-library')).toHaveAttribute('data-plugin-mounted', 'true');
     await expect(page.locator('#canvas')).toHaveAttribute('data-plugin-mounted', 'true');
     await expect(page.locator('#control-panel')).toHaveAttribute('data-plugin-mounted', 'true');
-    pluginValidation['AppShell.app-shell-symphony'] = true;
-    console.log('✅ AppShell.app-shell-symphony: Layout and mounting validated');
+    pluginValidation['App.app-shell-symphony'] = true;
+    console.log('✅ App.app-shell-symphony: Layout and mounting validated');
 
     // 2. Validate JsonLoader symphony plugin (component loading)
     const componentsLoaded = await page.evaluate(() => {
@@ -150,22 +150,22 @@ test.describe('RenderX Application E2E Tests with Symphony Plugin Validation', (
     pluginValidation['JsonLoader.json-component-symphony'] = true;
     console.log('✅ JsonLoader.json-component-symphony: JSON components loaded');
 
-    // 3. Test PanelToggle symphony plugin (if toggle buttons exist)
+    // 3. Test ControlPanel symphony plugin (if toggle buttons exist)
     const toggleButtons = page.locator('button').filter({ hasText: /toggle|panel|show|hide/i });
     const toggleCount = await toggleButtons.count();
     if (toggleCount > 0) {
       await toggleButtons.first().click();
       await page.waitForTimeout(300);
-      pluginValidation['PanelToggle.panel-toggle-symphony'] = true;
-      console.log('✅ PanelToggle.panel-toggle-symphony: Panel toggle functionality tested');
+      pluginValidation['ControlPanel.panel-toggle-symphony'] = true;
+      console.log('✅ ControlPanel.panel-toggle-symphony: Panel toggle functionality tested');
     } else {
       // Alternative validation - check if panels can be toggled via keyboard
       await page.keyboard.press('Tab');
-      pluginValidation['PanelToggle.panel-toggle-symphony'] = true;
-      console.log('✅ PanelToggle.panel-toggle-symphony: Panel system validated');
+      pluginValidation['ControlPanel.panel-toggle-symphony'] = true;
+      console.log('✅ ControlPanel.panel-toggle-symphony: Panel system validated');
     }
 
-    // 4. Validate LibraryDrop + ComponentDrag symphony plugins (drag and drop)
+    // 4. Validate ElementLibrary + Canvas symphony plugins (drag and drop)
     const buttonComponent = page.locator('[data-component="button"]').first();
     const canvas = page.locator('#canvas');
 
@@ -173,33 +173,33 @@ test.describe('RenderX Application E2E Tests with Symphony Plugin Validation', (
       await buttonComponent.dragTo(canvas);
       await page.waitForTimeout(500);
 
-      // Check if component was dropped (LibraryDrop)
+      // Check if component was dropped (ElementLibrary)
       const droppedComponent = canvas.locator('.component-button');
       if (await droppedComponent.count() > 0) {
-        pluginValidation['LibraryDrop.library-drop-symphony'] = true;
-        console.log('✅ LibraryDrop.library-drop-symphony: Component drop successful');
+        pluginValidation['ElementLibrary.library-drop-symphony'] = true;
+        console.log('✅ ElementLibrary.library-drop-symphony: Component drop successful');
 
-        // Test ComponentDrag by attempting to move the dropped component
+        // Test Canvas by attempting to move the dropped component
         const firstDropped = droppedComponent.first();
         const canvasBounds = await canvas.boundingBox();
         if (canvasBounds) {
           await firstDropped.dragTo(canvas, {
             targetPosition: { x: canvasBounds.width / 2, y: canvasBounds.height / 2 }
           });
-          pluginValidation['ComponentDrag.component-drag-symphony'] = true;
-          console.log('✅ ComponentDrag.component-drag-symphony: Component drag successful');
+          pluginValidation['Canvas.component-drag-symphony'] = true;
+          console.log('✅ Canvas.component-drag-symphony: Component drag successful');
         }
       }
     }
 
-    // 5. Validate ElementSelection symphony plugin
+    // 5. Validate Component symphony plugin
     const canvasElements = canvas.locator('.component-button');
     const elementCount = await canvasElements.count();
     if (elementCount > 0) {
       await canvasElements.first().click();
       await page.waitForTimeout(200);
-      pluginValidation['ElementSelection.element-selection-symphony'] = true;
-      console.log('✅ ElementSelection.element-selection-symphony: Element selection tested');
+      pluginValidation['Component.element-selection-symphony'] = true;
+      console.log('✅ Component.element-selection-symphony: Element selection tested');
     }
 
     // Validate all plugins were tested

@@ -21,6 +21,7 @@ import {
   MusicalConductor,
   MusicalSequences,
 } from "./communication";
+import { initializeDomainEvents, DomainEventSystem } from "./communication/DomainEventSystem";
 
 
 // Types
@@ -114,7 +115,12 @@ const ThemeToggleButton: React.FC = () => {
 };
 
 // Element Library Component with JSON Component Loading
-const ElementLibrary: React.FC = () => {
+interface ElementLibraryProps {
+  onDragStart?: (e: React.DragEvent, component: LoadedJsonComponent) => void;
+  onDragEnd?: (e: React.DragEvent) => void;
+}
+
+const ElementLibrary: React.FC<ElementLibraryProps> = ({ onDragStart, onDragEnd }) => {
   const [components, setComponents] = useState<LoadedJsonComponent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -202,80 +208,7 @@ const ElementLibrary: React.FC = () => {
     return iconMap[component.metadata.type] || "🧩";
   };
 
-  // Drag handlers for Canvas Library Drop Symphony
-  const handleDragStart = (
-    e: React.DragEvent,
-    component: LoadedJsonComponent
-  ) => {
-    console.log(
-      "🎼 Starting drag operation for component:",
-      component.metadata.name
-    );
 
-    // Set drag data - include full component data for data-driven styling
-    const dragData = {
-      type: component.metadata.type,
-      componentId: component.id,
-      metadata: component.metadata,
-      componentData: component, // Full component data for data-driven approach
-    };
-
-    e.dataTransfer.setData("application/json", JSON.stringify(dragData));
-    e.dataTransfer.effectAllowed = "copy";
-
-    // Update drag state
-    setDraggedComponent(component);
-
-    // Add visual feedback
-    e.currentTarget.classList.add("dragging");
-
-    // 🎼 Start Component Drag Symphony for library element drag using CIA conductor.play()
-    const communicationSystem = (window as any).renderxCommunicationSystem;
-    if (communicationSystem && communicationSystem.conductor) {
-      console.log("🎼 Starting Component Drag Symphony for library element drag via conductor.play()...");
-
-      // CIA-compliant trigger using conductor.play()
-      communicationSystem.conductor.play('ComponentDrag.component-drag-symphony', 'onDragStart', {
-        element: component,
-        dragData,
-        source: 'element-library-drag',
-        timestamp: Date.now(),
-        eventType: 'drag-start',
-        changes: { dragStart: true, dragData },
-        elements: [], // elements array (empty for library drag)
-        setElements: undefined, // setElements function (not needed for library drag)
-        syncElementCSS: undefined  // syncElementCSS function (not needed for library drag)
-      });
-    }
-  };
-
-  const handleDragEnd = (e: React.DragEvent) => {
-    console.log("🎼 Ending drag operation");
-
-    // Clear drag state
-    setDraggedComponent(null);
-
-    // Remove visual feedback
-    e.currentTarget.classList.remove("dragging");
-
-    // 🎼 Start Component Drag Symphony for drag end using CIA conductor.play()
-    const communicationSystem = (window as any).renderxCommunicationSystem;
-    if (communicationSystem && communicationSystem.conductor) {
-      console.log("🎼 Starting Component Drag Symphony for drag end via conductor.play()...");
-
-      // CIA-compliant trigger using conductor.play()
-      communicationSystem.conductor.play('ComponentDrag.component-drag-symphony', 'onDragEnd', {
-        element: { id: 'drag-end-operation', type: 'drag-end' },
-        changes: { dragEnd: true },
-        source: 'element-library-drag-end',
-        timestamp: Date.now(),
-        eventType: 'drag-end',
-        elements: [], // elements array (empty for library drag end)
-        setElements: undefined, // setElements function
-        syncElementCSS: undefined  // syncElementCSS function
-      });
-    }
-  };
 
   return (
     <div className="element-library">
@@ -319,8 +252,8 @@ const ElementLibrary: React.FC = () => {
                       className="element-item"
                       data-component={component.metadata.type.toLowerCase()}
                       draggable
-                      onDragStart={(e) => handleDragStart(e, component)}
-                      onDragEnd={handleDragEnd}
+                      onDragStart={onDragStart ? (e) => onDragStart(e, component) : undefined}
+                      onDragEnd={onDragEnd}
                       title={`${component.metadata.description}\nVersion: ${component.metadata.version}\nAuthor: ${component.metadata.author}\nDrag to canvas to add`}
                     >
                       <span className="element-icon">
@@ -430,7 +363,12 @@ const CanvasElement: React.FC<{
   );
 };
 
-const Canvas: React.FC<{ mode: string }> = ({ mode }) => {
+interface CanvasProps {
+  mode: string;
+  onCanvasElementDragStart?: (e: React.DragEvent, element: any) => void;
+}
+
+const Canvas: React.FC<CanvasProps> = ({ mode, onCanvasElementDragStart }) => {
   const [canvasElements, setCanvasElements] = useState<any[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
 
@@ -454,49 +392,7 @@ const Canvas: React.FC<{ mode: string }> = ({ mode }) => {
     console.log("🎨 Canvas drag leave - visual state updated");
   };
 
-  // Canvas element drag start handler for Component Drag Symphony
-  const handleCanvasElementDragStart = (
-    e: React.DragEvent,
-    element: any
-  ) => {
-    console.log("🎼 Starting canvas element drag operation for:", element.id);
 
-    // Set drag data for canvas element movement
-    const dragData = {
-      type: element.type,
-      componentId: element.id,
-      isCanvasElement: true, // Flag to distinguish from library drops
-      elementData: element, // Current element data
-      source: 'canvas-element-drag'
-    };
-
-    e.dataTransfer.setData("application/json", JSON.stringify(dragData));
-    e.dataTransfer.effectAllowed = "move";
-
-    // Add visual feedback
-    e.currentTarget.classList.add("dragging");
-
-    console.log("🎼 Canvas element drag data set:", dragData);
-
-    // 🎼 Start Component Drag Symphony for canvas element drag using CIA conductor.play()
-    const communicationSystem = (window as any).renderxCommunicationSystem;
-    if (communicationSystem && communicationSystem.conductor) {
-      console.log("🎼 Starting Component Drag Symphony for canvas element drag via conductor.play()...");
-
-      // CIA-compliant trigger using conductor.play()
-      communicationSystem.conductor.play('ComponentDrag.component-drag-symphony', 'onDragStart', {
-        element, // The canvas element being dragged
-        changes: { dragStart: true, dragData },
-        source: 'canvas-element-drag-start',
-        timestamp: Date.now(),
-        eventType: 'canvas-element-drag-start',
-        dragData,
-        elements: canvasElements, // elements array
-        setElements: setCanvasElements, // setElements function
-        syncElementCSS: undefined  // syncElementCSS function
-      });
-    }
-  };
 
   const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault();
@@ -670,7 +566,7 @@ const Canvas: React.FC<{ mode: string }> = ({ mode }) => {
                     element={element}
                     elementId={elementId}
                     cssClass={cssClass}
-                    onDragStart={handleCanvasElementDragStart}
+                    onDragStart={onCanvasElementDragStart}
                   />
                 );
               })}
@@ -698,6 +594,80 @@ const AppContent: React.FC = () => {
     conductor: MusicalConductor;
   } | null>(null);
 
+  const [domainEvents, setDomainEvents] = useState<DomainEventSystem | null>(null);
+
+  // Drag handlers for ElementLibrary domain events
+  const handleDragStart = (
+    e: React.DragEvent,
+    component: LoadedJsonComponent
+  ) => {
+    console.log(
+      "🎼 Starting drag operation for component:",
+      component.metadata.name
+    );
+
+    const dragData = {
+      type: "component",
+      componentType: component.metadata.type,
+      name: component.metadata.name,
+      metadata: component.metadata,
+      componentData: component, // Full component data for data-driven approach
+    };
+
+    e.dataTransfer.setData("application/json", JSON.stringify(dragData));
+    e.dataTransfer.effectAllowed = "copy";
+
+    // Add visual feedback
+    e.currentTarget.classList.add("dragging");
+
+    // 🎼 Emit domain-based event - let plugins handle the specifics
+    if (domainEvents) {
+      domainEvents.elementLibrary.dragStart(component, dragData);
+    }
+  };
+
+  const handleDragEnd = (e: React.DragEvent) => {
+    console.log("🎼 Ending drag operation");
+
+    // Remove visual feedback
+    e.currentTarget.classList.remove("dragging");
+
+    // 🎼 Emit domain-based event - let plugins handle the specifics
+    if (domainEvents) {
+      domainEvents.elementLibrary.dragEnd();
+    }
+  };
+
+  // Canvas element drag start handler for Canvas domain events
+  const handleCanvasElementDragStart = (
+    e: React.DragEvent,
+    element: any
+  ) => {
+    console.log("🎼 Starting canvas element drag operation for:", element.id);
+
+    // Set drag data for canvas element movement
+    const dragData = {
+      type: element.type,
+      componentId: element.id,
+      isCanvasElement: true, // Flag to distinguish from library drops
+      elementData: element, // Current element data
+      source: 'canvas-element-drag'
+    };
+
+    e.dataTransfer.setData("application/json", JSON.stringify(dragData));
+    e.dataTransfer.effectAllowed = "move";
+
+    // Add visual feedback
+    e.currentTarget.classList.add("dragging");
+
+    console.log("🎼 Canvas element drag data set:", dragData);
+
+    // 🎼 Emit domain-based event - let plugins handle the specifics
+    if (domainEvents) {
+      domainEvents.canvas.elementDragStart(element, dragData);
+    }
+  };
+
   // Initialize communication system
   useEffect(() => {
     console.log("🚀 RenderX Evolution - Initializing Communication System...");
@@ -716,6 +686,10 @@ const AppContent: React.FC = () => {
       }).catch((error) => {
         console.error("❌ CIA plugins registration failed:", error);
       });
+
+      // Initialize domain event system
+      const domainEventSystem = initializeDomainEvents(system);
+      setDomainEvents(domainEventSystem);
 
       // Expose communication system globally for components to access
       (window as any).renderxCommunicationSystem = system;
@@ -845,7 +819,7 @@ const AppContent: React.FC = () => {
       case "preview":
         return (
           <div className="app-layout app-layout--preview">
-            <Canvas mode="preview" />
+            <Canvas mode="preview" onCanvasElementDragStart={handleCanvasElementDragStart} />
             <div className="preview-overlay">
               <button
                 className="preview-exit-button"
@@ -861,7 +835,7 @@ const AppContent: React.FC = () => {
       case "fullscreen-preview":
         return (
           <div className="app-layout app-layout--fullscreen-preview">
-            <Canvas mode="fullscreen-preview" />
+            <Canvas mode="fullscreen-preview" onCanvasElementDragStart={handleCanvasElementDragStart} />
             <div className="preview-overlay">
               <button
                 className="preview-exit-button"
@@ -893,13 +867,13 @@ const AppContent: React.FC = () => {
             {/* Element Library - Left Panel */}
             {showElementLibrary && (
               <aside className="app-sidebar left" id="component-library" data-plugin-mounted="true">
-                <ElementLibrary />
+                <ElementLibrary onDragStart={handleDragStart} onDragEnd={handleDragEnd} />
               </aside>
             )}
 
             {/* Canvas - Center */}
             <section className="app-canvas" id="canvas" data-plugin-mounted="true">
-              <Canvas mode="editor" />
+              <Canvas mode="editor" onCanvasElementDragStart={handleCanvasElementDragStart} />
             </section>
 
             {/* Control Panel - Right Panel */}
