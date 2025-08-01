@@ -26,4 +26,3 @@ export const handleCanvasElementPositioned = (data: any): any => {
 };
 
 export { handleCanvasElementCreated as default };
-export { handleCanvasElementPositioned };

@@ -17,4 +17,3 @@ export const handlePanelAnimationComplete = (data: any): any => {
 };
 
 export { handlePanelAnimationStart as default };
-export { handlePanelAnimationComplete };

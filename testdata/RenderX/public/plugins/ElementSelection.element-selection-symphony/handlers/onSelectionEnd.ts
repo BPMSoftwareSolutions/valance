@@ -89,4 +89,3 @@ export const handleCanvasSelectionStateSync = (data: SelectionEndData): any => {
 };
 
 export { handleCanvasSelectionVisualUpdate as default };
-export { handleCanvasSelectionStateSync };

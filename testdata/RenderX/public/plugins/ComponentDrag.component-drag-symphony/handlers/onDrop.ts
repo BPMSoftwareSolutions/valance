@@ -68,4 +68,3 @@ export const handleCanvasElementCSSSync = (data: DropData): boolean => {
 };
 
 export { handleCanvasDropValidation as default };
-export { handleCanvasElementCSSSync };
