@@ -134,52 +134,7 @@ const ElementLibrary: React.FC<ElementLibraryProps> = ({
 
   // DISABLED: Prevent race condition with plugin loading
   // useEffect(() => {
-  const loadComponentsAfterPlugins = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      console.log("🔄 Loading JSON components with musical sequences...");
-
-      // Connect to conductor if available (from parent context)
-      const communicationSystem = (window as any).renderxCommunicationSystem;
-      if (communicationSystem) {
-        jsonComponentLoader.connectToConductor(communicationSystem.conductor);
-
-        // Use musical sequence loading
-        const result = await jsonComponentLoader.loadAllComponentsMusical();
-
-        if (result.failed.length > 0) {
-          console.warn("⚠️ Some components failed to load:", result.failed);
-        }
-
-        setComponents(result.success);
-        console.log(
-          `✅ Loaded ${result.success.length} JSON components via musical sequences`
-        );
-      } else {
-        // Fallback to direct loading
-        console.log("🔄 No conductor available, using direct loading...");
-        const result = await jsonComponentLoader.loadAllComponents();
-
-        if (result.failed.length > 0) {
-          console.warn("⚠️ Some components failed to load:", result.failed);
-        }
-
-        setComponents(result.success);
-        console.log(
-          `✅ Loaded ${result.success.length} JSON components (direct loading)`
-        );
-      }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Unknown error";
-      setError(errorMessage);
-      console.error("❌ Failed to load JSON components:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // loadComponents();
+  //   loadComponentsAfterPlugins();
   // }, []);
 
   const getComponentsByCategory = () => {
@@ -680,6 +635,36 @@ const AppContent: React.FC = () => {
     // 🎼 Emit domain-based event - let plugins handle the specifics
     if (domainEvents) {
       domainEvents.canvas.elementDragStart(element, dragData);
+    }
+  };
+
+  // Component loading function - defined in AppContent where it's called
+  const loadComponentsAfterPlugins = async () => {
+    try {
+      console.log("🔄 Loading JSON components with musical sequences...");
+
+      // Connect to conductor if available
+      if (communicationSystem) {
+        jsonComponentLoader.connectToConductor(communicationSystem.conductor);
+
+        // Use musical sequence loading
+        const result = await jsonComponentLoader.loadAllComponentsMusical();
+
+        if (result.failed.length > 0) {
+          console.warn("⚠️ Some components failed to load:", result.failed);
+        }
+
+        console.log(
+          `✅ Loaded ${result.success.length} JSON components via musical sequences`
+        );
+
+        // TODO: Need to pass components to ElementLibrary
+        // This will require refactoring the component state management
+      } else {
+        console.log("🔄 No conductor available for component loading");
+      }
+    } catch (err) {
+      console.error("❌ Failed to load JSON components:", err);
     }
   };
 
