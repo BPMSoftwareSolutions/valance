@@ -284,7 +284,20 @@ export class MusicalConductor {
 
   private async loadPluginManifest() {
     try {
+      console.log('🎼 MusicalConductor: Loading plugin manifest...');
       const response = await fetch('/plugins/plugin-manifest.json');
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text();
+        console.error('🎼 MusicalConductor: Expected JSON but got:', contentType, text.substring(0, 100));
+        throw new Error(`Expected JSON but got ${contentType}`);
+      }
+
       const manifest = await response.json();
 
       // Validate manifest structure
