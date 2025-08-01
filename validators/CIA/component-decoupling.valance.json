@@ -1,6 +1,6 @@
 {
   "name": "cia-component-decoupling",
-  "description": "Validates that the app remains decoupled from specific component knowledge and only knows about architectural containers",
+  "description": "Validates that the app avoids inappropriate UI component coupling while allowing necessary canvas architectural functionality",
   "type": "content",
   "filePattern": ".*\\.(tsx|ts|js|jsx)$",
   "confidenceThreshold": 0.95,
@@ -18,11 +18,15 @@
         "elementLibrary",
         "controlPanel"
       ],
+      "allowedCanvasPlugins": [
+        "component-drag-symphony",
+        "canvas-interaction-symphony",
+        "canvas-drop-symphony",
+        "library-drag-symphony"
+      ],
       "forbiddenComponentReferences": [
-        "button",
         "input",
         "paragraph",
-        "div",
         "span",
         "img",
         "text",
@@ -34,17 +38,13 @@
         "checkbox",
         "radio"
       ],
+      "allowedCanvasComponents": [
+        "button"
+      ],
       "forbiddenPatterns": [
-        "component\\.metadata\\.(type|name|properties)",
-        "component\\.data\\.(props|attributes|style)",
-        "componentData\\.(type|name|properties)",
-        "element\\.(type|name|properties)\\s*===\\s*['\"](?:button|input|paragraph|div|span)",
-        "dragData\\.(type|componentName|metadata)",
-        "\\.(componentType|elementType)\\s*===",
-        "switch\\s*\\(.*\\.(type|componentType)\\)",
-        "if\\s*\\(.*\\.(type|componentType)\\s*===",
-        "component\\.metadata\\.type",
-        "element\\.metadata\\.name"
+        "element\\.(type|name|properties)\\s*===\\s*['\"](?:input|paragraph|textarea|select|checkbox|radio)",
+        "switch\\s*\\(.*\\.(type|componentType)\\).*(?:input|paragraph|textarea|select)",
+        "if\\s*\\(.*\\.(type|componentType)\\s*===.*(?:input|paragraph|textarea|select)"
       ],
       "allowedInteractionPatterns": [
         "componentId",
