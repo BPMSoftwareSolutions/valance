@@ -21,7 +21,7 @@ import {
   MusicalConductor,
   MusicalSequences,
 } from "./communication";
-import { startCanvasComponentDragFlow } from "./communication/sequences/canvas-sequences/CanvasSequences.component-drag-symphony";
+
 
 // Types
 interface AppState {
@@ -235,7 +235,7 @@ const ElementLibrary: React.FC = () => {
       console.log("🎼 Starting Component Drag Symphony for library element drag via conductor.play()...");
 
       // CIA-compliant trigger using conductor.play()
-      communicationSystem.conductor.play('component-drag-symphony', 'onDragStart', {
+      communicationSystem.conductor.play('ComponentDrag.component-drag-symphony', 'onDragStart', {
         element: component,
         dragData,
         source: 'element-library-drag',
@@ -264,7 +264,7 @@ const ElementLibrary: React.FC = () => {
       console.log("🎼 Starting Component Drag Symphony for drag end via conductor.play()...");
 
       // CIA-compliant trigger using conductor.play()
-      communicationSystem.conductor.play('component-drag-symphony', 'onDragEnd', {
+      communicationSystem.conductor.play('ComponentDrag.component-drag-symphony', 'onDragEnd', {
         element: { id: 'drag-end-operation', type: 'drag-end' },
         changes: { dragEnd: true },
         source: 'element-library-drag-end',
@@ -484,7 +484,7 @@ const Canvas: React.FC<{ mode: string }> = ({ mode }) => {
       console.log("🎼 Starting Component Drag Symphony for canvas element drag via conductor.play()...");
 
       // CIA-compliant trigger using conductor.play()
-      communicationSystem.conductor.play('component-drag-symphony', 'onDragStart', {
+      communicationSystem.conductor.play('ComponentDrag.component-drag-symphony', 'onDragStart', {
         element, // The canvas element being dragged
         changes: { dragStart: true, dragData },
         source: 'canvas-element-drag-start',

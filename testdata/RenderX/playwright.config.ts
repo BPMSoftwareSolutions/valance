@@ -96,8 +96,8 @@ export default defineConfig({
   },
 
   /* Global setup and teardown */
-  globalSetup: require.resolve('./test/global-setup.ts'),
-  globalTeardown: require.resolve('./test/global-teardown.ts'),
+  globalSetup: './test/global-setup.ts',
+  globalTeardown: './test/global-teardown.ts',
 
   /* Test timeout */
   timeout: 30000,

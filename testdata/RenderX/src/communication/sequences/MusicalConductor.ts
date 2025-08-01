@@ -267,21 +267,29 @@ export class MusicalConductor {
     try {
       console.log("🧠 Registering CIA-compliant plugins...");
 
-      // Register component-drag-symphony (canvas component interactions)
-      const componentDragPlugin = await import('../../../public/plugins/component-drag-symphony/index');
-      this.mount(componentDragPlugin.sequence, componentDragPlugin.handlers, 'component-drag-symphony');
+      // Register ComponentDrag.component-drag-symphony (canvas component interactions)
+      const componentDragPlugin = await import('../../../public/plugins/ComponentDrag.component-drag-symphony/index');
+      this.mount(componentDragPlugin.sequence, componentDragPlugin.handlers, 'ComponentDrag.component-drag-symphony');
 
-      // Register library-drop-symphony (library drop interactions)
-      const libraryDropPlugin = await import('../../../public/plugins/library-drop-symphony/index');
-      this.mount(libraryDropPlugin.sequence, libraryDropPlugin.handlers, 'library-drop-symphony');
+      // Register LibraryDrop.library-drop-symphony (library drop interactions)
+      const libraryDropPlugin = await import('../../../public/plugins/LibraryDrop.library-drop-symphony/index');
+      this.mount(libraryDropPlugin.sequence, libraryDropPlugin.handlers, 'LibraryDrop.library-drop-symphony');
 
-      // Register panel-toggle-symphony (control panel interactions)
-      const panelTogglePlugin = await import('../../../public/plugins/panel-toggle-symphony/index');
-      this.mount(panelTogglePlugin.sequence, panelTogglePlugin.handlers, 'panel-toggle-symphony');
+      // Register PanelToggle.panel-toggle-symphony (control panel interactions)
+      const panelTogglePlugin = await import('../../../public/plugins/PanelToggle.panel-toggle-symphony/index');
+      this.mount(panelTogglePlugin.sequence, panelTogglePlugin.handlers, 'PanelToggle.panel-toggle-symphony');
 
-      // Register layout-mode-symphony (layout mode changes)
-      const layoutModePlugin = await import('../../../public/plugins/layout-mode-symphony/index');
-      this.mount(layoutModePlugin.sequence, layoutModePlugin.handlers, 'layout-mode-symphony');
+      // Register ElementSelection.element-selection-symphony (element selection)
+      const elementSelectionPlugin = await import('../../../public/plugins/ElementSelection.element-selection-symphony/index');
+      this.mount(elementSelectionPlugin.sequence, elementSelectionPlugin.handlers, 'ElementSelection.element-selection-symphony');
+
+      // Register JsonLoader.json-component-symphony (JSON component loading)
+      const jsonLoaderPlugin = await import('../../../public/plugins/JsonLoader.json-component-symphony/index');
+      this.mount(jsonLoaderPlugin.sequence, jsonLoaderPlugin.handlers, 'JsonLoader.json-component-symphony');
+
+      // Register AppShell.app-shell-symphony (application shell)
+      const appShellPlugin = await import('../../../public/plugins/AppShell.app-shell-symphony/index');
+      this.mount(appShellPlugin.sequence, appShellPlugin.handlers, 'AppShell.app-shell-symphony');
 
       console.log("✅ CIA-compliant plugins registered successfully");
     } catch (error) {
@@ -334,7 +342,7 @@ export class MusicalConductor {
     try {
       console.log(`🧠 MusicalConductor: Loading plugin from: ${pluginPath}`);
 
-      const plugin = await import(pluginPath);
+      const plugin = await import(/* @vite-ignore */ pluginPath);
 
       // Validate plugin structure after import
       if (!plugin || typeof plugin !== 'object') {

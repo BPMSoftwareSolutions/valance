@@ -121,6 +121,31 @@ class E2ETestPresenceValidator {
       result.errors.push(`${fileName}: Missing validation for .component-button in canvas`);
     }
 
+    // Check for symphony plugin validation
+    const symphonyPlugins = [
+      'AppShell.app-shell-symphony',
+      'ComponentDrag.component-drag-symphony',
+      'ElementSelection.element-selection-symphony',
+      'JsonLoader.json-component-symphony',
+      'LibraryDrop.library-drop-symphony',
+      'PanelToggle.panel-toggle-symphony'
+    ];
+
+    let symphonyPluginValidationCount = 0;
+    symphonyPlugins.forEach(plugin => {
+      if (content.includes(plugin)) {
+        symphonyPluginValidationCount++;
+      }
+    });
+
+    if (symphonyPluginValidationCount === 0) {
+      result.errors.push(`${fileName}: Missing symphony plugin validation - no plugins referenced in tests`);
+    } else if (symphonyPluginValidationCount < 3) {
+      result.warnings.push(`${fileName}: Limited symphony plugin validation - only ${symphonyPluginValidationCount} plugins referenced`);
+    } else {
+      result.info.push(`${fileName}: Good symphony plugin validation - ${symphonyPluginValidationCount} plugins referenced`);
+    }
+
     // Check for proper test structure
     if (!content.includes('test(') && !content.includes('it(')) {
       result.errors.push(`${fileName}: Missing test function declarations`);
@@ -129,6 +154,11 @@ class E2ETestPresenceValidator {
     // Validate test describes the E2E scenario
     if (!/(?:test|it)\s*\(\s*['"][^'"]*drag[^'"]*['"]/.test(content)) {
       result.warnings.push(`${fileName}: Test should describe drag and drop scenario`);
+    }
+
+    // Check for symphony plugin comprehensive testing
+    if (content.includes('ALL symphony plugins') || content.includes('symphony plugin validation')) {
+      result.info.push(`${fileName}: Comprehensive symphony plugin testing detected`);
     }
 
     result.info.push(`${fileName}: E2E test file validated`);
