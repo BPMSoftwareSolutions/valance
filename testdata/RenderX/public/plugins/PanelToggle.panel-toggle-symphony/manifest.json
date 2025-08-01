@@ -1,0 +1,42 @@
+{
+  "id": "PanelToggle.panel-toggle-symphony",
+  "name": "Panel Toggle Symphony No. 1",
+  "version": "1.0.0",
+  "description": "Layout Control - Dynamic panel visibility and layout management",
+  "category": "layout-operations",
+  "type": "symphony-plugin",
+  "musical": {
+    "key": "F Major",
+    "tempo": 100,
+    "timeSignature": "4/4",
+    "feel": "Smooth and controlled panel transitions"
+  },
+  "entry": "index.ts",
+  "sequence": "sequence.ts",
+  "handlers": {
+    "onPanelToggle": "handlers/onPanelToggle.ts",
+    "onLayoutChange": "handlers/onLayoutChange.ts",
+    "onAnimationComplete": "handlers/onAnimationComplete.ts"
+  },
+  "hooks": "hooks/index.ts",
+  "logic": "logic/index.ts",
+  "dependencies": [],
+  "events": {
+    "listens": [
+      "layout:panel:toggle",
+      "layout:panel:show",
+      "layout:panel:hide",
+      "layout:change"
+    ],
+    "emits": [
+      "layout:panel:toggled",
+      "layout:changed",
+      "layout:animation:complete"
+    ]
+  },
+  "cia": {
+    "safeMount": true,
+    "errorIsolation": true,
+    "gracefulDegradation": true
+  }
+}
