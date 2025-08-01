@@ -411,42 +411,20 @@ const CanvasElement: React.FC<{
     );
   }
 
-  // Get default properties from component definition
-  const defaultProperties = componentData.integration?.properties?.defaultValues || {};
-
-  // Simple template rendering (for now, just handle basic button case)
-  // In a full implementation, this would use a proper template engine
-  if (element.type === 'button') {
-    const content = defaultProperties.content || element.metadata?.name || 'Click me';
-    const variant = defaultProperties.variant || 'primary';
-    const size = defaultProperties.size || 'medium';
-    const disabled = defaultProperties.disabled || false;
-
-    return (
-      <button
-        id={elementId}
-        data-component-id={elementId}
-        className={`${cssClass} rx-button rx-button--${variant} rx-button--${size} rx-selected`}
-        draggable="true"
-        type="button"
-        disabled={disabled}
-        onDragStart={onDragStart ? (e) => onDragStart(e, element) : undefined}
-      >
-        {content}
-      </button>
-    );
-  }
-
-  // Generic fallback for other component types
+  // Generic component rendering - app doesn't know component specifics
+  // Component rendering should be handled by JsonComponentLoader at runtime
   return (
     <div
       id={elementId}
       data-component-id={elementId}
-      className={`${cssClass} rx-selected`}
+      className={`${cssClass} rx-generic-component rx-selected`}
       draggable="true"
       onDragStart={onDragStart ? (e) => onDragStart(e, element) : undefined}
     >
-      {element.metadata?.name || element.type}
+      {/* Generic component placeholder - actual rendering handled by JsonComponentLoader */}
+      <span className="rx-component-placeholder">
+        Component {element.id}
+      </span>
     </div>
   );
 };
