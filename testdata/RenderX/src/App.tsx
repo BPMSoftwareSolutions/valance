@@ -324,6 +324,7 @@ const ElementLibrary: React.FC = () => {
                     <div
                       key={component.id}
                       className="element-item"
+                      data-component={component.metadata.type.toLowerCase()}
                       draggable
                       onDragStart={(e) => handleDragStart(e, component)}
                       onDragEnd={handleDragEnd}
@@ -688,7 +689,7 @@ const Canvas: React.FC<{ mode: string }> = ({ mode }) => {
                     .substr(2, 9)}`;
                 const cssClass =
                   element.cssClass ||
-                  `rx-comp-${element.type}-${Math.random()
+                  `component-${element.type.toLowerCase()} rx-comp-${element.type}-${Math.random()
                     .toString(36)
                     .substr(2, 6)}`;
 
@@ -914,19 +915,19 @@ const AppContent: React.FC = () => {
           <div className={layoutClass}>
             {/* Element Library - Left Panel */}
             {showElementLibrary && (
-              <aside className="app-sidebar left">
+              <aside className="app-sidebar left" id="component-library" data-plugin-mounted="true">
                 <ElementLibrary />
               </aside>
             )}
 
             {/* Canvas - Center */}
-            <section className="app-canvas">
+            <section className="app-canvas" id="canvas" data-plugin-mounted="true">
               <Canvas mode="editor" />
             </section>
 
             {/* Control Panel - Right Panel */}
             {showControlPanel && (
-              <aside className="app-sidebar right">
+              <aside className="app-sidebar right" id="control-panel" data-plugin-mounted="true">
                 <ControlPanel />
               </aside>
             )}

@@ -1,0 +1,72 @@
+{
+  "id": "input-component-001",
+  "metadata": {
+    "name": "Text Input",
+    "type": "Input",
+    "description": "Text input field for user data entry",
+    "version": "1.0.0",
+    "author": "RenderX Team",
+    "category": "form",
+    "tags": ["input", "form", "text", "data-entry"],
+    "icon": "📝"
+  },
+  "structure": {
+    "type": "input",
+    "props": {
+      "className": "form-input",
+      "type": "text",
+      "placeholder": "Enter text...",
+      "onChange": "handleChange"
+    }
+  },
+  "styling": {
+    "defaultStyles": {
+      "padding": "8px 12px",
+      "border": "1px solid #ccc",
+      "borderRadius": "4px",
+      "fontSize": "14px",
+      "width": "200px",
+      "outline": "none",
+      "transition": "border-color 0.2s ease"
+    },
+    "focusStyles": {
+      "borderColor": "#007bff",
+      "boxShadow": "0 0 0 2px rgba(0, 123, 255, 0.25)"
+    }
+  },
+  "behavior": {
+    "events": {
+      "onChange": {
+        "type": "function",
+        "description": "Handles input value changes"
+      },
+      "onFocus": {
+        "type": "function",
+        "description": "Handles input focus events"
+      },
+      "onBlur": {
+        "type": "function",
+        "description": "Handles input blur events"
+      }
+    }
+  },
+  "spa": {
+    "pluginType": "component",
+    "mountable": true,
+    "sequence": {
+      "id": "input-interaction-symphony",
+      "movements": [
+        {
+          "name": "onMount",
+          "beat": 1,
+          "event": "COMPONENT_MOUNTED"
+        },
+        {
+          "name": "onChange",
+          "beat": 2,
+          "event": "INPUT_CHANGED"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "id": "button-component-001",
+  "metadata": {
+    "name": "Button",
+    "type": "Button",
+    "description": "Interactive button component for user actions",
+    "version": "1.0.0",
+    "author": "RenderX Team",
+    "category": "interactive",
+    "tags": ["button", "interactive", "ui", "action"],
+    "icon": "🔘"
+  },
+  "structure": {
+    "type": "button",
+    "props": {
+      "className": "btn btn-primary",
+      "onClick": "handleClick",
+      "type": "button"
+    },
+    "children": [
+      {
+        "type": "text",
+        "content": "Click Me"
+      }
+    ]
+  },
+  "styling": {
+    "defaultStyles": {
+      "padding": "8px 16px",
+      "border": "1px solid #007bff",
+      "borderRadius": "4px",
+      "backgroundColor": "#007bff",
+      "color": "white",
+      "cursor": "pointer",
+      "fontSize": "14px",
+      "fontWeight": "500",
+      "transition": "all 0.2s ease"
+    },
+    "hoverStyles": {
+      "backgroundColor": "#0056b3",
+      "borderColor": "#0056b3"
+    },
+    "activeStyles": {
+      "backgroundColor": "#004085",
+      "borderColor": "#004085"
+    }
+  },
+  "behavior": {
+    "events": {
+      "onClick": {
+        "type": "function",
+        "description": "Handles button click events",
+        "defaultAction": "console.log('Button clicked')"
+      },
+      "onHover": {
+        "type": "function",
+        "description": "Handles button hover events",
+        "defaultAction": "console.log('Button hovered')"
+      }
+    },
+    "states": {
+      "disabled": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether the button is disabled"
+      },
+      "loading": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether the button is in loading state"
+      }
+    }
+  },
+  "variants": [
+    {
+      "name": "Primary",
+      "props": {
+        "className": "btn btn-primary"
+      },
+      "styling": {
+        "backgroundColor": "#007bff",
+        "borderColor": "#007bff"
+      }
+    },
+    {
+      "name": "Secondary",
+      "props": {
+        "className": "btn btn-secondary"
+      },
+      "styling": {
+        "backgroundColor": "#6c757d",
+        "borderColor": "#6c757d"
+      }
+    },
+    {
+      "name": "Success",
+      "props": {
+        "className": "btn btn-success"
+      },
+      "styling": {
+        "backgroundColor": "#28a745",
+        "borderColor": "#28a745"
+      }
+    }
+  ],
+  "accessibility": {
+    "ariaLabel": "Interactive button",
+    "role": "button",
+    "tabIndex": 0,
+    "keyboardSupport": {
+      "Enter": "trigger click",
+      "Space": "trigger click"
+    }
+  },
+  "spa": {
+    "pluginType": "component",
+    "mountable": true,
+    "sequence": {
+      "id": "button-interaction-symphony",
+      "movements": [
+        {
+          "name": "onMount",
+          "beat": 1,
+          "event": "COMPONENT_MOUNTED"
+        },
+        {
+          "name": "onClick",
+          "beat": 2,
+          "event": "BUTTON_CLICKED"
+        },
+        {
+          "name": "onUnmount",
+          "beat": 3,
+          "event": "COMPONENT_UNMOUNTED"
+        }
+      ]
+    }
+  }
+}
