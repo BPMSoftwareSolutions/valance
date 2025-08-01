@@ -101,8 +101,8 @@ export const CIAPlugin = {
   },
 };
 
-// Note: handlers export removed - JsonLoader is purely event-driven
-// Handlers subscribe to event bus and respond to beat emissions
-// No direct handler calls needed with the new architecture
+// Export main sequence as 'sequence' for MusicalConductor compatibility
+export { JSON_COMPONENT_LOADING_SEQUENCE as sequence } from "./sequence.ts";
 
+// Note: Testing TypeScript direct loading - no handlers export needed
 export default CIAPlugin;

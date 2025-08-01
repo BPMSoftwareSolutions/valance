@@ -1,42 +1,6 @@
 [
   {
-    "validator": "cia-plugin-interface-runtime",
-    "passed": true,
-    "message": "All checks passed",
-    "details": []
-  },
-  {
-    "validator": "cia-handler-alignment-runtime",
-    "passed": true,
-    "message": "All checks passed",
-    "details": []
-  },
-  {
-    "validator": "cia-mount-call-safety",
-    "passed": true,
-    "message": "All checks passed",
-    "details": []
-  },
-  {
-    "validator": "cia-plugin-loader-validation",
-    "passed": true,
-    "message": "All checks passed",
-    "details": []
-  },
-  {
-    "validator": "cia-conductor-test-harness",
-    "passed": true,
-    "message": "All checks passed",
-    "details": []
-  },
-  {
-    "validator": "cia-sequence-trigger-mapping",
-    "passed": true,
-    "message": "All checks passed",
-    "details": []
-  },
-  {
-    "validator": "cia-component-decoupling",
+    "validator": "cia-spa-plugin-export-compliance",
     "passed": true,
     "message": "All checks passed",
     "details": []

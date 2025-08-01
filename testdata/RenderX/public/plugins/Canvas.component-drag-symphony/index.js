@@ -9,25 +9,36 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
+  if ((from && typeof from === "object") || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
-));
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toESM = (mod, isNodeMode, target) => (
+  (target = mod != null ? __create(__getProtoOf(mod)) : {}),
+  __copyProps(
+    // If the importer is in node compatibility mode or this is not an ESM
+    // file that has been converted to a CommonJS file using a Babel-
+    // compatible transform (i.e. "__esModule" has not been set), then set
+    // "default" to the CommonJS "module.exports" for node compatibility.
+    isNodeMode || !mod || !mod.__esModule
+      ? __defProp(target, "default", { value: mod, enumerable: true })
+      : target,
+    mod
+  )
+);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var stdin_exports = {};
 __export(stdin_exports, {
-  CANVAS_COMPONENT_DRAG_SEQUENCE: () => import_sequence.CANVAS_COMPONENT_DRAG_SEQUENCE,
+  CANVAS_COMPONENT_DRAG_SEQUENCE: () =>
+    import_sequence.CANVAS_COMPONENT_DRAG_SEQUENCE,
+  sequence: () => import_sequence.CANVAS_COMPONENT_DRAG_SEQUENCE,
   CIAPlugin: () => CIAPlugin,
   PLUGIN_INFO: () => PLUGIN_INFO,
   applyDragFeedback: () => import_dragCoordination.applyDragFeedback,
@@ -42,12 +53,13 @@ __export(stdin_exports, {
   handleCanvasElementCSSSync: () => import_onDrop.handleCanvasElementCSSSync,
   handleCanvasElementMoved: () => import_onDragging.default,
   processElementDrag: () => import_dragProcessing.processElementDrag,
-  startCanvasComponentDragFlow: () => import_sequence.startCanvasComponentDragFlow,
+  startCanvasComponentDragFlow: () =>
+    import_sequence.startCanvasComponentDragFlow,
   syncDragChanges: () => import_dragCoordination.syncDragChanges,
   useCanvasComponentDrag: () => import_hooks.useCanvasComponentDrag,
   useCanvasComponentDragDefault: () => import_hooks.default,
   validateDragBoundaries: () => import_dragValidation.validateDragBoundaries,
-  validateDragContext: () => import_dragValidation.validateDragContext
+  validateDragContext: () => import_dragValidation.validateDragContext,
 });
 module.exports = __toCommonJS(stdin_exports);
 var import_sequence = require("./sequence.ts");
@@ -62,15 +74,16 @@ const PLUGIN_INFO = {
   id: "ComponentDrag.component-drag-symphony",
   name: "Canvas Component Drag Symphony No. 4",
   version: "1.0.0",
-  description: "Dynamic Movement - Dynamic drag operation flow for canvas components",
+  description:
+    "Dynamic Movement - Dynamic drag operation flow for canvas components",
   category: "canvas-operations",
   type: "symphony-plugin",
   musical: {
     key: "D Major",
     tempo: 140,
     timeSignature: "4/4",
-    feel: "Dynamic element dragging with real-time position updates"
-  }
+    feel: "Dynamic element dragging with real-time position updates",
+  },
 };
 const CIAPlugin = {
   mount: (conductor, eventBus) => {
@@ -110,6 +123,6 @@ const CIAPlugin = {
       console.error("\u{1F6A8} ComponentDrag Plugin: Unmount failed:", error);
       return false;
     }
-  }
+  },
 };
 var stdin_default = CIAPlugin;
