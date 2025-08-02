@@ -86,10 +86,65 @@ const ElementLibrary: React.FC<ElementLibraryProps> = ({
   const [draggedComponent, setDraggedComponent] =
     useState<LoadedJsonComponent | null>(null);
 
-  // DISABLED: Prevent race condition with plugin loading
-  // useEffect(() => {
-  //   loadComponentsAfterPlugins();
-  // }, []);
+  // Component loading function - now properly scoped within ElementLibrary
+  const loadComponentsAfterPlugins = async () => {
+    try {
+      console.log("🔄 Loading JSON components with musical sequences...");
+
+      // Get the communication system from global scope
+      const system = (window as any).renderxCommunicationSystem;
+
+      if (system) {
+        jsonComponentLoader.connectToConductor(system.conductor);
+
+        // Use musical sequence loading
+        const result = await jsonComponentLoader.loadAllComponentsMusical();
+
+        if (result.failed.length > 0) {
+          console.warn("⚠️ Some components failed to load:", result.failed);
+          setError(`Failed to load ${result.failed.length} components`);
+        }
+
+        console.log(
+          `✅ Loaded ${result.success.length} JSON components via musical sequences`
+        );
+
+        // Update React state with loaded components
+        setComponents(result.success);
+        setLoading(false);
+        setError(null);
+
+        console.log(
+          `🎨 Updated UI state with ${result.success.length} components`
+        );
+      } else {
+        console.log("🔄 No conductor available for component loading");
+        setError("No conductor available for component loading");
+        setLoading(false);
+      }
+    } catch (err) {
+      console.error("❌ Failed to load JSON components:", err);
+      setError(
+        err instanceof Error ? err.message : "Failed to load components"
+      );
+      setLoading(false);
+    }
+  };
+
+  // Load components when ElementLibrary mounts and communication system is ready
+  useEffect(() => {
+    const checkAndLoadComponents = () => {
+      const system = (window as any).renderxCommunicationSystem;
+      if (system) {
+        loadComponentsAfterPlugins();
+      } else {
+        // Wait a bit and try again
+        setTimeout(checkAndLoadComponents, 100);
+      }
+    };
+
+    checkAndLoadComponents();
+  }, []);
 
   const getComponentsByCategory = () => {
     const categories: Record<string, LoadedJsonComponent[]> = {};
@@ -592,36 +647,6 @@ const AppContent: React.FC = () => {
     }
   };
 
-  // Component loading function - defined in AppContent where it's called
-  const loadComponentsAfterPlugins = async (system = communicationSystem) => {
-    try {
-      console.log("🔄 Loading JSON components with musical sequences...");
-
-      // Connect to conductor if available
-      if (system) {
-        jsonComponentLoader.connectToConductor(system.conductor);
-
-        // Use musical sequence loading
-        const result = await jsonComponentLoader.loadAllComponentsMusical();
-
-        if (result.failed.length > 0) {
-          console.warn("⚠️ Some components failed to load:", result.failed);
-        }
-
-        console.log(
-          `✅ Loaded ${result.success.length} JSON components via musical sequences`
-        );
-
-        // TODO: Need to pass components to ElementLibrary
-        // This will require refactoring the component state management
-      } else {
-        console.log("🔄 No conductor available for component loading");
-      }
-    } catch (err) {
-      console.error("❌ Failed to load JSON components:", err);
-    }
-  };
-
   // Initialize communication system
   useEffect(() => {
     console.log("🚀 RenderX Evolution - Initializing Communication System...");
@@ -634,14 +659,12 @@ const AppContent: React.FC = () => {
       console.log("📡 EventBus:", system.eventBus.getDebugInfo());
       console.log("🎼 Musical Conductor:", system.conductor.getStatistics());
 
-      // Register CIA-compliant plugins first, then load components
+      // Register CIA-compliant plugins
       system.conductor
         .registerCIAPlugins()
         .then(() => {
           console.log("🧠 CIA plugins registration completed");
-
-          // Now load JSON components after plugins are ready
-          loadComponentsAfterPlugins(system);
+          // Component loading is now handled by ElementLibrary component
         })
         .catch((error) => {
           console.error("❌ CIA plugins registration failed:", error);
