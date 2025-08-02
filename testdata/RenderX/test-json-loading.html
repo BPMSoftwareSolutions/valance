@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JSON Component Loading Test</title>
+  </head>
+  <body>
+    <h1>JSON Component Loading Test</h1>
+    <div id="results"></div>
+
+    <script>
+      async function testJsonComponentLoading() {
+        const results = document.getElementById("results");
+
+        try {
+          console.log("🧪 Testing JSON component loading...");
+
+          // Test 1: Direct fetch of JSON components
+          const response = await fetch("/json-components/button.json");
+          const buttonComponent = await response.json();
+
+          results.innerHTML += `
+                    <h2>✅ Test 1: Direct JSON Fetch</h2>
+                    <p>Successfully loaded: ${buttonComponent.metadata.name}</p>
+                    <p>Type: ${buttonComponent.metadata.type}</p>
+                    <p>Description: ${buttonComponent.metadata.description}</p>
+                `;
+
+          // Test 2: Check if plugins are loaded
+          if (window.renderxPlugins) {
+            results.innerHTML += `
+                        <h2>✅ Test 2: Plugin Registry</h2>
+                        <p>Plugins found: ${
+                          Object.keys(window.renderxPlugins).length
+                        }</p>
+                        <ul>
+                            ${Object.keys(window.renderxPlugins)
+                              .map((key) => `<li>${key}</li>`)
+                              .join("")}
+                        </ul>
+                    `;
+          } else {
+            results.innerHTML += `
+                        <h2>❌ Test 2: Plugin Registry</h2>
+                        <p>No plugin registry found</p>
+                    `;
+          }
+
+          // Test 3: Check if EventBus exists
+          if (window.eventBus) {
+            results.innerHTML += `
+                        <h2>✅ Test 3: EventBus</h2>
+                        <p>EventBus found and available</p>
+                    `;
+
+            // Test 4: Trigger component loading manually
+            console.log("🧪 Manually triggering component loading...");
+            window.eventBus.emit("component:load:start", {
+              source: "manual-test",
+              timestamp: Date.now(),
+            });
+
+            results.innerHTML += `
+                        <h2>✅ Test 4: Manual Trigger</h2>
+                        <p>Manually triggered component:load:start event</p>
+                    `;
+          } else {
+            results.innerHTML += `
+                        <h2>❌ Test 3: EventBus</h2>
+                        <p>No EventBus found</p>
+                    `;
+          }
+        } catch (error) {
+          console.error("❌ Test failed:", error);
+          results.innerHTML += `
+                    <h2>❌ Test Failed</h2>
+                    <p>Error: ${error.message}</p>
+                `;
+        }
+      }
+
+      // Run test when page loads
+      window.addEventListener("load", () => {
+        setTimeout(testJsonComponentLoading, 2000); // Wait 2 seconds for plugins to load
+
+        // Also try to manually trigger JSON loading after 3 seconds
+        setTimeout(() => {
+          console.log("🧪 Manually triggering JSON component loading...");
+          if (window.eventBus) {
+            window.eventBus.emit("component:load:start", {
+              source: "manual-test",
+              timestamp: Date.now(),
+            });
+
+            document.getElementById("results").innerHTML += `
+                        <h2>🧪 Manual Trigger Test</h2>
+                        <p>Manually triggered component:load:start event at ${new Date().toLocaleTimeString()}</p>
+                    `;
+          } else {
+            document.getElementById("results").innerHTML += `
+                        <h2>❌ Manual Trigger Failed</h2>
+                        <p>EventBus not available for manual trigger</p>
+                    `;
+          }
+        }, 3000);
+      });
+    </script>
+  </body>
+</html>

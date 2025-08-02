@@ -1,0 +1,102 @@
+{
+  "name": "cia-plugin-mounting-compliance",
+  "description": "Comprehensive CIA validation for plugin mounting compliance and architectural fitness",
+  "version": "1.0.0",
+  "author": "Valence CIA Validation System",
+  "tags": ["cia", "plugin-mounting", "architectural-fitness", "event-driven"],
+  "validators": [
+    "CIA/spa-plugin-export-compliance",
+    "CIA/conductor-mount-compatibility",
+    "CIA/plugin-interface-runtime",
+    "CIA/handler-alignment-runtime",
+    "CIA/mount-call-safety"
+  ],
+  "validationLevels": {
+    "critical": [
+      "CIA/spa-plugin-export-compliance",
+      "CIA/conductor-mount-compatibility",
+      "CIA/plugin-interface-runtime"
+    ],
+    "important": [
+      "CIA/handler-alignment-runtime",
+      "CIA/mount-call-safety"
+    ],
+    "recommended": []
+  },
+  "scope": {
+    "pluginFiles": [
+      "**/*symphony*/index.{ts,js}",
+      "**/plugins/**/*symphony*/**/*.{ts,js}"
+    ],
+    "conductorFiles": [
+      "**/*conductor*.{ts,js}",
+      "**/src/**/*conductor*.{ts,js}"
+    ],
+    "excludePatterns": [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/*.test.{ts,js}",
+      "**/*.spec.{ts,js}"
+    ]
+  },
+  "reportingConfig": {
+    "generateReports": true,
+    "confidenceThreshold": 0.8,
+    "includeMetadata": true,
+    "includeSuggestions": true,
+    "groupByValidationLevel": true
+  },
+  "architecturalContext": {
+    "targetArchitecture": "Event-Driven Plugin Architecture",
+    "description": "Validates compliance with CIA (Conductor Integration Architecture) for safe plugin mounting and event-driven plugin support",
+    "keyPrinciples": [
+      "Plugins export required interfaces for conductor mounting",
+      "Conductor supports both handler-based and event-driven plugins",
+      "Graceful degradation when plugins lack handlers",
+      "Event bus is primary communication mechanism",
+      "Backward compatibility with existing handler-based plugins"
+    ],
+    "validationStrategy": "Fail-fast on critical architectural violations, warn on important issues, suggest improvements for recommended practices"
+  },
+  "usageExamples": {
+    "validateRenderXPlugins": {
+      "command": "node cli/cli.js --profile cia-plugin-mounting-compliance --files \"testdata/RenderX/public/plugins/**/*symphony*\"",
+      "description": "Validate all RenderX SPA plugins for CIA mounting compliance"
+    },
+    "validateConductor": {
+      "command": "node cli/cli.js --profile cia-plugin-mounting-compliance --files \"testdata/RenderX/src/**/*conductor*\"",
+      "description": "Validate RenderX conductor for plugin mounting compatibility"
+    },
+    "cicdIntegration": {
+      "command": "node cli/cli.js --profile cia-plugin-mounting-compliance --files \"src/**/*.{ts,js}\" --format json --confidence-threshold 0.9",
+      "description": "CI/CD validation with high confidence threshold and JSON output"
+    }
+  },
+  "expectedOutcomes": {
+    "beforeFixes": {
+      "expectedFailures": [
+        "Canvas, Component, ElementLibrary, ControlPanel plugins missing sequence export",
+        "Conductor mount function requires handlers for all plugins",
+        "Import resolution issues in plugin files",
+        "Play method uses legacy movementName instead of sequenceId"
+      ],
+      "expectedWarnings": [
+        "Missing event-driven architecture documentation",
+        "No graceful degradation patterns",
+        "Inconsistent export structures across plugins"
+      ]
+    },
+    "afterFixes": {
+      "expectedPasses": [
+        "All plugins export required sequence interface",
+        "Conductor supports optional handlers",
+        "Event-driven architecture properly implemented",
+        "Backward compatibility maintained"
+      ],
+      "remainingWarnings": [
+        "Some plugins may still use handler-based approach (acceptable)",
+        "Documentation could be enhanced for clarity"
+      ]
+    }
+  }
+}

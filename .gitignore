@@ -74,6 +74,13 @@ dist
 .cache/
 public
 
+# Whitelist specific testdata folders
+!testdata/renderx/public/
+!testdata/renderx/public/plugins/
+!testdata/RenderX/public/
+!testdata/RenderX/public/plugins/
+!testdata/RenderX/public/json-components/
+
 # Storybook build outputs
 .out
 .storybook-out

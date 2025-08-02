@@ -1,0 +1,77 @@
+{
+  "name": "cia-spa-plugin-directory-compliance",
+  "description": "Validates entire SPA plugin directories for CIA conductor mounting compliance",
+  "type": "directory",
+  "directoryPattern": ".*plugins.*symphony$",
+  "confidenceThreshold": 0.95,
+  "version": "1.0.0",
+  "author": "Valence CIA Validation System",
+  "tags": ["cia", "spa", "plugin-directory", "conductor-mounting", "architectural-compliance"],
+  "rules": [
+    {
+      "plugin": "validateSpaPluginDirectoryCompliance",
+      "checkRequiredFiles": true,
+      "checkForbiddenFiles": true,
+      "checkExportCompliance": true,
+      "checkDirectoryStructure": true,
+      "validateArchitecturalIntegrity": true,
+      "verbose": true
+    }
+  ],
+  "pluginDirectoryRequirements": {
+    "requiredFiles": [
+      "index.js",
+      "sequence.js",
+      "manifest.json"
+    ],
+    "forbiddenFiles": [
+      "index.ts",
+      "sequence.ts"
+    ],
+    "optionalFiles": [
+      "handlers/",
+      "logic/",
+      "hooks/",
+      "components/",
+      "dist/"
+    ],
+    "requiredExports": {
+      "index.js": ["sequence", "default"],
+      "sequence.js": ["*_SEQUENCE"]
+    }
+  },
+  "architecturalChecks": {
+    "runtimePurity": [
+      "No TypeScript source files in runtime directory",
+      "Only compiled JavaScript files present",
+      "Clean separation between source and runtime"
+    ],
+    "exportCompliance": [
+      "index.js exports required 'sequence' for conductor mounting",
+      "index.js exports CIA-compliant default plugin",
+      "All exports follow CommonJS or ES6 patterns"
+    ],
+    "structuralIntegrity": [
+      "Required files present and accessible",
+      "Import paths resolve correctly",
+      "No circular dependencies"
+    ]
+  },
+  "documentation": {
+    "purpose": "Validates entire plugin directories as cohesive architectural units",
+    "scope": "All SPA plugin directories ending with 'symphony'",
+    "validationApproach": "Directory-level validation instead of individual file validation",
+    "keyPrinciples": [
+      "Plugin as architectural unit - validate entire directory structure",
+      "Runtime purity - no development artifacts in production directories",
+      "Export compliance - all required interfaces present",
+      "Structural integrity - complete and consistent plugin architecture"
+    ],
+    "advantages": [
+      "Catches architectural violations across entire plugin",
+      "Validates plugin as complete functional unit",
+      "Prevents partial compliance (some files compliant, others not)",
+      "Ensures consistent plugin structure across all plugins"
+    ]
+  }
+}

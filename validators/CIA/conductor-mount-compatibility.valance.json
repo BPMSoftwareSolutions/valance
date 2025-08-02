@@ -1,0 +1,85 @@
+{
+  "name": "cia-conductor-mount-compatibility",
+  "description": "Validates that conductor mount function handles optional handlers for event-driven plugins",
+  "type": "content",
+  "filePattern": ".*conductor\\.(ts|js)$",
+  "confidenceThreshold": 0.9,
+  "version": "1.0.0",
+  "author": "Valence CIA Validation System",
+  "tags": ["cia", "conductor", "mount-compatibility", "event-driven"],
+  "rules": [
+    {
+      "plugin": "validateConductorMountCompatibility",
+      "checkOptionalHandlers": true,
+      "checkEventDrivenSupport": true,
+      "checkGracefulDegradation": true,
+      "checkPlayMethodCompatibility": true,
+      "validateArchitecturalAlignment": true,
+      "verbose": true
+    }
+  ],
+  "mountCompatibilityChecks": {
+    "requiredPatterns": [
+      "handlers\\s*\\?",
+      "typeof\\s+handlers\\s*===\\s*['\"]object['\"]",
+      "handlers\\s*&&\\s*typeof",
+      "if\\s*\\(\\s*handlers\\s*\\)"
+    ],
+    "eventDrivenPatterns": [
+      "event-driven",
+      "event\\s*bus",
+      "optional.*handlers",
+      "handlers.*optional"
+    ],
+    "playMethodPatterns": [
+      "play\\s*\\([^)]*sequenceId",
+      "startSequence\\s*\\(",
+      "executeSequence\\s*\\("
+    ],
+    "gracefulDegradationPatterns": [
+      "continue.*operation",
+      "graceful.*failure",
+      "system.*continues",
+      "without.*handlers"
+    ]
+  },
+  "architecturalAlignment": {
+    "eventDrivenArchitecture": [
+      "Supports plugins without handlers export",
+      "Uses event bus for plugin communication",
+      "Handlers are optional for mounting",
+      "Play method uses sequenceId instead of movementName"
+    ],
+    "backwardCompatibility": [
+      "Still supports handler-based plugins",
+      "Validates handlers when provided",
+      "Maintains existing plugin contracts",
+      "Graceful handling of mixed plugin types"
+    ]
+  },
+  "documentation": {
+    "purpose": "Ensures conductor mount function supports both handler-based and event-driven SPA plugins",
+    "scope": "Conductor files that implement plugin mounting functionality",
+    "validationTypes": [
+      "Optional handlers parameter validation",
+      "Event-driven plugin support verification",
+      "Play method architectural alignment",
+      "Graceful degradation for missing handlers",
+      "Backward compatibility maintenance"
+    ],
+    "commonIssues": [
+      "Mount function requires handlers even for event-driven plugins",
+      "No conditional validation for optional handlers",
+      "Play method still uses movementName instead of sequenceId",
+      "Missing support for event-bus driven architecture",
+      "Lack of graceful handling for mixed plugin types"
+    ],
+    "fixSuggestions": [
+      "Make handlers parameter optional in mount signature",
+      "Add conditional handlers validation: if (handlers && typeof handlers === 'object')",
+      "Update play method to use sequenceId and startSequence()",
+      "Add support for event-driven plugins without handlers",
+      "Implement graceful degradation for missing handlers"
+    ]
+  }
+}

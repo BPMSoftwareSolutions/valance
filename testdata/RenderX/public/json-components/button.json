@@ -1,0 +1,106 @@
+{
+  "id": "button-component-001",
+  "metadata": {
+    "name": "Button",
+    "type": "Button",
+    "description": "Interactive button component for user actions",
+    "version": "1.0.0",
+    "author": "RenderX Team",
+    "category": "interactive",
+    "tags": ["button", "interactive", "ui", "action"],
+    "icon": "🔘"
+  },
+  "ui": {
+    "template": "<button class=\"btn btn-primary\" type=\"button\" onclick=\"handleClick\">Click Me</button>",
+    "styles": {
+      "css": ".btn { padding: 8px 16px; border: 1px solid #007bff; border-radius: 4px; background-color: #007bff; color: white; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s ease; } .btn:hover { background-color: #0056b3; border-color: #0056b3; } .btn:active { background-color: #004085; border-color: #004085; }",
+      "variables": {
+        "primary-color": "#007bff",
+        "primary-hover": "#0056b3",
+        "primary-active": "#004085"
+      }
+    }
+  },
+  "integration": {
+    "properties": {
+      "schema": {
+        "text": {
+          "type": "string",
+          "default": "Click Me",
+          "description": "Button text content",
+          "required": true
+        },
+        "variant": {
+          "type": "string",
+          "default": "primary",
+          "description": "Button style variant",
+          "enum": ["primary", "secondary", "success"]
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the button is disabled"
+        },
+        "loading": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the button is in loading state"
+        }
+      },
+      "defaultValues": {
+        "text": "Click Me",
+        "variant": "primary",
+        "disabled": false,
+        "loading": false
+      }
+    },
+    "canvasIntegration": {
+      "resizable": true,
+      "draggable": true,
+      "selectable": true,
+      "minWidth": 80,
+      "minHeight": 32,
+      "maxWidth": 400,
+      "maxHeight": 60,
+      "defaultWidth": 120,
+      "defaultHeight": 40,
+      "snapToGrid": true,
+      "allowChildElements": false
+    },
+    "events": {
+      "onClick": {
+        "description": "Handles button click events",
+        "parameters": ["event"]
+      },
+      "onHover": {
+        "description": "Handles button hover events",
+        "parameters": ["event"]
+      }
+    }
+  },
+  "musicalSequences": {
+    "componentInteraction": {
+      "sequenceName": "Button Interaction Symphony",
+      "description": "Handles button interaction events",
+      "key": "C Major",
+      "tempo": 120,
+      "movements": [
+        {
+          "name": "Button Click Movement",
+          "measures": [
+            {
+              "beat": 1,
+              "event": "BUTTON_CLICKED",
+              "dynamics": "forte"
+            },
+            {
+              "beat": 2,
+              "event": "COMPONENT_UPDATED",
+              "dynamics": "mezzo-forte"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

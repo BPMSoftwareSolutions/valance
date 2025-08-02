@@ -26,13 +26,7 @@ import {
   startLayoutModeChangeFlow
 } from './layout-sequences/PanelToggleSequence';
 
-// Import canvas sequences
-import {
-  ALL_CANVAS_SEQUENCES,
-  CanvasSequences,
-  registerAllCanvasSequences,
-  registerAllCanvasHandlers
-} from './canvas-sequences';
+// Canvas sequences are now handled by dynamic symphony plugins
 
 /**
  * All Musical Sequences Registry
@@ -45,10 +39,9 @@ export const ALL_SEQUENCES = [
 
   // Layout Sequences
   PANEL_TOGGLE_SEQUENCE,
-  LAYOUT_MODE_CHANGE_SEQUENCE,
+  LAYOUT_MODE_CHANGE_SEQUENCE
 
-  // Canvas Sequences
-  ...ALL_CANVAS_SEQUENCES
+  // Canvas sequences now handled by dynamic symphony plugins
 ] as const;
 
 /**
@@ -82,8 +75,7 @@ export const MusicalSequences = {
   startPanelToggleFlow,
   startLayoutModeChangeFlow,
 
-  // Canvas Sequences
-  ...CanvasSequences,
+  // Canvas sequences now handled by dynamic symphony plugins
   
   /**
    * Generic sequence starter for custom sequences
@@ -235,8 +227,7 @@ export function initializeMusicalSequences(conductor: MusicalConductor): {
   // Register all valid sequences
   registerAllSequences(conductor);
 
-  // Register all canvas handlers with event bus
-  registerAllCanvasHandlers(conductor, eventBus);
+  // Canvas handlers now registered by dynamic symphony plugins
 
   const registeredSequences = conductor.getSequenceNames().length;
   const success = registeredSequences > 0;

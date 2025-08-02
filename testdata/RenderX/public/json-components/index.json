@@ -1,0 +1,10 @@
+{
+  "components": [
+    "button.json",
+    "input.json", 
+    "text.json"
+  ],
+  "version": "1.0.0",
+  "description": "Available JSON components for RenderX",
+  "lastUpdated": "2025-01-02T00:00:00Z"
+}

@@ -11,6 +11,7 @@ export interface JsonComponentMetadata {
   description: string;
   category: string;
   tags: string[];
+  icon?: string;
   replaces?: string;
 }
 
@@ -25,7 +26,7 @@ export interface JsonComponentUI {
 }
 
 export interface JsonComponentPropertySchema {
-  type: 'string' | 'number' | 'boolean' | 'array' | 'object';
+  type: "string" | "number" | "boolean" | "array" | "object";
   default: any;
   description: string;
   required?: boolean;

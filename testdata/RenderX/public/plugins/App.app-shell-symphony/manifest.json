@@ -1,0 +1,29 @@
+{
+  "id": "app-shell-symphony",
+  "name": "App Shell Symphony",
+  "version": "1.0.0",
+  "description": "Main application shell and layout management for RX.Evolution.client",
+  "author": "RenderX Team",
+  "type": "symphony",
+  "dependencies": [],
+  "capabilities": ["layout", "shell", "navigation", "theme-management"],
+  "tags": ["shell", "layout", "navigation", "core"],
+  "license": "MIT",
+  "entry": "index.js",
+  "exports": {
+    "sequence": "./sequence.js",
+    "handlers": "./handlers/index.js",
+    "components": "./components/index.js"
+  },
+  "spa": {
+    "tempo": 140,
+    "key": "G-major",
+    "movements": 4
+  },
+  "evolution": {
+    "isCore": true,
+    "priority": 1,
+    "autoMount": true,
+    "layoutProvider": true
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "name": "cia-spa-plugin-export-compliance",
+  "description": "Validates that SPA plugins export required interfaces for CIA conductor mounting",
+  "type": "content",
+  "filePattern": ".*plugins.*symphony.*index\\.(ts|js)$",
+  "enforcementLevel": "strict",
+  "confidenceThreshold": 0.95,
+  "version": "1.0.0",
+  "author": "Valence CIA Validation System",
+  "tags": ["cia", "spa", "plugin-exports", "conductor-mounting"],
+  "rules": [
+    {
+      "plugin": "validateSpaPluginExportCompliance",
+      "checkSequenceExport": true,
+      "checkHandlersExport": true,
+      "checkCiaPluginExport": true,
+      "checkImportResolution": true,
+      "validateExportStructure": true,
+      "verbose": true
+    }
+  ],
+  "exportRequirements": {
+    "requiredExports": ["sequence", "default"],
+    "optionalExports": ["handlers"],
+    "exportPatterns": [
+      "export\\s+\\{[^}]*sequence[^}]*\\}",
+      "export\\s+const\\s+sequence\\s*=",
+      "export\\s+default\\s+\\w+Plugin",
+      "export\\s+\\{[^}]*handlers[^}]*\\}"
+    ],
+    "importPatterns": [
+      "import\\s+\\{[^}]*\\}\\s+from\\s+['\"]\\./sequence",
+      "import\\s+\\{[^}]*\\}\\s+from\\s+['\"]\\./handlers"
+    ]
+  },
+  "complianceChecks": {
+    "sequenceExportValidation": [
+      "Must export 'sequence' for conductor mounting",
+      "Sequence should be imported from sequence.ts file",
+      "Export should use named export pattern"
+    ],
+    "handlerExportValidation": [
+      "Handlers export is optional for event-driven plugins",
+      "If present, handlers must be object mapping movements to functions",
+      "Missing handlers should not cause mounting failures"
+    ],
+    "ciaPluginValidation": [
+      "Must export default CIA-compliant plugin object",
+      "Plugin should have mount/unmount methods",
+      "Plugin should follow CIA plugin interface"
+    ],
+    "importResolutionValidation": [
+      "All imports must resolve correctly",
+      "No circular dependencies",
+      "Proper file extensions in imports"
+    ]
+  },
+  "documentation": {
+    "purpose": "Ensures SPA plugins export required interfaces for CIA conductor mounting compatibility",
+    "scope": "All SPA plugin index.ts/js files in symphony directories",
+    "validationTypes": [
+      "Required sequence export validation",
+      "Optional handlers export validation",
+      "CIA plugin interface compliance",
+      "Import resolution verification",
+      "Export structure consistency"
+    ],
+    "commonIssues": [
+      "TypeScript source files present in runtime directory",
+      "Missing 'sequence' export prevents conductor mounting",
+      "Import resolution failures cause plugin loading errors",
+      "Inconsistent export patterns across plugins",
+      "Missing CIA plugin interface implementation",
+      "Handlers export issues in event-driven plugins"
+    ],
+    "fixSuggestions": [
+      "Remove all .ts files from plugin directories - keep only compiled .js files",
+      "Add 'export { SEQUENCE_NAME as sequence } from \"./sequence.js\"'",
+      "Ensure all imports use .js extensions for runtime compatibility",
+      "Make handlers export optional for event-driven plugins",
+      "Implement CIA plugin interface with mount/unmount methods",
+      "Use consistent export patterns across all plugins"
+    ]
+  }
+}

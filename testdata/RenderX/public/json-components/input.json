@@ -1,0 +1,110 @@
+{
+  "id": "input-component-001",
+  "metadata": {
+    "name": "Text Input",
+    "type": "Input",
+    "description": "Text input field for user data entry",
+    "version": "1.0.0",
+    "author": "RenderX Team",
+    "category": "form",
+    "tags": ["input", "form", "text", "data-entry"],
+    "icon": "📝"
+  },
+  "ui": {
+    "template": "<input class=\"form-input\" type=\"text\" placeholder=\"Enter text...\" onchange=\"handleChange\" />",
+    "styles": {
+      "css": ".form-input { padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; width: 200px; outline: none; transition: border-color 0.2s ease; } .form-input:focus { border-color: #007bff; box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25); }",
+      "variables": {
+        "border-color": "#ccc",
+        "focus-color": "#007bff",
+        "focus-shadow": "rgba(0, 123, 255, 0.25)"
+      }
+    }
+  },
+  "integration": {
+    "properties": {
+      "schema": {
+        "placeholder": {
+          "type": "string",
+          "default": "Enter text...",
+          "description": "Input placeholder text",
+          "required": false
+        },
+        "value": {
+          "type": "string",
+          "default": "",
+          "description": "Input value",
+          "required": false
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the input is disabled"
+        },
+        "required": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the input is required"
+        }
+      },
+      "defaultValues": {
+        "placeholder": "Enter text...",
+        "value": "",
+        "disabled": false,
+        "required": false
+      }
+    },
+    "canvasIntegration": {
+      "resizable": true,
+      "draggable": true,
+      "selectable": true,
+      "minWidth": 100,
+      "minHeight": 32,
+      "maxWidth": 500,
+      "maxHeight": 40,
+      "defaultWidth": 200,
+      "defaultHeight": 36,
+      "snapToGrid": true,
+      "allowChildElements": false
+    },
+    "events": {
+      "onChange": {
+        "description": "Handles input value changes",
+        "parameters": ["event", "value"]
+      },
+      "onFocus": {
+        "description": "Handles input focus events",
+        "parameters": ["event"]
+      },
+      "onBlur": {
+        "description": "Handles input blur events",
+        "parameters": ["event"]
+      }
+    }
+  },
+  "musicalSequences": {
+    "componentInteraction": {
+      "sequenceName": "Input Interaction Symphony",
+      "description": "Handles input field interaction events",
+      "key": "D Major",
+      "tempo": 100,
+      "movements": [
+        {
+          "name": "Input Change Movement",
+          "measures": [
+            {
+              "beat": 1,
+              "event": "INPUT_CHANGED",
+              "dynamics": "mezzo-forte"
+            },
+            {
+              "beat": 2,
+              "event": "COMPONENT_UPDATED",
+              "dynamics": "piano"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

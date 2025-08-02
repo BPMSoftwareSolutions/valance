@@ -1,0 +1,156 @@
+{
+  "manifestVersion": "1.0.0",
+  "description": "RenderX Symphony Plugin Manifest - Domain-based plugin registry",
+  "lastUpdated": "2025-08-01T11:30:00.000Z",
+  "domains": {
+    "App": {
+      "description": "Application-level functionality and shell management",
+      "plugins": ["App.app-shell-symphony"]
+    },
+    "Canvas": {
+      "description": "Canvas-related operations including component manipulation",
+      "plugins": ["Canvas.component-drag-symphony"]
+    },
+    "Component": {
+      "description": "Individual component operations and selection management",
+      "plugins": ["Component.element-selection-symphony"]
+    },
+    "JsonLoader": {
+      "description": "JSON-based component loading and parsing",
+      "plugins": ["JsonLoader.json-component-symphony"]
+    },
+    "ElementLibrary": {
+      "description": "Component library and element management",
+      "plugins": [
+        "ElementLibrary.library-drop-symphony",
+        "ElementLibrary.library-display-symphony"
+      ]
+    },
+    "ControlPanel": {
+      "description": "Control panel and UI panel management",
+      "plugins": ["ControlPanel.panel-toggle-symphony"]
+    },
+    "Theme": {
+      "description": "Theme management and UI theming operations",
+      "plugins": ["Theme.theme-management-symphony"]
+    }
+  },
+  "pluginNamingConvention": {
+    "format": "[Domain].[specific-functionality]-symphony",
+    "examples": [
+      "App.app-shell-symphony",
+      "Canvas.component-drag-symphony",
+      "Component.element-selection-symphony",
+      "JsonLoader.json-component-symphony",
+      "ElementLibrary.library-drop-symphony",
+      "ControlPanel.panel-toggle-symphony"
+    ],
+    "rules": {
+      "domainCasing": "PascalCase",
+      "functionalityCasing": "kebab-case",
+      "suffix": "-symphony",
+      "separator": "."
+    }
+  },
+  "validationRules": {
+    "requiredFiles": ["manifest.json", "index.ts", "sequence.ts"],
+    "optionalDirectories": ["handlers/", "hooks/", "logic/", "components/"],
+    "requiredExports": ["sequence", "handlers"]
+  },
+  "plugins": [
+    {
+      "name": "App.app-shell-symphony",
+      "domain": "App",
+      "functionality": "app-shell",
+      "description": "Core application shell and layout management",
+      "version": "1.0.0",
+      "path": "./App.app-shell-symphony/",
+      "isCore": true,
+      "priority": 1,
+      "autoMount": true
+    },
+    {
+      "name": "Canvas.component-drag-symphony",
+      "domain": "Canvas",
+      "functionality": "component-drag",
+      "description": "Canvas component drag operations and positioning",
+      "version": "1.0.0",
+      "path": "./Canvas.component-drag-symphony/",
+      "isCore": true,
+      "priority": 2,
+      "autoMount": true
+    },
+    {
+      "name": "Component.element-selection-symphony",
+      "domain": "Component",
+      "functionality": "element-selection",
+      "description": "Component selection and highlighting management",
+      "version": "1.0.0",
+      "path": "./Component.element-selection-symphony/",
+      "isCore": true,
+      "priority": 3,
+      "autoMount": true
+    },
+    {
+      "name": "JsonLoader.json-component-symphony",
+      "domain": "JsonLoader",
+      "functionality": "json-component",
+      "description": "JSON component loading and parsing system",
+      "version": "1.0.0",
+      "path": "./JsonLoader.json-component-symphony/",
+      "isCore": true,
+      "priority": 4,
+      "autoMount": true
+    },
+    {
+      "name": "ElementLibrary.library-drop-symphony",
+      "domain": "ElementLibrary",
+      "functionality": "library-drop",
+      "description": "Element library drag and drop operations",
+      "version": "1.0.0",
+      "path": "./ElementLibrary.library-drop-symphony/",
+      "isCore": true,
+      "priority": 5,
+      "autoMount": true
+    },
+    {
+      "name": "ElementLibrary.library-display-symphony",
+      "domain": "ElementLibrary",
+      "functionality": "library-display",
+      "description": "Element library UI display and component categorization",
+      "version": "1.0.0",
+      "path": "./ElementLibrary.library-display-symphony/",
+      "isCore": true,
+      "priority": 5,
+      "autoMount": true
+    },
+    {
+      "name": "ControlPanel.panel-toggle-symphony",
+      "domain": "ControlPanel",
+      "functionality": "panel-toggle",
+      "description": "Control panel visibility and animation management",
+      "version": "1.0.0",
+      "path": "./ControlPanel.panel-toggle-symphony/",
+      "isCore": true,
+      "priority": 6,
+      "autoMount": true
+    },
+    {
+      "name": "Theme.theme-management-symphony",
+      "domain": "Theme",
+      "functionality": "theme-management",
+      "description": "Comprehensive theme management with light/dark/system modes",
+      "version": "1.0.0",
+      "path": "./Theme.theme-management-symphony/",
+      "isCore": true,
+      "priority": 0,
+      "autoMount": true
+    }
+  ],
+  "statistics": {
+    "totalPlugins": 8,
+    "totalDomains": 7,
+    "corePlugins": 8,
+    "optionalPlugins": 0
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "id": "JsonLoader.json-component-symphony",
+  "name": "JSON Component Loading Symphony No. 1",
+  "version": "1.0.0",
+  "description": "Component Loading - Dynamic JSON component loading and error handling",
+  "category": "component-operations",
+  "type": "symphony-plugin",
+  "musical": {
+    "key": "C Major",
+    "tempo": 110,
+    "timeSignature": "4/4",
+    "feel": "Steady and reliable component loading"
+  },
+  "entry": "index.ts",
+  "sequence": "sequence.ts",
+  "handlers": {
+    "onLoadStart": "handlers/onLoadStart.ts",
+    "onLoadProgress": "handlers/onLoadProgress.ts",
+    "onLoadComplete": "handlers/onLoadComplete.ts",
+    "onLoadError": "handlers/onLoadError.ts"
+  },
+  "hooks": "hooks/index.ts",
+  "logic": "logic/index.ts",
+  "dependencies": [],
+  "events": {
+    "listens": [
+      "component:load:request",
+      "component:load:progress",
+      "component:load:complete",
+      "component:load:error"
+    ],
+    "emits": [
+      "component:loaded",
+      "component:error",
+      "component:ready"
+    ]
+  },
+  "cia": {
+    "safeMount": true,
+    "errorIsolation": true,
+    "gracefulDegradation": true
+  }
+}
