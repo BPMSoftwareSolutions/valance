@@ -11,16 +11,16 @@
     "timeSignature": "4/4",
     "feel": "Steady and reliable component loading"
   },
-  "entry": "index.ts",
-  "sequence": "sequence.ts",
+  "entry": "index.js",
+  "sequence": "sequence.js",
   "handlers": {
-    "onLoadStart": "handlers/onLoadStart.ts",
-    "onLoadProgress": "handlers/onLoadProgress.ts",
-    "onLoadComplete": "handlers/onLoadComplete.ts",
-    "onLoadError": "handlers/onLoadError.ts"
+    "onLoadStart": "handlers/onLoadStart.js",
+    "onLoadProgress": "handlers/onLoadProgress.js",
+    "onLoadComplete": "handlers/onLoadComplete.js",
+    "onLoadError": "handlers/onLoadError.js"
   },
-  "hooks": "hooks/index.ts",
-  "logic": "logic/index.ts",
+  "hooks": "hooks/index.js",
+  "logic": "logic/index.js",
   "dependencies": [],
   "events": {
     "listens": [

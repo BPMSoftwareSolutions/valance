@@ -11,15 +11,15 @@
     "timeSignature": "4/4",
     "feel": "Energetic element creation and placement"
   },
-  "entry": "index.ts",
-  "sequence": "sequence.ts",
+  "entry": "index.js",
+  "sequence": "sequence.js",
   "handlers": {
-    "onLibraryDragStart": "handlers/onLibraryDragStart.ts",
-    "onCanvasDrop": "handlers/onCanvasDrop.ts",
-    "onElementCreate": "handlers/onElementCreate.ts"
+    "onLibraryDragStart": "handlers/onLibraryDragStart.js",
+    "onCanvasDrop": "handlers/onCanvasDrop.js",
+    "onElementCreate": "handlers/onElementCreate.js"
   },
-  "hooks": "hooks/index.ts",
-  "logic": "logic/index.ts",
+  "hooks": "hooks/index.js",
+  "logic": "logic/index.js",
   "dependencies": [],
   "events": {
     "listens": [

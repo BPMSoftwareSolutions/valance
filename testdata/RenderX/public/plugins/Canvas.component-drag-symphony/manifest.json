@@ -11,20 +11,20 @@
     "timeSignature": "4/4",
     "feel": "Dynamic element dragging with real-time position updates"
   },
-  "entry": "index.ts",
-  "sequence": "sequence.ts",
+  "entry": "index.js",
+  "sequence": "sequence.js",
   "handlers": {
-    "onDragStart": "handlers/onDragStart.ts",
-    "onDragging": "handlers/onDragging.ts", 
-    "onDrop": "handlers/onDrop.ts"
+    "onDragStart": "handlers/onDragStart.js",
+    "onDragging": "handlers/onDragging.js",
+    "onDrop": "handlers/onDrop.js"
   },
-  "hooks": "hooks/index.ts",
-  "logic": "logic/index.ts",
+  "hooks": "hooks/index.js",
+  "logic": "logic/index.js",
   "dependencies": [],
   "events": {
     "listens": [
       "canvas:element:drag:start",
-      "canvas:element:drag:move", 
+      "canvas:element:drag:move",
       "canvas:element:drag:end",
       "canvas:element:position:update"
     ],

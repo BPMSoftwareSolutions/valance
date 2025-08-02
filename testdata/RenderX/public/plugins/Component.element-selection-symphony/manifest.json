@@ -11,15 +11,15 @@
     "timeSignature": "4/4",
     "feel": "Smooth and responsive element selection"
   },
-  "entry": "index.ts",
-  "sequence": "sequence.ts",
+  "entry": "index.js",
+  "sequence": "sequence.js",
   "handlers": {
-    "onSelectionStart": "handlers/onSelectionStart.ts",
-    "onSelectionChange": "handlers/onSelectionChange.ts",
-    "onSelectionEnd": "handlers/onSelectionEnd.ts"
+    "onSelectionStart": "handlers/onSelectionStart.js",
+    "onSelectionChange": "handlers/onSelectionChange.js",
+    "onSelectionEnd": "handlers/onSelectionEnd.js"
   },
-  "hooks": "hooks/index.ts",
-  "logic": "logic/index.ts",
+  "hooks": "hooks/index.js",
+  "logic": "logic/index.js",
   "dependencies": [],
   "events": {
     "listens": [
