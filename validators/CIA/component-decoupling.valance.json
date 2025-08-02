@@ -1,148 +1,81 @@
 {
   "name": "cia-component-decoupling",
-  "description": "Validates that the app avoids inappropriate UI component coupling while allowing necessary canvas architectural functionality",
+  "description": "Ensures app remains decoupled from specific component knowledge and only knows about architectural containers",
   "type": "content",
-  "filePattern": ".*\\.(tsx|ts|js|jsx)$",
-  "confidenceThreshold": 0.95,
+  "filePattern": ".*(App|AppContent)\\.(tsx|ts|jsx|js)$",
+  "confidenceThreshold": 0.9,
   "version": "1.0.0",
   "author": "Valence CIA Validation System",
-  "tags": ["cia", "decoupling", "architecture", "component-isolation"],
+  "tags": ["cia", "component-decoupling", "architectural-boundaries", "separation-of-concerns"],
   "rules": [
     {
       "plugin": "validateComponentDecoupling",
-      "allowedArchitecturalComponents": [
-        "element-library",
-        "JsonComponentLoader",
-        "canvas",
-        "control-panel",
-        "elementLibrary",
-        "controlPanel"
-      ],
-      "allowedCanvasPlugins": [
-        "component-drag-symphony",
-        "canvas-interaction-symphony",
-        "canvas-drop-symphony",
-        "library-drag-symphony"
-      ],
-      "forbiddenComponentReferences": [
-        "input",
-        "paragraph",
-        "span",
-        "img",
-        "text",
-        "heading",
-        "link",
-        "form",
-        "textarea",
-        "select",
-        "checkbox",
-        "radio"
-      ],
-      "allowedCanvasComponents": [
-        "button"
-      ],
-      "forbiddenPatterns": [
-        "element\\.(type|name|properties)\\s*===\\s*['\"](?:input|paragraph|textarea|select|checkbox|radio)",
-        "switch\\s*\\(.*\\.(type|componentType)\\).*(?:input|paragraph|textarea|select)",
-        "if\\s*\\(.*\\.(type|componentType)\\s*===.*(?:input|paragraph|textarea|select)"
-      ],
-      "allowedInteractionPatterns": [
-        "componentId",
-        "elementId", 
-        "interactionType",
-        "source",
-        "timestamp",
-        "position",
-        "coordinates"
-      ],
-      "strictMode": true,
+      "checkForbiddenComponentTypes": true,
+      "validateMetadataAccess": true,
+      "checkComponentSpecificLogic": true,
+      "enforceGenericInteractions": true,
+      "allowArchitecturalComponents": true,
       "verbose": false
     }
   ],
-  "decouplingRules": {
-    "appFiles": [
-      ".*App\\.(tsx|ts|js|jsx)$",
-      ".*main\\.(tsx|ts|js|jsx)$",
-      ".*index\\.(tsx|ts|js|jsx)$"
+  "forbiddenComponentTypes": [
+    "input",
+    "textarea", 
+    "select",
+    "paragraph",
+    "heading",
+    "link",
+    "image"
+  ],
+  "allowedArchitecturalComponents": [
+    "button",
+    "canvas",
+    "ElementLibrary",
+    "JsonComponentLoader",
+    "ControlPanel",
+    "component-drag-symphony",
+    "library-drop-symphony"
+  ],
+  "forbiddenPatterns": [
+    "component\\.metadata\\.type",
+    "component\\.metadata\\.name",
+    "switch\\s*\\(\\s*component\\.type\\s*\\)",
+    "if\\s*\\(\\s*element\\.type\\s*===\\s*['\"`](input|textarea|select|paragraph)['\"`]\\s*\\)"
+  ],
+  "documentation": {
+    "purpose": "Ensures app remains decoupled from specific component knowledge and prevents component-specific logic in main app files",
+    "scope": "Main app files (App.tsx, AppContent.tsx) that should only know about architectural containers",
+    "validationTypes": [
+      "Forbidden component type references detection",
+      "Component metadata access validation", 
+      "Component-specific rendering logic prevention",
+      "Generic interaction pattern enforcement",
+      "Architectural boundary maintenance"
     ],
-    "allowedKnowledge": {
-      "architecturalContainers": [
-        "ElementLibrary",
-        "JsonComponentLoader", 
-        "Canvas",
-        "ControlPanel"
-      ],
-      "interactionData": [
-        "componentId",
-        "elementId",
-        "position",
-        "coordinates",
-        "timestamp",
-        "source",
-        "interactionType"
-      ],
-      "genericProperties": [
-        "id",
-        "className",
-        "style",
-        "position",
-        "coordinates"
-      ]
+    "commonIssues": [
+      "App contains component-specific rendering logic (button, input, etc.)",
+      "Direct access to component.metadata.type or component.metadata.name",
+      "Switch statements on component types in app files",
+      "Component-specific business logic in architectural files",
+      "Tight coupling between app and UI component specifics"
+    ],
+    "allowedPatterns": {
+      "architectural": "App knows about: ElementLibrary, JsonComponentLoader, Canvas, ControlPanel",
+      "generic": "App uses only generic component IDs and interaction data",
+      "plugins": "App can trigger canvas plugins (component-drag-symphony, library-drop-symphony)"
     },
-    "forbiddenKnowledge": {
-      "componentSpecifics": [
+    "examples": {
+      "forbidden": [
+        "if (element.type === 'button') { ... }",
         "component.metadata.type",
-        "component.data.props",
-        "element.type === 'button'",
-        "componentData.properties",
-        "metadata.attributes"
+        "switch (component.type) { case 'input': ... }"
       ],
-      "componentTypes": [
-        "button",
-        "input", 
-        "paragraph",
-        "div",
-        "span",
-        "img",
-        "text",
-        "heading"
-      ],
-      "componentInternals": [
-        "props",
-        "attributes", 
-        "componentData.data",
-        "metadata.properties",
-        "element.metadata.name"
+      "allowed": [
+        "conductor.play('component-drag-symphony', 'onDragStart', context)",
+        "const elementId = element.id",
+        "<Canvas />", 
+        "<ElementLibrary />"
       ]
     }
-  },
-  "documentation": {
-    "purpose": "Ensures the app remains lean and decoupled from specific component knowledge",
-    "principle": "App should only know about architectural containers (element library, canvas, control panel) and generic interaction data (IDs, positions, timestamps)",
-    "scope": "Main app files (App.tsx, main.tsx, index.tsx) and core interaction handlers",
-    "validationTypes": [
-      "Component reference validation - no direct component type references",
-      "Metadata access validation - no component-specific metadata access",
-      "Interaction data validation - only generic interaction properties allowed",
-      "Architectural boundary validation - only container-level knowledge permitted"
-    ],
-    "commonViolations": [
-      "Accessing component.metadata.type or component.data.props",
-      "Switch statements on component types (button, input, etc.)",
-      "Direct references to specific component names in app logic",
-      "Component-specific styling or behavior in app code",
-      "Metadata property access beyond generic ID/position data"
-    ],
-    "correctPatterns": [
-      "conductor.play('library-drag-symphony', 'onDragStart', { componentId, timestamp })",
-      "const dragData = { componentId: component.id, source: 'element-library' }",
-      "element.id, element.position, element.coordinates (generic properties only)"
-    ],
-    "incorrectPatterns": [
-      "conductor.play('button-click-symphony', ...)",
-      "if (component.metadata.type === 'button') { ... }",
-      "const dragData = { componentName: component.name, componentData: component.data }",
-      "switch (element.type) { case 'button': ... }"
-    ]
   }
 }

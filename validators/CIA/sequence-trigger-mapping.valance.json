@@ -1,101 +1,59 @@
 {
   "name": "cia-sequence-trigger-mapping",
-  "description": "Validates that every SPA plugin registered via CIA is actually triggered at runtime using conductor methods",
+  "description": "Validates that every SPA plugin registered via CIA is actually triggered at runtime using conductor.play() calls",
   "type": "content",
-  "filePattern": ".*\\.(tsx|ts|js|jsx)$",
-  "confidenceThreshold": 0.9,
+  "filePattern": ".*\\.(tsx|ts|jsx|js)$",
+  "confidenceThreshold": 0.95,
   "version": "1.0.0",
   "author": "Valence CIA Validation System",
-  "tags": ["cia", "sequence-trigger", "plugin-mapping", "runtime-validation"],
+  "tags": ["cia", "sequence-triggers", "conductor-play", "runtime-validation"],
   "rules": [
     {
       "plugin": "validateSequenceTriggerMapping",
-      "checkSequenceStartCalls": true,
-      "checkMovementHandlerCalls": true,
-      "checkConvenienceFunctions": true,
-      "validateTriggerFiles": ["App.tsx", "Canvas.tsx", "index.tsx"],
-      "requiredTriggerPatterns": [
-        "conductor\\.startSequence\\s*\\(",
-        "conductor\\.executeMovementHandler\\s*\\(",
-        "startCanvasComponentDragFlow\\s*\\(",
-        "startLayoutModeChangeFlow\\s*\\(",
-        "startPanelToggleFlow\\s*\\(",
-        "startJsonComponentLoadingFlow\\s*\\("
-      ],
+      "checkConductorPlayCalls": true,
+      "validateTriggerFiles": true,
+      "crossReferencePlugins": true,
+      "detectDeadCode": true,
+      "validateTriggerContext": true,
       "verbose": false
     }
   ],
-  "triggerValidation": {
-    "requiredMethods": [
-      "conductor.startSequence",
-      "conductor.executeMovementHandler"
-    ],
-    "convenienceFunctions": [
-      "startCanvasComponentDragFlow",
-      "startLayoutModeChangeFlow", 
-      "startPanelToggleFlow",
-      "startJsonComponentLoadingFlow",
-      "startCustomSequence",
-      "startCustomCanvasSequence"
-    ],
-    "triggerFilePatterns": [
-      ".*App\\.(tsx|ts|js|jsx)$",
-      ".*Canvas\\.(tsx|ts|js|jsx)$",
-      ".*index\\.(tsx|ts|js|jsx)$",
-      ".*hooks\\.(tsx|ts|js|jsx)$"
-    ],
-    "sequenceNamePatterns": [
-      "['\"].*Symphony.*['\"]",
-      "['\"].*Sequence.*['\"]",
-      "['\"].*component-drag-symphony['\"]",
-      "['\"].*canvas-.*['\"]"
-    ]
+  "triggerPatterns": {
+    "conductorPlayPattern": "conductor\\.play\\s*\\(\\s*['\"`]([^'\"`,]+)['\"`]\\s*,\\s*['\"`]([^'\"`,]+)['\"`]",
+    "pluginRegistrationPattern": "conductor\\.(mount|loadPlugin|registerCIAPlugins)",
+    "sequenceIdPattern": "[a-zA-Z][a-zA-Z0-9-]*-symphony",
+    "movementNamePattern": "[a-zA-Z][a-zA-Z0-9]*"
   },
-  "pluginMapping": {
-    "expectedPlugins": [
-      {
-        "id": "component-drag-symphony",
-        "expectedTriggers": [
-          {
-            "file": "App.tsx",
-            "method": "startCanvasComponentDragFlow",
-            "movement": "onDragStart"
-          }
-        ]
-      },
-      {
-        "id": "canvas-component-drag-symphony",
-        "expectedTriggers": [
-          {
-            "file": "App.tsx", 
-            "method": "conductor.startSequence",
-            "sequenceName": "Canvas Component Drag Symphony No. 4"
-          }
-        ]
-      }
-    ],
-    "dynamicDiscovery": {
-      "scanForPlugins": true,
-      "pluginDirectories": ["plugins/**/*symphony*", "sequences/**/*symphony*"],
-      "manifestFiles": ["manifest.json", "sequence.ts"]
-    }
-  },
+  "triggerFiles": [
+    "App.tsx",
+    "AppContent.tsx", 
+    "Canvas.tsx",
+    "ElementLibrary.tsx",
+    "ControlPanel.tsx"
+  ],
   "documentation": {
-    "purpose": "Ensures that every SPA plugin registered via CIA is actually triggered at runtime using conductor methods",
-    "scope": "All trigger files (App.tsx, Canvas.tsx, etc.) and plugin registration files",
+    "purpose": "Ensures every SPA plugin registered via CIA is actually triggered at runtime, preventing dead code and maintaining architectural integrity",
+    "scope": "All React components and trigger files that should contain conductor.play() calls",
     "validationTypes": [
-      "Sequence trigger validation - conductor.startSequence() calls",
-      "Movement handler validation - conductor.executeMovementHandler() calls", 
-      "Convenience function validation - startCanvasComponentDragFlow() etc.",
-      "Plugin-to-trigger mapping validation",
-      "Runtime trigger coverage analysis"
+      "Conductor.play() call detection",
+      "Plugin-to-trigger mapping verification",
+      "Dead code prevention (registered but unused plugins)",
+      "Trigger file pattern validation",
+      "Cross-reference analysis between plugins and triggers",
+      "Movement name validation in triggers"
     ],
     "commonIssues": [
-      "Plugin registered but never triggered at runtime",
-      "Missing conductor.startSequence() calls for registered sequences",
-      "Convenience functions defined but not called",
-      "Plugin movements defined but handlers never executed",
-      "Trigger files missing required sequence calls"
-    ]
+      "Plugin registered but never triggered via conductor.play()",
+      "conductor.play() calls with invalid plugin IDs",
+      "Missing conductor.play() calls in expected trigger files",
+      "Incorrect movement names in conductor.play() calls",
+      "Orphaned plugin registrations without runtime usage",
+      "Trigger files missing required conductor.play() patterns"
+    ],
+    "examples": {
+      "validTrigger": "conductor.play('component-drag-symphony', 'onDragStart', context)",
+      "invalidTrigger": "startCanvasComponentDragFlow(conductor, element, eventData)",
+      "pluginRegistration": "conductor.mount(plugin.sequence, plugin.handlers)"
+    }
   }
 }

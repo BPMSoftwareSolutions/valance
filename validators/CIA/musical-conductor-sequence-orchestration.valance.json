@@ -1,109 +1,106 @@
 {
   "name": "cia-musical-conductor-sequence-orchestration",
-  "description": "Validates that MusicalConductor implements proper sequence queuing and orchestration",
+  "description": "Validates Musical Conductor Orchestration (MCO) and Musical Symphony Orchestration (MSO) architecture patterns",
   "type": "content",
   "filePattern": ".*MusicalConductor\\.(ts|js)$",
-  "enforcementLevel": "strict",
   "confidenceThreshold": 0.95,
   "version": "1.0.0",
   "author": "Valence CIA Validation System",
-  "tags": ["cia", "musical-conductor", "sequence-orchestration", "queuing", "concurrency"],
+  "tags": ["cia", "mco", "mso", "orchestration", "sequence-management", "resource-management"],
   "rules": [
     {
-      "plugin": "validateMusicalConductorOrchestration",
-      "checkSequenceQueue": true,
-      "checkConcurrencyControl": true,
-      "checkDeferredExecution": true,
-      "checkOrderPreservation": true,
-      "validateOrchestrationMethods": true,
-      "verbose": true
+      "plugin": "validateMusicalConductorSequenceOrchestration",
+      "checkSequentialOrchestration": true,
+      "validateResourceManagement": true,
+      "checkBeatExecution": true,
+      "validateIdempotencyProtection": true,
+      "checkEventListenerManagement": true,
+      "enforceQueueBasedSystem": true,
+      "verbose": false
     }
   ],
-  "orchestrationRequirements": {
-    "requiredMethods": [
-      "queueSequence",
-      "executeNextSequence",
-      "isSequenceRunning",
-      "getCurrentSequence",
-      "getQueuedSequences",
-      "clearSequenceQueue"
+  "mcoPatterns": {
+    "sequentialOrchestration": [
+      "activeSequence.*SequenceExecutionContext",
+      "sequenceQueue.*SequenceRequest",
+      "sequenceHistory.*SequenceExecutionContext"
     ],
-    "requiredProperties": [
-      "sequenceQueue",
-      "currentSequence",
-      "isExecuting",
-      "executionOrder"
+    "beatExecution": [
+      "executeBeat\\s*\\(",
+      "beat.*execution",
+      "sequential.*beat"
     ],
-    "concurrencyPatterns": [
-      "async.*await.*sequence",
-      "Promise.*sequence",
-      "queue.*push|enqueue",
-      "dequeue|shift.*queue",
-      "mutex|lock|semaphore"
-    ],
-    "orchestrationPatterns": [
-      "if.*isExecuting.*return",
-      "while.*queue.*length",
-      "executeSequentially",
-      "waitForCompletion",
-      "defer.*until.*complete"
+    "queueManagement": [
+      "sequenceQueue\\.push",
+      "sequenceQueue\\.shift",
+      "processQueue"
     ]
   },
-  "architecturalChecks": {
-    "sequenceQueuing": [
-      "MusicalConductor must queue concurrent sequence requests",
-      "Sequences must execute in order of request (FIFO)",
-      "No simultaneous sequence execution allowed",
-      "Queue must persist pending sequences until execution"
+  "msoPatterns": {
+    "resourceManagement": [
+      "resourceOwnership",
+      "conflictResolution",
+      "resource.*tracking"
     ],
-    "concurrencyControl": [
-      "Only one sequence can execute at a time",
-      "Concurrent requests must be deferred, not rejected",
-      "Execution state must be tracked and accessible",
-      "Race conditions must be prevented"
+    "idempotencyProtection": [
+      "duplicate.*detection",
+      "sequence.*hash",
+      "idempotent.*execution"
     ],
-    "orchestrationFlow": [
-      "Current sequence must complete before next begins",
-      "Queue must be processed automatically",
-      "Failed sequences must not block queue processing",
-      "Cleanup must occur after sequence completion"
+    "eventListenerManagement": [
+      "addEventListener",
+      "removeEventListener",
+      "cleanup.*listeners"
     ]
   },
-  "antiPatterns": {
-    "forbidden": [
-      "Multiple simultaneous sequence execution",
-      "Immediate execution without queuing check",
-      "Sequence requests being dropped or ignored",
-      "No concurrency control mechanisms"
-    ],
-    "warnings": [
-      "Synchronous sequence execution",
-      "No queue size limits",
-      "Missing error handling in orchestration",
-      "No sequence timeout mechanisms"
-    ]
-  },
+  "requiredMethods": [
+    "play",
+    "mount",
+    "registerSequence",
+    "executeSequence"
+  ],
   "documentation": {
-    "purpose": "Ensures MusicalConductor properly orchestrates sequence execution to prevent race conditions",
-    "scope": "MusicalConductor implementation files",
-    "validationApproach": "Code analysis for sequence queuing, concurrency control, and orchestration patterns",
-    "keyPrinciples": [
-      "Sequential execution - one sequence at a time",
-      "Queue management - defer concurrent requests",
-      "Order preservation - FIFO execution order",
-      "Concurrency safety - prevent race conditions"
+    "purpose": "Validates Musical Conductor Orchestration (MCO) for sequential beat execution and Musical Symphony Orchestration (MSO) for resource management",
+    "scope": "MusicalConductor class files that implement MCO/MSO architecture",
+    "validationTypes": [
+      "Sequential orchestration validation (MCO)",
+      "Resource management validation (MSO)",
+      "Beat-level execution queue validation",
+      "Idempotency protection checking",
+      "Event listener management validation",
+      "Queue-based system enforcement",
+      "React StrictMode compatibility"
     ],
     "commonIssues": [
-      "Missing sequence queue implementation",
-      "Simultaneous sequence execution",
-      "No deferred execution for concurrent requests",
-      "Race conditions between sequence calls"
+      "Concurrent beat execution instead of sequential",
+      "Missing resource ownership tracking",
+      "No idempotency protection for React StrictMode",
+      "Improper event listener cleanup",
+      "Missing queue-based orchestration system",
+      "No conflict resolution for resource access"
     ],
-    "expectedBehavior": [
-      "First sequence executes immediately",
-      "Subsequent sequences queue until current completes",
-      "Queue processes automatically in order",
-      "No sequence interference or race conditions"
-    ]
+    "architecturalPrinciples": {
+      "MCO": "Musical Conductor Orchestration - Sequential beat execution with queue-based system",
+      "MSO": "Musical Symphony Orchestration - Resource management and conflict resolution",
+      "benefits": [
+        "Prevents concurrent beat execution conflicts",
+        "Ensures proper resource ownership tracking",
+        "Provides React StrictMode compatibility",
+        "Enables proper cleanup mechanisms",
+        "Supports scalable sequence orchestration"
+      ]
+    },
+    "examples": {
+      "validMCO": [
+        "private activeSequence: SequenceExecutionContext | null = null;",
+        "private sequenceQueue: SequenceRequest[] = [];",
+        "await this.executeBeat(beat, context);"
+      ],
+      "validMSO": [
+        "private resourceOwnership: Map<string, string> = new Map();",
+        "if (this.isDuplicateExecution(sequenceHash)) return;",
+        "this.cleanupEventListeners();"
+      ]
+    }
   }
 }

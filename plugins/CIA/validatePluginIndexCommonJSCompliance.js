@@ -3,126 +3,218 @@ export const operator = "validatePluginIndexCommonJSCompliance";
 export async function evaluate(content, rule, context) {
   try {
     const filePath = context.filePath;
+    const errors = [];
+    const warnings = [];
 
     // Check if this is a plugin index.js file
-    if (!filePath.includes('symphony') || !filePath.includes('index.js')) {
+    if (!filePath.endsWith('/index.js')) {
       return {
         passed: true,
-        message: "Not a plugin index.js file, skipping validation"
+        message: "Not a plugin index.js file, skipping CommonJS compliance validation"
       };
     }
 
-    const errors = [];
-    const warnings = [];
-    const suggestions = [];
-
-    // Check for ES6 export/import statements (forbidden in runtime index.js)
-    const es6Patterns = [
-      /^\s*export\s+\{/m,
-      /^\s*export\s+const/m,
-      /^\s*export\s+default/m,
-      /^\s*export\s+function/m,
-      /^\s*export\s+class/m,
-      /^\s*import\s+\{/m,
-      /^\s*import\s+\*/m,
-      /^\s*import\s+\w+\s+from/m
-    ];
-
-    const foundES6Patterns = [];
-    for (const pattern of es6Patterns) {
-      const match = content.match(pattern);
-      if (match) {
-        foundES6Patterns.push(match[0].trim());
+    // Check for CommonJS module.exports patterns
+    if (rule.checkModuleExports) {
+      const exportsValidation = validateModuleExports(content, rule);
+      if (!exportsValidation.passed) {
+        errors.push(exportsValidation.message);
+      }
+      if (exportsValidation.warnings) {
+        warnings.push(...exportsValidation.warnings);
       }
     }
 
-    if (foundES6Patterns.length > 0) {
-      errors.push(
-        `CRITICAL: ES6 module syntax detected in runtime index.js: ${foundES6Patterns.join(', ')}`
-      );
-      suggestions.push(
-        "Replace index.js with CommonJS bundled version from dist/plugin.js"
-      );
-      suggestions.push(
-        "Move ES6 source files to separate development directory"
-      );
-    }
-
-    // Check for required CommonJS patterns
-    const commonjsPatterns = {
-      moduleExports: /module\.exports\s*=/,
-      toCommonJS: /__toCommonJS/,
-      exportHelper: /__export/,
-      bundledStructure: /var __.*= Object\./
-    };
-
-    const missingCommonJSPatterns = [];
-    for (const [name, pattern] of Object.entries(commonjsPatterns)) {
-      if (!pattern.test(content)) {
-        missingCommonJSPatterns.push(name);
+    // Validate require statements
+    if (rule.validateRequireStatements) {
+      const requireValidation = validateRequireStatements(content, rule);
+      if (!requireValidation.passed) {
+        errors.push(requireValidation.message);
       }
     }
 
-    if (missingCommonJSPatterns.length > 0) {
-      errors.push(
-        `CRITICAL: Missing CommonJS patterns: ${missingCommonJSPatterns.join(', ')}`
-      );
-      suggestions.push(
-        "Ensure index.js is a properly bundled CommonJS module"
-      );
+    // Detect forbidden ES6 syntax
+    if (rule.detectES6Syntax) {
+      const es6Validation = detectES6Syntax(content, rule);
+      if (!es6Validation.passed) {
+        errors.push(es6Validation.message);
+      }
     }
 
-    // Determine module format
-    let moduleFormat = "unknown";
-    if (foundES6Patterns.length > 0) {
-      moduleFormat = "ES6";
-    } else if (missingCommonJSPatterns.length === 0) {
-      moduleFormat = "CommonJS-bundled";
-    } else if (commonjsPatterns.moduleExports.test(content)) {
-      moduleFormat = "CommonJS-simple";
+    // Check required plugin exports
+    if (rule.checkPluginExports) {
+      const pluginExportsValidation = validatePluginExports(content, rule);
+      if (!pluginExportsValidation.passed) {
+        errors.push(pluginExportsValidation.message);
+      }
+      if (pluginExportsValidation.warnings) {
+        warnings.push(...pluginExportsValidation.warnings);
+      }
     }
 
-    // Check for specific MusicalConductor compatibility
-    const hasRequiredExports = /CIAPlugin|sequence|default/.test(content);
-    if (!hasRequiredExports) {
-      warnings.push("Missing expected exports: CIAPlugin, sequence, or default");
+    if (errors.length > 0) {
+      return {
+        passed: false,
+        message: `CommonJS compliance validation failed: ${errors.join('; ')}`
+      };
     }
 
-    const result = {
-      passed: errors.length === 0,
-      confidence: errors.length === 0 ? 0.95 : 0.8,
-      message: errors.length === 0
-        ? `Plugin index.js CommonJS compliance validation passed (${moduleFormat})`
-        : `Plugin index.js CommonJS compliance failed: ${errors.join('; ')}`
+    return {
+      passed: true,
+      message: "CommonJS compliance validation passed - plugin uses proper CommonJS format",
+      warnings: warnings.length > 0 ? warnings : undefined
     };
-
-    if (warnings.length > 0) {
-      result.warnings = warnings;
-    }
-
-    if (suggestions.length > 0) {
-      result.suggestions = suggestions;
-    }
-
-    // Add detailed metadata
-    result.metadata = {
-      filePath: filePath,
-      moduleFormat: moduleFormat,
-      hasES6Syntax: foundES6Patterns.length > 0,
-      hasCommonJSSyntax: missingCommonJSPatterns.length === 0,
-      foundES6Patterns: foundES6Patterns,
-      missingCommonJSPatterns: missingCommonJSPatterns,
-      hasRequiredExports: hasRequiredExports,
-      runtimeCompatible: errors.length === 0
-    };
-
-    return result;
 
   } catch (error) {
     return {
       passed: false,
-      confidence: 0.5,
-      message: `Plugin index.js CommonJS validation error: ${error.message}`
+      message: `CommonJS compliance validation error: ${error.message}`
     };
   }
+}
+
+function validateModuleExports(content, rule) {
+  const validExportPatterns = rule.commonJSPatterns?.validExports || [
+    "module\\.exports\\s*=",
+    "module\\.exports\\.[a-zA-Z_$][a-zA-Z0-9_$]*\\s*=",
+    "exports\\.[a-zA-Z_$][a-zA-Z0-9_$]*\\s*="
+  ];
+
+  const warnings = [];
+  let hasValidExports = false;
+
+  for (const pattern of validExportPatterns) {
+    const regex = new RegExp(pattern, 'g');
+    const matches = content.match(regex);
+    if (matches && matches.length > 0) {
+      hasValidExports = true;
+      warnings.push(`Found ${matches.length} valid CommonJS export(s): ${pattern}`);
+    }
+  }
+
+  if (!hasValidExports) {
+    return {
+      passed: false,
+      message: "No valid CommonJS module.exports patterns found"
+    };
+  }
+
+  return {
+    passed: true,
+    message: "Valid CommonJS exports found",
+    warnings: warnings.length > 0 ? warnings : undefined
+  };
+}
+
+function validateRequireStatements(content, rule) {
+  const validRequirePatterns = rule.commonJSPatterns?.validRequires || [
+    "require\\s*\\(\\s*['\"`][^'\"`,]+['\"`]\\s*\\)",
+    "const\\s+[a-zA-Z_$][a-zA-Z0-9_$]*\\s*=\\s*require\\s*\\("
+  ];
+
+  const warnings = [];
+  let hasRequires = false;
+
+  for (const pattern of validRequirePatterns) {
+    const regex = new RegExp(pattern, 'g');
+    const matches = content.match(regex);
+    if (matches && matches.length > 0) {
+      hasRequires = true;
+      warnings.push(`Found ${matches.length} require statement(s)`);
+    }
+  }
+
+  // Require statements are optional, so this is just informational
+  return {
+    passed: true,
+    message: hasRequires ? "Valid require statements found" : "No require statements (optional)",
+    warnings: warnings.length > 0 ? warnings : undefined
+  };
+}
+
+function detectES6Syntax(content, rule) {
+  const forbiddenES6Patterns = rule.commonJSPatterns?.forbiddenES6 || [
+    "import\\s+",
+    "export\\s+",
+    "export\\s*{",
+    "export\\s*default",
+    "import\\s*{",
+    "import\\s*\\*\\s*as"
+  ];
+
+  const errors = [];
+
+  for (const pattern of forbiddenES6Patterns) {
+    const regex = new RegExp(pattern, 'g');
+    const matches = content.match(regex);
+    if (matches && matches.length > 0) {
+      errors.push(`Found forbidden ES6 syntax: ${pattern} (${matches.length} occurrence(s))`);
+    }
+  }
+
+  if (errors.length > 0) {
+    return {
+      passed: false,
+      message: `ES6 syntax detected - use CommonJS format instead: ${errors.join('; ')}`
+    };
+  }
+
+  return {
+    passed: true,
+    message: "No forbidden ES6 syntax found"
+  };
+}
+
+function validatePluginExports(content, rule) {
+  const requiredExports = rule.requiredExports || ['sequence', 'handlers'];
+  const optionalExports = rule.optionalExports || ['metadata', 'mount', 'unmount'];
+  
+  const errors = [];
+  const warnings = [];
+
+  // Check for required exports
+  for (const requiredExport of requiredExports) {
+    const exportPatterns = [
+      new RegExp(`module\\.exports\\.${requiredExport}\\s*=`, 'g'),
+      new RegExp(`exports\\.${requiredExport}\\s*=`, 'g'),
+      new RegExp(`module\\.exports\\s*=\\s*{[^}]*${requiredExport}[^}]*}`, 'g'),
+      new RegExp(`${requiredExport}\\s*:`, 'g') // Object property syntax
+    ];
+
+    let found = false;
+    for (const pattern of exportPatterns) {
+      if (pattern.test(content)) {
+        found = true;
+        break;
+      }
+    }
+
+    if (!found) {
+      errors.push(`Missing required export: ${requiredExport}`);
+    } else {
+      warnings.push(`Found required export: ${requiredExport}`);
+    }
+  }
+
+  // Check for optional exports
+  for (const optionalExport of optionalExports) {
+    const exportPatterns = [
+      new RegExp(`module\\.exports\\.${optionalExport}\\s*=`, 'g'),
+      new RegExp(`exports\\.${optionalExport}\\s*=`, 'g'),
+      new RegExp(`${optionalExport}\\s*:`, 'g')
+    ];
+
+    for (const pattern of exportPatterns) {
+      if (pattern.test(content)) {
+        warnings.push(`Found optional export: ${optionalExport}`);
+        break;
+      }
+    }
+  }
+
+  return {
+    passed: errors.length === 0,
+    message: errors.length > 0 ? errors.join('; ') : "All required plugin exports found",
+    warnings: warnings.length > 0 ? warnings : undefined
+  };
 }

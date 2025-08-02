@@ -5,30 +5,39 @@
   "author": "Valence CIA Validation System",
   "tags": ["cia", "conductor", "runtime", "plugin-mounting", "safety"],
   "validators": [
+    "CIA/component-decoupling",
     "CIA/plugin-interface-runtime",
     "CIA/handler-alignment-runtime",
     "CIA/mount-call-safety",
     "CIA/plugin-loader-validation",
     "CIA/conductor-test-harness",
     "CIA/sequence-trigger-mapping",
-    "CIA/component-decoupling"
+    "CIA/plugin-directory",
+    "CIA/plugin-index-commonjs-compliance",
+    "CIA/musical-conductor-sequence-orchestration"
   ],
   "validationLevels": {
     "critical": [
+      "CIA/component-decoupling",
       "CIA/plugin-interface-runtime",
       "CIA/handler-alignment-runtime",
       "CIA/mount-call-safety",
-      "CIA/component-decoupling"
+      "CIA/plugin-index-commonjs-compliance"
     ],
     "important": [
       "CIA/plugin-loader-validation",
       "CIA/conductor-test-harness",
-      "CIA/sequence-trigger-mapping"
+      "CIA/sequence-trigger-mapping",
+      "CIA/plugin-directory",
+      "CIA/musical-conductor-sequence-orchestration"
     ],
     "recommended": []
   },
   "executionOrder": [
     "CIA/component-decoupling",
+    "CIA/musical-conductor-sequence-orchestration",
+    "CIA/plugin-directory",
+    "CIA/plugin-index-commonjs-compliance",
     "CIA/plugin-interface-runtime",
     "CIA/handler-alignment-runtime",
     "CIA/mount-call-safety",

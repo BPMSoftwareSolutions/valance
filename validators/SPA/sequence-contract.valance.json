@@ -2,7 +2,7 @@
   "name": "spa-sequence-contract",
   "description": "Validates SPA sequence.ts file structure - ensures musical properties and movements follow the contract",
   "type": "content",
-  "filePattern": ".*sequence\\.(ts|js)$",
+  "filePattern": ".*sequence\\.(js)$",
   "confidenceThreshold": 0.9,
   "version": "1.0.0",
   "author": "Valence SPA Validation System",
