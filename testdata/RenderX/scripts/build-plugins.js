@@ -84,7 +84,7 @@ async function buildPlugins() {
         console.log(`✅ Transformed: ${sourceFile} -> ${jsFile}`);
         transformedCount++;
       } catch (error) {
-        console.error(`❌ Failed to transform ${tsFile}:`, error.message);
+        console.error(`❌ Failed to transform ${sourceFile}:`, error.message);
         errorCount++;
       }
     }

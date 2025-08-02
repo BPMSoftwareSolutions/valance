@@ -1,10 +1,28 @@
-/**
- * Theme Management Symphony No. 1
- * Musical sequence for comprehensive theme management
- */
-
-// Theme Management Sequence
-export const THEME_MANAGEMENT_SEQUENCE = {
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var stdin_exports = {};
+__export(stdin_exports, {
+  THEME_MANAGEMENT_SEQUENCE: () => THEME_MANAGEMENT_SEQUENCE,
+  startThemeManagementFlow: () => startThemeManagementFlow,
+  startThemeToggleFlow: () => startThemeToggleFlow
+});
+module.exports = __toCommonJS(stdin_exports);
+const THEME_MANAGEMENT_SEQUENCE = {
   name: "Theme Management Symphony No. 1",
   description: "Orchestrates theme initialization, switching, and persistence",
   version: "1.0.0",
@@ -87,28 +105,21 @@ export const THEME_MANAGEMENT_SEQUENCE = {
     ]
   }
 };
-
-// Flow control functions
-export const startThemeManagementFlow = (eventBus, initialData = {}) => {
-  console.log("🎨 Starting Theme Management Symphony...");
-  
+const startThemeManagementFlow = (eventBus, initialData = {}) => {
+  console.log("\u{1F3A8} Starting Theme Management Symphony...");
   eventBus.emit("sequence.theme-management.started", {
     sequence: THEME_MANAGEMENT_SEQUENCE,
     timestamp: Date.now(),
     ...initialData
   });
-  
   return THEME_MANAGEMENT_SEQUENCE;
 };
-
-export const startThemeToggleFlow = (eventBus, toggleData = {}) => {
-  console.log("🔄 Starting Theme Toggle Flow...");
-  
+const startThemeToggleFlow = (eventBus, toggleData = {}) => {
+  console.log("\u{1F504} Starting Theme Toggle Flow...");
   eventBus.emit("theme.toggle-requested", {
     timestamp: Date.now(),
     ...toggleData
   });
-  
   return {
     movement: "Theme Switching",
     action: "theme-toggle-requested"

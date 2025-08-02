@@ -20,6 +20,7 @@ import {
   EVENT_TYPES,
   MusicalConductor,
   MusicalSequences,
+  resetBeatLogging,
 } from "./communication";
 import {
   initializeDomainEvents,
@@ -592,13 +593,13 @@ const AppContent: React.FC = () => {
   };
 
   // Component loading function - defined in AppContent where it's called
-  const loadComponentsAfterPlugins = async () => {
+  const loadComponentsAfterPlugins = async (system = communicationSystem) => {
     try {
       console.log("🔄 Loading JSON components with musical sequences...");
 
       // Connect to conductor if available
-      if (communicationSystem) {
-        jsonComponentLoader.connectToConductor(communicationSystem.conductor);
+      if (system) {
+        jsonComponentLoader.connectToConductor(system.conductor);
 
         // Use musical sequence loading
         const result = await jsonComponentLoader.loadAllComponentsMusical();
@@ -640,7 +641,7 @@ const AppContent: React.FC = () => {
           console.log("🧠 CIA plugins registration completed");
 
           // Now load JSON components after plugins are ready
-          loadComponentsAfterPlugins();
+          loadComponentsAfterPlugins(system);
         })
         .catch((error) => {
           console.error("❌ CIA plugins registration failed:", error);
@@ -655,6 +656,12 @@ const AppContent: React.FC = () => {
     } catch (error) {
       console.error("❌ Failed to initialize communication system:", error);
     }
+
+    // Cleanup function for React StrictMode compatibility
+    return () => {
+      console.log("🧹 Cleaning up communication system...");
+      resetBeatLogging();
+    };
   }, []);
 
   // Panel toggle handlers with Musical Sequence integration

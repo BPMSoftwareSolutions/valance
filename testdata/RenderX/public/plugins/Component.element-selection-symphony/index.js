@@ -9,58 +9,45 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if ((from && typeof from === "object") || typeof from === "function") {
+  if (from && typeof from === "object" || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
         __defProp(to, key, {
           get: () => from[key],
-          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable
         });
   }
   return to;
 };
-var __toESM = (mod, isNodeMode, target) => (
-  (target = mod != null ? __create(__getProtoOf(mod)) : {}),
-  __copyProps(
-    // If the importer is in node compatibility mode or this is not an ESM
-    // file that has been converted to a CommonJS file using a Babel-
-    // compatible transform (i.e. "__esModule" has not been set), then set
-    // "default" to the CommonJS "module.exports" for node compatibility.
-    isNodeMode || !mod || !mod.__esModule
-      ? __defProp(target, "default", { value: mod, enumerable: true })
-      : target,
-    mod
-  )
-);
-var __toCommonJS = (mod) =>
-  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var stdin_exports = {};
 __export(stdin_exports, {
-  CANVAS_ELEMENT_SELECTION_SEQUENCE: () =>
-    import_sequence.CANVAS_ELEMENT_SELECTION_SEQUENCE,
+  CANVAS_ELEMENT_SELECTION_SEQUENCE: () => import_sequence.CANVAS_ELEMENT_SELECTION_SEQUENCE,
   sequence: () => import_sequence.CANVAS_ELEMENT_SELECTION_SEQUENCE,
   CIAPlugin: () => CIAPlugin,
   PLUGIN_INFO: () => PLUGIN_INFO,
   canElementBeSelected: () => import_selectionValidation.canElementBeSelected,
   default: () => stdin_default,
-  getSelectionConstraints: () =>
-    import_selectionValidation.getSelectionConstraints,
+  getSelectionConstraints: () => import_selectionValidation.getSelectionConstraints,
   handleCanvasElementSelected: () => import_onSelectionStart.default,
   handleCanvasSelectionChanged: () => import_onSelectionChange.default,
-  handleCanvasSelectionStateSync: () =>
-    import_onSelectionEnd.handleCanvasSelectionStateSync,
+  handleCanvasSelectionStateSync: () => import_onSelectionEnd.handleCanvasSelectionStateSync,
   handleCanvasSelectionVisualUpdate: () => import_onSelectionEnd.default,
-  processElementSelection: () =>
-    import_selectionProcessing.processElementSelection,
-  startCanvasElementSelectionFlow: () =>
-    import_sequence.startCanvasElementSelectionFlow,
+  processElementSelection: () => import_selectionProcessing.processElementSelection,
+  startCanvasElementSelectionFlow: () => import_sequence.startCanvasElementSelectionFlow,
   syncSelectionState: () => import_selectionCoordination.syncSelectionState,
-  updateSelectionVisuals: () =>
-    import_selectionCoordination.updateSelectionVisuals,
+  updateSelectionVisuals: () => import_selectionCoordination.updateSelectionVisuals,
   useCanvasElementSelection: () => import_hooks.useCanvasElementSelection,
   useCanvasElementSelectionDefault: () => import_hooks.default,
-  validateSelectionContext: () =>
-    import_selectionValidation.validateSelectionContext,
+  validateSelectionContext: () => import_selectionValidation.validateSelectionContext
 });
 module.exports = __toCommonJS(stdin_exports);
 var import_sequence = require("./sequence.ts");
@@ -81,7 +68,7 @@ const PLUGIN_INFO = {
   version: "1.0.0",
   description: "Selection Harmony - Dynamic element selection sequence",
   category: "canvas-operations",
-  type: "symphony-plugin",
+  type: "symphony-plugin"
 };
 const CIAPlugin = {
   mount: (conductor, eventBus) => {
@@ -136,6 +123,6 @@ const CIAPlugin = {
       );
       return false;
     }
-  },
+  }
 };
 var stdin_default = CIAPlugin;

@@ -1,6 +1,6 @@
 /**
  * Communication System Exports
- * 
+ *
  * Central export point for all communication-related components
  * including EventBus, Musical Conductor, and sequence types.
  */
@@ -13,8 +13,8 @@ export {
   type EventCallback,
   type UnsubscribeFunction,
   type EventSubscription,
-  type EventDebugInfo
-} from './EventBus';
+  type EventDebugInfo,
+} from "./EventBus";
 
 // Event Types exports
 export {
@@ -33,18 +33,16 @@ export {
   type CanvasEventType,
   type ControlPanelEventType,
   type LayoutEventType,
-  type ElementLibraryEventType
-} from './event-types';
+  type ElementLibraryEventType,
+} from "./event-types";
 
 // Musical Conductor exports
-export {
-  MusicalConductor
-} from './sequences/MusicalConductor';
+export { MusicalConductor } from "./sequences/MusicalConductor";
 
 // Import MusicalConductor and sequences for internal use
-import { MusicalConductor } from './sequences/MusicalConductor';
-import { initializeMusicalSequences } from './sequences';
-import { eventBus as internalEventBus, ConductorEventBus } from './EventBus';
+import { MusicalConductor } from "./sequences/MusicalConductor";
+import { initializeMusicalSequences } from "./sequences";
+import { eventBus as internalEventBus, ConductorEventBus } from "./EventBus";
 
 // Musical Sequences exports
 export {
@@ -59,13 +57,11 @@ export {
   startJsonComponentLoadingFlow,
   startJsonComponentErrorFlow,
   startPanelToggleFlow,
-  startLayoutModeChangeFlow
-} from './sequences';
+  startLayoutModeChangeFlow,
+} from "./sequences";
 
 // Sequence Types imports for internal use
-import {
-  MUSICAL_CONDUCTOR_EVENT_TYPES
-} from './sequences/SequenceTypes';
+import { MUSICAL_CONDUCTOR_EVENT_TYPES } from "./sequences/SequenceTypes";
 
 // Sequence Types exports
 export {
@@ -85,37 +81,82 @@ export {
   type ConductorStatistics,
   type SequenceRequest,
   type SequencePriority,
-  type MusicalConductorEventType
-} from './sequences/SequenceTypes';
+  type MusicalConductorEventType,
+} from "./sequences/SequenceTypes";
+
+// Track if beat execution logging has been set up to prevent duplicate listeners
+let beatLoggingInitialized = false;
 
 /**
  * Set up beat execution logging
  * Listens to BEAT_STARTED and BEAT_COMPLETED events for detailed logging
+ * Protected against duplicate initialization for React StrictMode compatibility
  */
 function setupBeatExecutionLogging(eventBus: ConductorEventBus): void {
-  console.log('🎼 Setting up beat execution logging...');
+  if (beatLoggingInitialized) {
+    console.log("🎼 Beat execution logging already initialized, skipping...");
+    return;
+  }
+
+  console.log("🎼 Setting up beat execution logging...");
 
   // Listen for beat started events
-  eventBus.subscribe(MUSICAL_CONDUCTOR_EVENT_TYPES.BEAT_STARTED, (data: any) => {
-    console.log(`🎵 Beat ${data.beat} Started: ${data.title || 'No title'} (${data.event}) - ${data.sequenceName}`);
-  });
+  eventBus.subscribe(
+    MUSICAL_CONDUCTOR_EVENT_TYPES.BEAT_STARTED,
+    (data: any) => {
+      console.log(
+        `🎵 Beat ${data.beat} Started: ${data.title || "No title"} (${
+          data.event
+        }) - ${data.sequenceName}`
+      );
+    }
+  );
 
   // Listen for beat completed events
-  eventBus.subscribe(MUSICAL_CONDUCTOR_EVENT_TYPES.BEAT_COMPLETED, (data: any) => {
-    console.log(`🎵 Beat ${data.beat} Completed: ${data.event} - ${data.sequenceName}`);
-  });
+  eventBus.subscribe(
+    MUSICAL_CONDUCTOR_EVENT_TYPES.BEAT_COMPLETED,
+    (data: any) => {
+      console.log(
+        `🎵 Beat ${data.beat} Completed: ${data.event} - ${data.sequenceName}`
+      );
+    }
+  );
 
   // Listen for sequence started events
-  eventBus.subscribe(MUSICAL_CONDUCTOR_EVENT_TYPES.SEQUENCE_STARTED, (data: any) => {
-    console.log(`🎼 Sequence Started: ${data.sequenceName} (ID: ${data.requestId})`);
-  });
+  eventBus.subscribe(
+    MUSICAL_CONDUCTOR_EVENT_TYPES.SEQUENCE_STARTED,
+    (data: any) => {
+      console.log(
+        `🎼 Sequence Started: ${data.sequenceName} (ID: ${data.requestId})`
+      );
+    }
+  );
 
   // Listen for sequence completed events
-  eventBus.subscribe(MUSICAL_CONDUCTOR_EVENT_TYPES.SEQUENCE_COMPLETED, (data: any) => {
-    console.log(`🎼 Sequence Completed: ${data.sequenceName} (${data.executionTime.toFixed(2)}ms, ${data.beatsExecuted} beats, ${data.errors} errors)`);
-  });
+  eventBus.subscribe(
+    MUSICAL_CONDUCTOR_EVENT_TYPES.SEQUENCE_COMPLETED,
+    (data: any) => {
+      console.log(
+        `🎼 Sequence Completed: ${
+          data.sequenceName
+        } (${data.executionTime.toFixed(2)}ms, ${data.beatsExecuted} beats, ${
+          data.errors
+        } errors)`
+      );
+    }
+  );
 
-  console.log('✅ Beat execution logging set up successfully');
+  beatLoggingInitialized = true;
+  console.log("✅ Beat execution logging set up successfully");
+}
+
+/**
+ * Reset beat execution logging state (for testing/cleanup)
+ * This allows re-initialization if needed
+ */
+export function resetBeatLogging(): void {
+  beatLoggingInitialized = false;
+  console.log("🔄 Beat execution logging state reset");
 }
 
 /**
@@ -127,7 +168,7 @@ export function initializeCommunicationSystem(): {
   conductor: MusicalConductor;
   sequenceResults: ReturnType<typeof initializeMusicalSequences>;
 } {
-  console.log('🎼 Initializing RenderX Evolution Communication System...');
+  console.log("🎼 Initializing RenderX Evolution Communication System...");
 
   // Create musical conductor with the internal eventBus
   const conductor = new MusicalConductor(internalEventBus);
@@ -141,17 +182,22 @@ export function initializeCommunicationSystem(): {
   // Initialize and register all musical sequences
   const sequenceResults = initializeMusicalSequences(conductor);
 
-  console.log('✅ Communication System initialized successfully');
-  console.log(`🎼 Registered ${sequenceResults.registeredSequences} musical sequences`);
+  console.log("✅ Communication System initialized successfully");
+  console.log(
+    `🎼 Registered ${sequenceResults.registeredSequences} musical sequences`
+  );
 
   if (sequenceResults.validationResults.invalid.length > 0) {
-    console.warn('⚠️ Some sequences have validation issues:', sequenceResults.validationResults.invalid);
+    console.warn(
+      "⚠️ Some sequences have validation issues:",
+      sequenceResults.validationResults.invalid
+    );
   }
 
   return {
     eventBus: internalEventBus as ConductorEventBus,
     conductor,
-    sequenceResults
+    sequenceResults,
   };
 }
 
@@ -175,12 +221,12 @@ export function getCommunicationSystemStatus(): {
   return {
     eventBus: {
       debugInfo: internalEventBus.getDebugInfo(),
-      metrics: (internalEventBus as ConductorEventBus).getMetrics()
+      metrics: (internalEventBus as ConductorEventBus).getMetrics(),
     },
     conductor: {
       statistics: conductor.getStatistics(),
       queueStatus: conductor.getQueueStatus(),
-      sequenceCount: conductor.getSequenceNames().length
-    }
+      sequenceCount: conductor.getSequenceNames().length,
+    },
   };
 }

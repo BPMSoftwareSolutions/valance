@@ -9,48 +9,40 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if ((from && typeof from === "object") || typeof from === "function") {
+  if (from && typeof from === "object" || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
         __defProp(to, key, {
           get: () => from[key],
-          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable
         });
   }
   return to;
 };
-var __toESM = (mod, isNodeMode, target) => (
-  (target = mod != null ? __create(__getProtoOf(mod)) : {}),
-  __copyProps(
-    // If the importer is in node compatibility mode or this is not an ESM
-    // file that has been converted to a CommonJS file using a Babel-
-    // compatible transform (i.e. "__esModule" has not been set), then set
-    // "default" to the CommonJS "module.exports" for node compatibility.
-    isNodeMode || !mod || !mod.__esModule
-      ? __defProp(target, "default", { value: mod, enumerable: true })
-      : target,
-    mod
-  )
-);
-var __toCommonJS = (mod) =>
-  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var stdin_exports = {};
 __export(stdin_exports, {
-  CANVAS_LIBRARY_DROP_SEQUENCE: () =>
-    import_sequence.CANVAS_LIBRARY_DROP_SEQUENCE,
+  CANVAS_LIBRARY_DROP_SEQUENCE: () => import_sequence.CANVAS_LIBRARY_DROP_SEQUENCE,
   sequence: () => import_sequence.CANVAS_LIBRARY_DROP_SEQUENCE,
   CIAPlugin: () => CIAPlugin,
   PLUGIN_INFO: () => PLUGIN_INFO,
   default: () => stdin_default,
   handleCanvasDropValidation: () => import_onCanvasDrop.default,
   handleCanvasElementCreated: () => import_onElementCreate.default,
-  handleCanvasElementPositioned: () =>
-    import_onElementCreate.handleCanvasElementPositioned,
+  handleCanvasElementPositioned: () => import_onElementCreate.handleCanvasElementPositioned,
   handleLibraryDragStart: () => import_onLibraryDragStart.default,
   startCanvasLibraryDropFlow: () => import_sequence.startCanvasLibraryDropFlow,
   useCanvasLibraryDrop: () => import_hooks.useCanvasLibraryDrop,
   useCanvasLibraryDropDefault: () => import_hooks.default,
-  validateDropContext: () => import_dropValidation.validateDropContext,
+  validateDropContext: () => import_dropValidation.validateDropContext
 });
 module.exports = __toCommonJS(stdin_exports);
 var import_sequence = require("./sequence.ts");
@@ -67,7 +59,7 @@ const PLUGIN_INFO = {
   version: "1.0.0",
   description: "Element Creation - Dynamic library element drop sequence",
   category: "canvas-operations",
-  type: "symphony-plugin",
+  type: "symphony-plugin"
 };
 const CIAPlugin = {
   mount: (conductor, eventBus) => {
@@ -107,6 +99,6 @@ const CIAPlugin = {
       console.error("\u{1F6A8} LibraryDrop Plugin: Unmount failed:", error);
       return false;
     }
-  },
+  }
 };
 var stdin_default = CIAPlugin;

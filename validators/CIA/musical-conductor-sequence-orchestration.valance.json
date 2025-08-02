@@ -1,0 +1,109 @@
+{
+  "name": "cia-musical-conductor-sequence-orchestration",
+  "description": "Validates that MusicalConductor implements proper sequence queuing and orchestration",
+  "type": "content",
+  "filePattern": ".*MusicalConductor\\.(ts|js)$",
+  "enforcementLevel": "strict",
+  "confidenceThreshold": 0.95,
+  "version": "1.0.0",
+  "author": "Valence CIA Validation System",
+  "tags": ["cia", "musical-conductor", "sequence-orchestration", "queuing", "concurrency"],
+  "rules": [
+    {
+      "plugin": "validateMusicalConductorOrchestration",
+      "checkSequenceQueue": true,
+      "checkConcurrencyControl": true,
+      "checkDeferredExecution": true,
+      "checkOrderPreservation": true,
+      "validateOrchestrationMethods": true,
+      "verbose": true
+    }
+  ],
+  "orchestrationRequirements": {
+    "requiredMethods": [
+      "queueSequence",
+      "executeNextSequence",
+      "isSequenceRunning",
+      "getCurrentSequence",
+      "getQueuedSequences",
+      "clearSequenceQueue"
+    ],
+    "requiredProperties": [
+      "sequenceQueue",
+      "currentSequence",
+      "isExecuting",
+      "executionOrder"
+    ],
+    "concurrencyPatterns": [
+      "async.*await.*sequence",
+      "Promise.*sequence",
+      "queue.*push|enqueue",
+      "dequeue|shift.*queue",
+      "mutex|lock|semaphore"
+    ],
+    "orchestrationPatterns": [
+      "if.*isExecuting.*return",
+      "while.*queue.*length",
+      "executeSequentially",
+      "waitForCompletion",
+      "defer.*until.*complete"
+    ]
+  },
+  "architecturalChecks": {
+    "sequenceQueuing": [
+      "MusicalConductor must queue concurrent sequence requests",
+      "Sequences must execute in order of request (FIFO)",
+      "No simultaneous sequence execution allowed",
+      "Queue must persist pending sequences until execution"
+    ],
+    "concurrencyControl": [
+      "Only one sequence can execute at a time",
+      "Concurrent requests must be deferred, not rejected",
+      "Execution state must be tracked and accessible",
+      "Race conditions must be prevented"
+    ],
+    "orchestrationFlow": [
+      "Current sequence must complete before next begins",
+      "Queue must be processed automatically",
+      "Failed sequences must not block queue processing",
+      "Cleanup must occur after sequence completion"
+    ]
+  },
+  "antiPatterns": {
+    "forbidden": [
+      "Multiple simultaneous sequence execution",
+      "Immediate execution without queuing check",
+      "Sequence requests being dropped or ignored",
+      "No concurrency control mechanisms"
+    ],
+    "warnings": [
+      "Synchronous sequence execution",
+      "No queue size limits",
+      "Missing error handling in orchestration",
+      "No sequence timeout mechanisms"
+    ]
+  },
+  "documentation": {
+    "purpose": "Ensures MusicalConductor properly orchestrates sequence execution to prevent race conditions",
+    "scope": "MusicalConductor implementation files",
+    "validationApproach": "Code analysis for sequence queuing, concurrency control, and orchestration patterns",
+    "keyPrinciples": [
+      "Sequential execution - one sequence at a time",
+      "Queue management - defer concurrent requests",
+      "Order preservation - FIFO execution order",
+      "Concurrency safety - prevent race conditions"
+    ],
+    "commonIssues": [
+      "Missing sequence queue implementation",
+      "Simultaneous sequence execution",
+      "No deferred execution for concurrent requests",
+      "Race conditions between sequence calls"
+    ],
+    "expectedBehavior": [
+      "First sequence executes immediately",
+      "Subsequent sequences queue until current completes",
+      "Queue processes automatically in order",
+      "No sequence interference or race conditions"
+    ]
+  }
+}
