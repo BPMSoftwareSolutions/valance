@@ -317,21 +317,6 @@ const CIAPlugin = {
         timestamp: Date.now()
       });
       startElementLibraryDisplayFlow(conductor, eventBus);
-      const ElementLibraryComponent = createElementLibraryComponent(
-        conductor,
-        eventBus
-      );
-      if (typeof window !== "undefined") {
-        window.renderxPlugins = window.renderxPlugins || {};
-        window.renderxPlugins["ElementLibrary.library-display-symphony"] = {
-          Component: ElementLibraryComponent,
-          conductor,
-          eventBus
-        };
-        console.log(
-          "\u{1F3BC} ElementLibrary Component exposed to global registry"
-        );
-      }
       console.log("\u2705 ElementLibrary Plugin: Mounted successfully");
       return true;
     } catch (error) {

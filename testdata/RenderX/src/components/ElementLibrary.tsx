@@ -3,10 +3,10 @@
  * Displays available JSON components for drag-and-drop
  */
 
-import React, { useState, useEffect } from 'react';
-import type { LoadedJsonComponent } from '../types/JsonComponent';
-import type { ElementLibraryProps } from '../types/AppTypes';
-import { jsonComponentLoader } from '../services/JsonComponentLoader';
+import React, { useState, useEffect } from "react";
+import type { LoadedJsonComponent } from "../types/JsonComponent";
+import type { ElementLibraryProps } from "../types/AppTypes";
+import { jsonComponentLoader } from "../services/JsonComponentLoader";
 
 const ElementLibrary: React.FC<ElementLibraryProps> = ({
   onDragStart,
@@ -18,40 +18,75 @@ const ElementLibrary: React.FC<ElementLibraryProps> = ({
   const [draggedComponent, setDraggedComponent] =
     useState<LoadedJsonComponent | null>(null);
 
-  // Component loading function - now properly scoped within ElementLibrary
+  // Component loading function - integrates with Musical Conductor symphony
   const loadComponentsAfterPlugins = async () => {
     try {
-      console.log("🔄 Loading JSON components with musical sequences...");
+      console.log(
+        "🎼 ElementLibrary: Triggering JSON component loading symphony..."
+      );
 
       // Get the communication system from global scope
       const system = (window as any).renderxCommunicationSystem;
 
-      if (system) {
-        jsonComponentLoader.connectToConductor(system.conductor);
+      if (system && system.conductor && system.eventBus) {
+        const { conductor, eventBus } = system;
 
-        // Use musical sequence loading
-        const result = await jsonComponentLoader.loadAllComponentsMusical();
+        // Emit component:load:start event to trigger JsonLoader plugin
+        console.log("🎼 ElementLibrary: Emitting component:load:start event");
+        eventBus.emit("component:load:start", {
+          source: "element-library",
+          timestamp: Date.now(),
+        });
 
-        if (result.failed.length > 0) {
-          console.warn("⚠️ Some components failed to load:", result.failed);
-          setError(`Failed to load ${result.failed.length} components`);
-        }
+        // Listen for components:loaded event from JsonLoader
+        const handleComponentsLoaded = (data: any) => {
+          console.log(
+            "🎼 ElementLibrary: Received components from JsonLoader",
+            data
+          );
+          if (data.components && Array.isArray(data.components)) {
+            setComponents(data.components);
+            setLoading(false);
+            setError(null);
 
-        console.log(
-          `✅ Loaded ${result.success.length} JSON components via musical sequences`
-        );
+            // Play library display completion symphony
+            console.log(
+              "🎼 ElementLibrary: Playing library display completion symphony"
+            );
+            conductor.play("library-display-symphony", "onDisplayComplete", {
+              components: data.components,
+              count: data.components.length,
+              source: "element-library",
+              timestamp: Date.now(),
+            });
+          }
+        };
 
-        // Update React state with loaded components
-        setComponents(result.success);
-        setLoading(false);
-        setError(null);
+        const handleComponentsError = (data: any) => {
+          console.error("🎼 ElementLibrary: Error loading components", data);
+          setError(data.error || "Failed to load components");
+          setLoading(false);
 
-        console.log(
-          `🎨 Updated UI state with ${result.success.length} components`
-        );
+          // Play library display error symphony
+          conductor.play("library-display-symphony", "onDisplayError", {
+            error: data.error || "Failed to load components",
+            source: "element-library",
+            timestamp: Date.now(),
+          });
+        };
+
+        // Subscribe to events
+        eventBus.subscribe("components:loaded", handleComponentsLoaded);
+        eventBus.subscribe("components:error", handleComponentsError);
+
+        // Cleanup function
+        return () => {
+          eventBus.unsubscribe("components:loaded", handleComponentsLoaded);
+          eventBus.unsubscribe("components:error", handleComponentsError);
+        };
       } else {
-        console.log("🔄 No conductor available for component loading");
-        setError("No conductor available for component loading");
+        console.log("🔄 No conductor/eventBus available for component loading");
+        setError("Musical Conductor not available for component loading");
         setLoading(false);
       }
     } catch (err) {
@@ -65,10 +100,12 @@ const ElementLibrary: React.FC<ElementLibraryProps> = ({
 
   // Load components when ElementLibrary mounts and communication system is ready
   useEffect(() => {
-    const checkAndLoadComponents = () => {
+    let cleanup: (() => void) | undefined;
+
+    const checkAndLoadComponents = async () => {
       const system = (window as any).renderxCommunicationSystem;
       if (system) {
-        loadComponentsAfterPlugins();
+        cleanup = await loadComponentsAfterPlugins();
       } else {
         // Wait a bit and try again
         setTimeout(checkAndLoadComponents, 100);
@@ -76,6 +113,13 @@ const ElementLibrary: React.FC<ElementLibraryProps> = ({
     };
 
     checkAndLoadComponents();
+
+    // Return cleanup function
+    return () => {
+      if (cleanup) {
+        cleanup();
+      }
+    };
   }, []);
 
   const getComponentsByCategory = () => {

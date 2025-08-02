@@ -4,168 +4,17 @@
  */
 
 import React, { useState, useEffect } from "react";
-// ElementLibrary is now provided by ElementLibrary.library-display-symphony plugin
-// import ElementLibrary from "./ElementLibrary";
+// ElementLibrary component with Musical Conductor integration
+import ElementLibrary from "./ElementLibrary";
 import ControlPanel from "./ControlPanel";
 import Canvas from "./Canvas";
 import { ThemeToggleButton } from "../providers/ThemeProvider";
 import type { AppState } from "../types/AppTypes";
 import type { LoadedJsonComponent } from "../types/JsonComponent";
 
-// Plugin-based ElementLibrary component
-const ElementLibrary: React.FC<{
-  onDragStart?: (e: React.DragEvent, component: LoadedJsonComponent) => void;
-  onDragEnd?: (e: React.DragEvent) => void;
-}> = ({ onDragStart, onDragEnd }) => {
-  const [PluginComponent, setPluginComponent] =
-    useState<React.ComponentType<any> | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+// ElementLibrary component is now imported directly and integrates with Musical Conductor
+// Removed plugin-loading logic - using original ElementLibrary.tsx with Musical Conductor integration
 
-  useEffect(() => {
-    let retryCount = 0;
-    const maxRetries = 10;
-
-    const loadPluginComponent = () => {
-      try {
-        // Get the plugin from global registry
-        const plugin = (window as any).renderxPlugins?.[
-          "ElementLibrary.library-display-symphony"
-        ];
-
-        if (plugin && plugin.Component) {
-          console.log(
-            "🎼 Loading ElementLibrary from library-display-symphony plugin"
-          );
-          setPluginComponent(() => plugin.Component);
-          setLoading(false);
-          return true; // Success
-        } else if (retryCount >= maxRetries) {
-          // After max retries, show fallback
-          console.warn(
-            "⚠️ ElementLibrary.library-display-symphony plugin not found after retries, using fallback"
-          );
-          setPluginComponent(
-            () =>
-              ({ children }: { children?: React.ReactNode }) =>
-                (
-                  <div className="element-library plugin-fallback">
-                    <div className="element-library-header">
-                      <h3>Element Library</h3>
-                      <div className="warning-indicator">Plugin Fallback</div>
-                    </div>
-                    <div className="element-library-content">
-                      <div className="element-library-error">
-                        <div className="error-state">
-                          <h4>🔌 Plugin System</h4>
-                          <p>
-                            ElementLibrary.library-display-symphony plugin could
-                            not be loaded.
-                          </p>
-                          <p>Using fallback display.</p>
-                          <button
-                            onClick={() => window.location.reload()}
-                            className="retry-button"
-                          >
-                            🔄 Reload Page
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )
-          );
-          setLoading(false);
-          return true; // Stop retrying
-        }
-        return false; // Continue retrying
-      } catch (err) {
-        console.error("❌ Failed to load ElementLibrary plugin:", err);
-        setError(err instanceof Error ? err.message : "Plugin loading failed");
-        setLoading(false);
-        return true; // Stop retrying on error
-      }
-    };
-
-    // Try to load immediately
-    if (loadPluginComponent()) {
-      return; // Success or error, no need to retry
-    }
-
-    // If not available, retry periodically with limit
-    const retryInterval = setInterval(() => {
-      retryCount++;
-      if (loadPluginComponent()) {
-        clearInterval(retryInterval);
-      }
-    }, 500); // Retry every 500ms
-
-    return () => clearInterval(retryInterval);
-  }, []); // Empty dependency array - only run once on mount
-
-  if (loading) {
-    return (
-      <div className="element-library loading">
-        <div className="element-library-header">
-          <h3>Element Library</h3>
-          <div className="loading-indicator">Loading plugin...</div>
-        </div>
-        <div className="element-library-content">
-          <div className="loading-state">
-            <h4>🎼 Loading Symphony Plugin</h4>
-            <p>ElementLibrary.library-display-symphony initializing...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="element-library error">
-        <div className="element-library-header">
-          <h3>Element Library</h3>
-          <div className="error-indicator">Plugin Error</div>
-        </div>
-        <div className="element-library-content">
-          <div className="error-state">
-            <h4>❌ Plugin Loading Failed</h4>
-            <p>{error}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!PluginComponent) {
-    return (
-      <div className="element-library fallback">
-        <div className="element-library-header">
-          <h3>Element Library</h3>
-          <div className="warning-indicator">Using Fallback</div>
-        </div>
-        <div className="element-library-content">
-          <div className="fallback-state">
-            <h4>🔌 Plugin System</h4>
-            <p>ElementLibrary plugin not available</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Get communication system for plugin
-  const communicationSystem = (window as any).renderxCommunicationSystem;
-
-  return (
-    <PluginComponent
-      onDragStart={onDragStart}
-      onDragEnd={onDragEnd}
-      conductor={communicationSystem?.conductor}
-      eventBus={communicationSystem?.eventBus}
-    />
-  );
-};
 import {
   initializeCommunicationSystem,
   MusicalConductor,
