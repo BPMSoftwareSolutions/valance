@@ -65,13 +65,19 @@ const CIAPlugin = {
   mount: (conductor, eventBus) => {
     console.log("\u{1F3BC} LibraryDrop Plugin: Mounting...");
     try {
-      conductor.registerSequence(CANVAS_LIBRARY_DROP_SEQUENCE);
-      eventBus.subscribe("library:drag:start", handleLibraryDragStart);
-      eventBus.subscribe("canvas:drop:validation", handleCanvasDropValidation);
-      eventBus.subscribe("canvas:element:create", handleCanvasElementCreated);
+      conductor.registerSequence(import_sequence.CANVAS_LIBRARY_DROP_SEQUENCE);
+      eventBus.subscribe(
+        "library:drag:start",
+        import_onLibraryDragStart.default
+      );
+      eventBus.subscribe("canvas:drop:validation", import_onCanvasDrop.default);
+      eventBus.subscribe(
+        "canvas:element:create",
+        import_onElementCreate.default
+      );
       eventBus.subscribe(
         "canvas:element:position",
-        handleCanvasElementPositioned
+        import_onElementCreate.handleCanvasElementPositioned
       );
       console.log("\u2705 LibraryDrop Plugin: Mounted successfully");
       return true;
@@ -83,15 +89,21 @@ const CIAPlugin = {
   unmount: (conductor, eventBus) => {
     console.log("\u{1F3BC} LibraryDrop Plugin: Unmounting...");
     try {
-      eventBus.unsubscribe("library:drag:start", handleLibraryDragStart);
+      eventBus.unsubscribe(
+        "library:drag:start",
+        import_onLibraryDragStart.default
+      );
       eventBus.unsubscribe(
         "canvas:drop:validation",
-        handleCanvasDropValidation
+        import_onCanvasDrop.default
       );
-      eventBus.unsubscribe("canvas:element:create", handleCanvasElementCreated);
+      eventBus.unsubscribe(
+        "canvas:element:create",
+        import_onElementCreate.default
+      );
       eventBus.unsubscribe(
         "canvas:element:position",
-        handleCanvasElementPositioned
+        import_onElementCreate.handleCanvasElementPositioned
       );
       console.log("\u2705 LibraryDrop Plugin: Unmounted successfully");
       return true;

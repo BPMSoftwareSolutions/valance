@@ -68,14 +68,17 @@ const CIAPlugin = {
   mount: (conductor, eventBus) => {
     console.log("\u{1F3BC} PanelToggle Plugin: Mounting...");
     try {
-      conductor.registerSequence(PANEL_TOGGLE_SEQUENCE);
-      conductor.registerSequence(LAYOUT_MODE_CHANGE_SEQUENCE);
-      eventBus.subscribe("layout:panel:toggle", handlePanelToggled);
-      eventBus.subscribe("layout:change", handleLayoutChanged);
-      eventBus.subscribe("layout:animation:start", handlePanelAnimationStart);
+      conductor.registerSequence(import_sequence.PANEL_TOGGLE_SEQUENCE);
+      conductor.registerSequence(import_sequence.LAYOUT_MODE_CHANGE_SEQUENCE);
+      eventBus.subscribe("layout:panel:toggle", import_onPanelToggle.default);
+      eventBus.subscribe("layout:change", import_onLayoutChange.default);
+      eventBus.subscribe(
+        "layout:animation:start",
+        import_onAnimationComplete.default
+      );
       eventBus.subscribe(
         "layout:animation:complete",
-        handlePanelAnimationComplete
+        import_onAnimationComplete.handlePanelAnimationComplete
       );
       console.log("\u2705 PanelToggle Plugin: Mounted successfully");
       return true;
@@ -87,12 +90,15 @@ const CIAPlugin = {
   unmount: (conductor, eventBus) => {
     console.log("\u{1F3BC} PanelToggle Plugin: Unmounting...");
     try {
-      eventBus.unsubscribe("layout:panel:toggle", handlePanelToggled);
-      eventBus.unsubscribe("layout:change", handleLayoutChanged);
-      eventBus.unsubscribe("layout:animation:start", handlePanelAnimationStart);
+      eventBus.unsubscribe("layout:panel:toggle", import_onPanelToggle.default);
+      eventBus.unsubscribe("layout:change", import_onLayoutChange.default);
+      eventBus.unsubscribe(
+        "layout:animation:start",
+        import_onAnimationComplete.default
+      );
       eventBus.unsubscribe(
         "layout:animation:complete",
-        handlePanelAnimationComplete
+        import_onAnimationComplete.handlePanelAnimationComplete
       );
       console.log("\u2705 PanelToggle Plugin: Unmounted successfully");
       return true;

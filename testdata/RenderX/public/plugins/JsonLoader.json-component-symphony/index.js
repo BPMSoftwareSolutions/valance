@@ -12,7 +12,10 @@ var __copyProps = (to, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable
+        });
   }
   return to;
 };
@@ -45,14 +48,14 @@ __export(stdin_exports, {
   validateComponentStructure: () => import_logic.validateComponentStructure
 });
 module.exports = __toCommonJS(stdin_exports);
-var import_sequence = require("./sequence.ts");
-var import_sequence2 = require("./sequence.ts");
-var import_onLoadStart = __toESM(require("./handlers/onLoadStart.ts"));
-var import_onLoadProgress = __toESM(require("./handlers/onLoadProgress.ts"));
-var import_onLoadComplete = __toESM(require("./handlers/onLoadComplete.ts"));
-var import_onLoadError = __toESM(require("./handlers/onLoadError.ts"));
-var import_logic = require("./logic/index.ts");
-var import_hooks = __toESM(require("./hooks/index.ts"));
+var import_sequence = require("./sequence.js");
+var import_sequence2 = require("./sequence.js");
+var import_onLoadStart = __toESM(require("./handlers/onLoadStart.js"));
+var import_onLoadProgress = __toESM(require("./handlers/onLoadProgress.js"));
+var import_onLoadComplete = __toESM(require("./handlers/onLoadComplete.js"));
+var import_onLoadError = __toESM(require("./handlers/onLoadError.js"));
+var import_logic = require("./logic/index.js");
+var import_hooks = __toESM(require("./hooks/index.js"));
 const PLUGIN_INFO = {
   id: "JsonLoader.json-component-symphony",
   name: "JSON Component Loading Symphony No. 1",
@@ -65,18 +68,22 @@ const CIAPlugin = {
   mount: (conductor, eventBus) => {
     console.log("\u{1F3BC} JsonLoader Plugin: Mounting...");
     try {
-      conductor.registerSequence(JSON_COMPONENT_LOADING_SEQUENCE);
-      conductor.registerSequence(JSON_COMPONENT_ERROR_SEQUENCE);
-      eventBus.subscribe("component:load:start", handleComponentLoadingStarted);
+      conductor.registerSequence(
+        import_sequence.JSON_COMPONENT_LOADING_SEQUENCE
+      );
+      conductor.registerSequence(import_sequence.JSON_COMPONENT_ERROR_SEQUENCE);
+      eventBus.subscribe("component:load:start", (data) => {
+        import_onLoadStart.default(data, { eventBus, conductor });
+      });
       eventBus.subscribe(
         "component:load:progress",
-        handleComponentLoadingProgress
+        import_onLoadProgress.default
       );
       eventBus.subscribe(
         "component:load:complete",
-        handleComponentLoadingCompleted
+        import_onLoadComplete.default
       );
-      eventBus.subscribe("component:load:error", handleComponentLoadingError);
+      eventBus.subscribe("component:load:error", import_onLoadError.default);
       console.log("\u2705 JsonLoader Plugin: Mounted successfully");
       return true;
     } catch (error) {
@@ -87,19 +94,16 @@ const CIAPlugin = {
   unmount: (conductor, eventBus) => {
     console.log("\u{1F3BC} JsonLoader Plugin: Unmounting...");
     try {
-      eventBus.unsubscribe(
-        "component:load:start",
-        handleComponentLoadingStarted
-      );
+      eventBus.unsubscribe("component:load:start", import_onLoadStart.default);
       eventBus.unsubscribe(
         "component:load:progress",
-        handleComponentLoadingProgress
+        import_onLoadProgress.default
       );
       eventBus.unsubscribe(
         "component:load:complete",
-        handleComponentLoadingCompleted
+        import_onLoadComplete.default
       );
-      eventBus.unsubscribe("component:load:error", handleComponentLoadingError);
+      eventBus.unsubscribe("component:load:error", import_onLoadError.default);
       console.log("\u2705 JsonLoader Plugin: Unmounted successfully");
       return true;
     } catch (error) {

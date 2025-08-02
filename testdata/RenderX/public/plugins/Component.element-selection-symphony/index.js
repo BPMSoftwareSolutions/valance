@@ -74,19 +74,24 @@ const CIAPlugin = {
   mount: (conductor, eventBus) => {
     console.log("\u{1F3BC} ElementSelection Plugin: Mounting...");
     try {
-      conductor.registerSequence(CANVAS_ELEMENT_SELECTION_SEQUENCE);
-      eventBus.subscribe("canvas:element:select", handleCanvasElementSelected);
+      conductor.registerSequence(
+        import_sequence.CANVAS_ELEMENT_SELECTION_SEQUENCE
+      );
+      eventBus.subscribe(
+        "canvas:element:select",
+        import_onSelectionStart.default
+      );
       eventBus.subscribe(
         "canvas:selection:change",
-        handleCanvasSelectionChanged
+        import_onSelectionChange.default
       );
       eventBus.subscribe(
         "canvas:selection:visual",
-        handleCanvasSelectionVisualUpdate
+        import_onSelectionEnd.default
       );
       eventBus.subscribe(
         "canvas:selection:sync",
-        handleCanvasSelectionStateSync
+        import_onSelectionEnd.handleCanvasSelectionStateSync
       );
       console.log("\u2705 ElementSelection Plugin: Mounted successfully");
       return true;
@@ -100,19 +105,19 @@ const CIAPlugin = {
     try {
       eventBus.unsubscribe(
         "canvas:element:select",
-        handleCanvasElementSelected
+        import_onSelectionStart.default
       );
       eventBus.unsubscribe(
         "canvas:selection:change",
-        handleCanvasSelectionChanged
+        import_onSelectionChange.default
       );
       eventBus.unsubscribe(
         "canvas:selection:visual",
-        handleCanvasSelectionVisualUpdate
+        import_onSelectionEnd.default
       );
       eventBus.unsubscribe(
         "canvas:selection:sync",
-        handleCanvasSelectionStateSync
+        import_onSelectionEnd.handleCanvasSelectionStateSync
       );
       console.log("\u2705 ElementSelection Plugin: Unmounted successfully");
       return true;

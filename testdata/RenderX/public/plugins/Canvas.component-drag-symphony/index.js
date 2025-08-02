@@ -80,11 +80,19 @@ const CIAPlugin = {
   mount: (conductor, eventBus) => {
     console.log("\u{1F3BC} ComponentDrag Plugin: Mounting...");
     try {
-      conductor.registerSequence(CANVAS_COMPONENT_DRAG_SEQUENCE);
-      eventBus.subscribe("canvas:element:drag:start", handleCanvasDragOver);
-      eventBus.subscribe("canvas:element:drag:move", handleCanvasElementMoved);
-      eventBus.subscribe("canvas:element:drag:end", handleCanvasDropValidation);
-      eventBus.subscribe("canvas:element:css:sync", handleCanvasElementCSSSync);
+      conductor.registerSequence(
+        import_sequence.CANVAS_COMPONENT_DRAG_SEQUENCE
+      );
+      eventBus.subscribe(
+        "canvas:element:drag:start",
+        import_onDragStart.default
+      );
+      eventBus.subscribe("canvas:element:drag:move", import_onDragging.default);
+      eventBus.subscribe("canvas:element:drag:end", import_onDrop.default);
+      eventBus.subscribe(
+        "canvas:element:css:sync",
+        import_onDrop.handleCanvasElementCSSSync
+      );
       console.log("\u2705 ComponentDrag Plugin: Mounted successfully");
       return true;
     } catch (error) {
@@ -95,18 +103,18 @@ const CIAPlugin = {
   unmount: (conductor, eventBus) => {
     console.log("\u{1F3BC} ComponentDrag Plugin: Unmounting...");
     try {
-      eventBus.unsubscribe("canvas:element:drag:start", handleCanvasDragOver);
+      eventBus.unsubscribe(
+        "canvas:element:drag:start",
+        import_onDragStart.default
+      );
       eventBus.unsubscribe(
         "canvas:element:drag:move",
-        handleCanvasElementMoved
+        import_onDragging.default
       );
-      eventBus.unsubscribe(
-        "canvas:element:drag:end",
-        handleCanvasDropValidation
-      );
+      eventBus.unsubscribe("canvas:element:drag:end", import_onDrop.default);
       eventBus.unsubscribe(
         "canvas:element:css:sync",
-        handleCanvasElementCSSSync
+        import_onDrop.handleCanvasElementCSSSync
       );
       console.log("\u2705 ComponentDrag Plugin: Unmounted successfully");
       return true;

@@ -21,7 +21,10 @@
     },
     "ElementLibrary": {
       "description": "Component library and element management",
-      "plugins": ["ElementLibrary.library-drop-symphony"]
+      "plugins": [
+        "ElementLibrary.library-drop-symphony",
+        "ElementLibrary.library-display-symphony"
+      ]
     },
     "ControlPanel": {
       "description": "Control panel and UI panel management",
@@ -111,6 +114,17 @@
       "autoMount": true
     },
     {
+      "name": "ElementLibrary.library-display-symphony",
+      "domain": "ElementLibrary",
+      "functionality": "library-display",
+      "description": "Element library UI display and component categorization",
+      "version": "1.0.0",
+      "path": "./ElementLibrary.library-display-symphony/",
+      "isCore": true,
+      "priority": 5,
+      "autoMount": true
+    },
+    {
       "name": "ControlPanel.panel-toggle-symphony",
       "domain": "ControlPanel",
       "functionality": "panel-toggle",
@@ -134,9 +148,9 @@
     }
   ],
   "statistics": {
-    "totalPlugins": 7,
+    "totalPlugins": 8,
     "totalDomains": 7,
-    "corePlugins": 7,
+    "corePlugins": 8,
     "optionalPlugins": 0
   }
 }

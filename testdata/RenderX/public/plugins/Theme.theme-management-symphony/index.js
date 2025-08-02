@@ -298,7 +298,10 @@ var ThemeManagementPlugin = {
       "app.initialized": onSystemThemeDetection
     };
     Object.entries(handlers).forEach(([event, handler]) => {
-      eventBus.on(event, (data) => handler(data, { eventBus, conductor }));
+      eventBus.subscribe(
+        event,
+        (data) => handler(data, { eventBus, conductor })
+      );
     });
     startThemeManagementFlow(eventBus);
     if (typeof window !== "undefined") {
@@ -324,7 +327,7 @@ var ThemeManagementPlugin = {
       "app.initialized"
     ];
     events.forEach((event) => {
-      eventBus.off(event);
+      eventBus.unsubscribe(event);
     });
     if (typeof window !== "undefined" && window.renderxPlugins) {
       delete window.renderxPlugins["Theme.theme-management-symphony"];

@@ -445,6 +445,29 @@ export class MusicalConductor {
             }
           );
 
+          // Call the plugin's CIA mount method if available
+          if (
+            pluginModule.CIAPlugin &&
+            typeof pluginModule.CIAPlugin.mount === "function"
+          ) {
+            try {
+              const mountResult = pluginModule.CIAPlugin.mount(
+                this,
+                this.eventBus
+              );
+              if (!mountResult) {
+                console.warn(
+                  `⚠️ Plugin ${plugin.name} mount method returned false`
+                );
+              }
+            } catch (error) {
+              console.error(
+                `❌ Plugin ${plugin.name} mount method failed:`,
+                error
+              );
+            }
+          }
+
           console.log(`✅ Plugin registered: ${plugin.name}`);
         } else {
           console.log(`⏭️  Skipping plugin: ${plugin.name} (autoMount: false)`);
