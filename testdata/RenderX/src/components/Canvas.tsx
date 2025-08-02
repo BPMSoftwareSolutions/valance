@@ -3,10 +3,13 @@
  * Main workspace for drag-and-drop component placement
  */
 
-import React, { useState } from 'react';
-import CanvasElement from './CanvasElement';
-import { generateAndInjectComponentCSS, injectSelectionStyles } from '../utils/cssUtils';
-import type { CanvasProps } from '../types/AppTypes';
+import React, { useState } from "react";
+import CanvasElement from "./CanvasElement";
+import {
+  generateAndInjectComponentCSS,
+  injectSelectionStyles,
+} from "../utils/cssUtils";
+import type { CanvasProps } from "../types/AppTypes";
 
 const Canvas: React.FC<CanvasProps> = ({ mode, onCanvasElementDragStart }) => {
   const [canvasElements, setCanvasElements] = useState<any[]>([]);
@@ -90,8 +93,8 @@ const Canvas: React.FC<CanvasProps> = ({ mode, onCanvasElementDragStart }) => {
 
         // CIA-compliant trigger using conductor.play()
         const result = communicationSystem.conductor.play(
-          "library-drop-symphony",
-          "onDropValidation",
+          "ElementLibrary.library-drop-symphony",
+          "Canvas Library Drop Symphony No. 33",
           {
             dragData,
             dropCoordinates,
@@ -125,6 +128,14 @@ const Canvas: React.FC<CanvasProps> = ({ mode, onCanvasElementDragStart }) => {
 
         // Generate and inject CSS for the component (data-driven approach)
         if (dragData.componentData) {
+          console.log(
+            "🎨 Canvas: Component data for styling:",
+            dragData.componentData
+          );
+          console.log(
+            "🎨 Canvas: Component UI styles:",
+            dragData.componentData.ui?.styles
+          );
           generateAndInjectComponentCSS(
             newElement.cssClass,
             dragData.componentData,
