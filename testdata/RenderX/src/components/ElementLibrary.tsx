@@ -137,7 +137,12 @@ const ElementLibrary: React.FC<ElementLibraryProps> = ({
   };
 
   const getComponentIcon = (component: LoadedJsonComponent): string => {
-    // Simple icon mapping based on component type
+    // Use the icon from the component's metadata if available
+    if (component.metadata.icon) {
+      return component.metadata.icon;
+    }
+
+    // Fallback to type-based icon mapping
     const iconMap: Record<string, string> = {
       button: "🔘",
       input: "📝",
@@ -150,7 +155,42 @@ const ElementLibrary: React.FC<ElementLibraryProps> = ({
       div: "🔲",
     };
 
-    return iconMap[component.metadata.type] || "🧩";
+    return iconMap[component.metadata.type.toLowerCase()] || "🧩";
+  };
+
+  const createComponentPreview = (component: LoadedJsonComponent): string => {
+    // Create a mini preview using the component's template and styles
+    if (component.ui?.template && component.ui?.styles?.css) {
+      // Create a simplified version of the template for preview
+      let template = component.ui.template;
+
+      // Remove event handlers for preview
+      template = template.replace(/on\w+="[^"]*"/g, "");
+
+      // Add preview-specific classes
+      template = template.replace(
+        /class="([^"]*)"/,
+        'class="$1 component-preview"'
+      );
+
+      return template;
+    }
+
+    // Fallback to simple text preview
+    return `<span class="component-preview-fallback">${component.metadata.name}</span>`;
+  };
+
+  const getComponentStyles = (component: LoadedJsonComponent): string => {
+    // Return the CSS styles for the component
+    if (component.ui?.styles?.css) {
+      // Scope the styles to the preview container to avoid conflicts
+      const scopedCSS = component.ui.styles.css.replace(
+        /(\.[a-zA-Z-_][a-zA-Z0-9-_]*)/g,
+        `.element-item[data-component-id="${component.id}"] $1`
+      );
+      return scopedCSS;
+    }
+    return "";
   };
 
   return (
@@ -184,40 +224,85 @@ const ElementLibrary: React.FC<ElementLibraryProps> = ({
             </div>
           </div>
         ) : (
-          Object.entries(getComponentsByCategory()).map(
-            ([category, categoryComponents]) => (
-              <div key={category} className="element-category">
-                <h4>{category.charAt(0).toUpperCase() + category.slice(1)}</h4>
-                <div className="element-list">
-                  {categoryComponents.map((component) => (
-                    <div
-                      key={component.id}
-                      className="element-item"
-                      data-component={component.metadata.type.toLowerCase()}
-                      draggable
-                      onDragStart={
-                        onDragStart
-                          ? (e) => onDragStart(e, component)
-                          : undefined
-                      }
-                      onDragEnd={onDragEnd}
-                      title={`${component.metadata.description}\nVersion: ${component.metadata.version}\nAuthor: ${component.metadata.author}\nDrag to canvas to add`}
-                    >
-                      <span className="element-icon">
-                        {getComponentIcon(component)}
-                      </span>
-                      <span className="element-name">
-                        {component.metadata.name}
-                      </span>
-                      <span className="element-type">
-                        ({component.metadata.type})
-                      </span>
-                    </div>
-                  ))}
+          <>
+            {/* Inject component styles */}
+            <style>
+              {components
+                .map((component) => getComponentStyles(component))
+                .join("\n")}
+              {/* Additional preview styles */}
+              {`
+                .element-item .component-preview-container {
+                  margin: 4px 0;
+                  padding: 4px;
+                  border: 1px solid #e0e0e0;
+                  border-radius: 3px;
+                  background: #f9f9f9;
+                  min-height: 24px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 12px;
+                  overflow: hidden;
+                }
+                .element-item .component-preview {
+                  transform: scale(0.8);
+                  transform-origin: center;
+                  pointer-events: none;
+                }
+                .element-item .component-preview-fallback {
+                  color: #666;
+                  font-style: italic;
+                }
+              `}
+            </style>
+
+            {Object.entries(getComponentsByCategory()).map(
+              ([category, categoryComponents]) => (
+                <div key={category} className="element-category">
+                  <h4>
+                    {category.charAt(0).toUpperCase() + category.slice(1)}
+                  </h4>
+                  <div className="element-list">
+                    {categoryComponents.map((component) => (
+                      <div
+                        key={component.id}
+                        className="element-item"
+                        data-component={component.metadata.type.toLowerCase()}
+                        data-component-id={component.id}
+                        draggable
+                        onDragStart={
+                          onDragStart
+                            ? (e) => onDragStart(e, component)
+                            : undefined
+                        }
+                        onDragEnd={onDragEnd}
+                        title={`${component.metadata.description}\nVersion: ${component.metadata.version}\nAuthor: ${component.metadata.author}\nDrag to canvas to add`}
+                      >
+                        <div className="element-header">
+                          <span className="element-icon">
+                            {getComponentIcon(component)}
+                          </span>
+                          <span className="element-name">
+                            {component.metadata.name}
+                          </span>
+                          <span className="element-type">
+                            ({component.metadata.type})
+                          </span>
+                        </div>
+                        <div
+                          className="component-preview-container"
+                          dangerouslySetInnerHTML={{
+                            __html: createComponentPreview(component),
+                          }}
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )
-          )
+              )
+            )}
+          </>
         )}
       </div>
     </div>
