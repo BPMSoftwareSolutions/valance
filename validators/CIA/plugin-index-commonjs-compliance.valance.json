@@ -1,0 +1,87 @@
+{
+  "name": "cia-plugin-index-commonjs-compliance",
+  "description": "Validates that plugin index.js files use CommonJS format for runtime compatibility with require() loading",
+  "type": "content",
+  "filePattern": ".*/index\\.js$",
+  "confidenceThreshold": 0.9,
+  "version": "1.0.0",
+  "author": "Valence CIA Validation System",
+  "tags": ["cia", "commonjs", "module-format", "runtime-compatibility"],
+  "rules": [
+    {
+      "plugin": "validatePluginIndexCommonJSCompliance",
+      "checkModuleExports": true,
+      "validateRequireStatements": true,
+      "detectES6Syntax": true,
+      "enforceCommonJSFormat": true,
+      "checkPluginExports": true,
+      "verbose": false
+    }
+  ],
+  "commonJSPatterns": {
+    "validExports": [
+      "module\\.exports\\s*=",
+      "module\\.exports\\.[a-zA-Z_$][a-zA-Z0-9_$]*\\s*=",
+      "exports\\.[a-zA-Z_$][a-zA-Z0-9_$]*\\s*="
+    ],
+    "validRequires": [
+      "require\\s*\\(\\s*['\"`][^'\"`,]+['\"`]\\s*\\)",
+      "const\\s+[a-zA-Z_$][a-zA-Z0-9_$]*\\s*=\\s*require\\s*\\("
+    ],
+    "forbiddenES6": [
+      "import\\s+",
+      "export\\s+",
+      "export\\s*{",
+      "export\\s*default",
+      "import\\s*{",
+      "import\\s*\\*\\s*as"
+    ]
+  },
+  "requiredExports": [
+    "sequence",
+    "handlers"
+  ],
+  "optionalExports": [
+    "metadata",
+    "mount",
+    "unmount"
+  ],
+  "documentation": {
+    "purpose": "Ensures plugin index.js files use CommonJS format for runtime compatibility with Musical Conductor's require() loading",
+    "scope": "All plugin index.js files that need to be loaded dynamically at runtime",
+    "validationTypes": [
+      "CommonJS module.exports pattern detection",
+      "require() statement validation",
+      "ES6 import/export syntax detection (forbidden)",
+      "Required plugin exports validation (sequence, handlers)",
+      "Module format consistency checking",
+      "Runtime compatibility verification"
+    ],
+    "commonIssues": [
+      "ES6 import/export syntax instead of CommonJS",
+      "Missing module.exports for sequence and handlers",
+      "Mixed module formats in same file",
+      "Invalid require() statement syntax",
+      "Missing required plugin exports",
+      "Unexpected token 'export' runtime errors"
+    ],
+    "examples": {
+      "validCommonJS": [
+        "const sequence = require('./sequence');",
+        "module.exports = { sequence, handlers };",
+        "module.exports.sequence = sequence;",
+        "exports.handlers = handlers;"
+      ],
+      "invalidES6": [
+        "import { sequence } from './sequence';",
+        "export { sequence, handlers };",
+        "export default { sequence, handlers };",
+        "import sequence from './sequence';"
+      ],
+      "runtimeCompatible": {
+        "description": "CommonJS format allows Musical Conductor to use require() for dynamic loading",
+        "pattern": "const plugin = require(pluginPath); conductor.mount(plugin.sequence, plugin.handlers);"
+      }
+    }
+  }
+}

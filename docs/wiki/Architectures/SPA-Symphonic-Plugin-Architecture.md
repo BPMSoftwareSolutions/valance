@@ -15,17 +15,17 @@ The **Symphonic Plugin Architecture (SPA)** is a modular plugin architecture pat
 
 ### **Plugin Structure**
 ```
-MyPlugin.component-drag-symphony/
+Domain.functionality-symphony/
 ├── manifest.json              # Plugin metadata and configuration
-├── index.ts                   # Entry point and exports
-├── sequence.ts                # Musical definition and movements
-├── handlers/                  # Movement implementations
-│   ├── onDragStart.ts
-│   ├── onDragging.ts
-│   └── onDrop.ts
+├── index.js                   # CommonJS entry point and exports
+├── sequence.js                # Musical definition and movements
+├── handlers/                  # Movement implementations (optional)
+│   ├── onDragStart.js
+│   ├── onDragging.js
+│   └── onDrop.js
 ├── hooks/                     # Optional: React hooks
 ├── logic/                     # Optional: Business logic
-├── visuals/                   # Optional: Animations
+├── components/                # Optional: UI components
 └── tests/                     # Optional: Test files
 ```
 
@@ -281,8 +281,8 @@ jobs:
 
 ### **1. Create Plugin Structure**
 ```bash
-mkdir MyFeature.my-feature-symphony
-cd MyFeature.my-feature-symphony
+mkdir Domain.my-feature-symphony
+cd Domain.my-feature-symphony
 ```
 
 ### **2. Define Manifest**
@@ -293,13 +293,15 @@ cd MyFeature.my-feature-symphony
   "version": "1.0.0",
   "description": "Description of plugin functionality",
   "author": "Developer Name",
-  "type": "symphony"
+  "type": "symphony",
+  "entry": "index.js"
 }
 ```
 
 ### **3. Create Sequence Definition**
-```typescript
-export const sequence = {
+```javascript
+// sequence.js
+const sequence = {
   id: "my-feature-symphony",
   name: "My Feature Symphony",
   version: "1.0.0",
@@ -309,6 +311,8 @@ export const sequence = {
     // Define your movements here
   ]
 };
+
+module.exports = sequence;
 ```
 
 ### **4. Implement Handlers**
@@ -321,27 +325,32 @@ export const myHandler = (data: any) => {
 ```
 
 ### **5. Create Entry Point**
-```typescript
-// index.ts
-import { sequence } from './sequence';
-import { myHandler } from './handlers/myHandler';
+```javascript
+// index.js
+const sequence = require('./sequence');
+const { myHandler } = require('./handlers/myHandler');
 
-export const handlers = { myHandler };
-export { sequence };
-export const registerSequence = () => ({ sequence, handlers });
+const handlers = { myHandler };
+
+module.exports = {
+  sequence,
+  handlers
+};
 ```
 
 ## 📊 Migration Patterns
 
 ### **From Monolithic to SPA**
 1. **Identify Components**: Break down monolithic code into logical components
-2. **Define Movements**: Map component actions to musical movements
-3. **Extract Handlers**: Move implementation logic to handler functions
-4. **Create Sequence**: Define musical properties and movement coordination
-5. **Validate**: Run SPA validators to ensure compliance
+2. **Define Domain**: Choose appropriate domain name (App, Canvas, ElementLibrary, etc.)
+3. **Define Movements**: Map component actions to musical movements
+4. **Extract Handlers**: Move implementation logic to handler functions (CommonJS format)
+5. **Create Sequence**: Define musical properties and movement coordination
+6. **Convert to JavaScript**: Use CommonJS modules instead of TypeScript
+7. **Validate**: Run enhanced SPA validators to ensure compliance
 
 ### **Example Migration**
-```typescript
+```javascript
 // Before: Monolithic component
 class DragComponent {
   onMouseDown() { /* ... */ }
@@ -349,27 +358,31 @@ class DragComponent {
   onMouseUp() { /* ... */ }
 }
 
-// After: SPA Plugin
-// sequence.ts - Define movements
-// handlers/onDragStart.ts - Extract onMouseDown logic
-// handlers/onDragging.ts - Extract onMouseMove logic  
-// handlers/onDrop.ts - Extract onMouseUp logic
+// After: SPA Plugin (Canvas.component-drag-symphony)
+// sequence.js - Define movements (CommonJS)
+// handlers/onDragStart.js - Extract onMouseDown logic (CommonJS)
+// handlers/onDragging.js - Extract onMouseMove logic (CommonJS)
+// handlers/onDrop.js - Extract onMouseUp logic (CommonJS)
+// index.js - module.exports = { sequence, handlers }
 ```
 
 ## 🎯 Best Practices
 
 ### **For Plugin Developers**
-- Follow SPA directory structure consistently
+- Follow domain-based naming convention (Domain.functionality-symphony)
+- Use CommonJS format for all plugin files (index.js, sequence.js)
 - Use meaningful movement names and descriptions
 - Add @agent-context annotations for AI tooling
 - Implement comprehensive test coverage
 - Keep handlers pure and testable
+- Ensure runtime purity (no TypeScript files in plugin directories)
 
 ### **For Architecture Teams**
-- Enforce critical SPA validators in CI/CD
-- Review plugin quality through validation reports
-- Maintain consistent musical metaphors
-- Update SPA patterns as architecture evolves
+- Enforce critical SPA and CIA validators in CI/CD
+- Review plugin quality through enhanced validation reports
+- Maintain consistent musical metaphors and domain boundaries
+- Update SPA patterns as MCO/MSO architecture evolves
+- Monitor component decoupling and architectural boundaries
 
 ## 🔗 Related Documentation
 

@@ -1,0 +1,106 @@
+{
+  "name": "cia-musical-conductor-sequence-orchestration",
+  "description": "Validates Musical Conductor Orchestration (MCO) and Musical Symphony Orchestration (MSO) architecture patterns",
+  "type": "content",
+  "filePattern": ".*MusicalConductor\\.(ts|js)$",
+  "confidenceThreshold": 0.95,
+  "version": "1.0.0",
+  "author": "Valence CIA Validation System",
+  "tags": ["cia", "mco", "mso", "orchestration", "sequence-management", "resource-management"],
+  "rules": [
+    {
+      "plugin": "validateMusicalConductorSequenceOrchestration",
+      "checkSequentialOrchestration": true,
+      "validateResourceManagement": true,
+      "checkBeatExecution": true,
+      "validateIdempotencyProtection": true,
+      "checkEventListenerManagement": true,
+      "enforceQueueBasedSystem": true,
+      "verbose": false
+    }
+  ],
+  "mcoPatterns": {
+    "sequentialOrchestration": [
+      "activeSequence.*SequenceExecutionContext",
+      "sequenceQueue.*SequenceRequest",
+      "sequenceHistory.*SequenceExecutionContext"
+    ],
+    "beatExecution": [
+      "executeBeat\\s*\\(",
+      "beat.*execution",
+      "sequential.*beat"
+    ],
+    "queueManagement": [
+      "sequenceQueue\\.push",
+      "sequenceQueue\\.shift",
+      "processQueue"
+    ]
+  },
+  "msoPatterns": {
+    "resourceManagement": [
+      "resourceOwnership",
+      "conflictResolution",
+      "resource.*tracking"
+    ],
+    "idempotencyProtection": [
+      "duplicate.*detection",
+      "sequence.*hash",
+      "idempotent.*execution"
+    ],
+    "eventListenerManagement": [
+      "addEventListener",
+      "removeEventListener",
+      "cleanup.*listeners"
+    ]
+  },
+  "requiredMethods": [
+    "play",
+    "mount",
+    "registerSequence",
+    "executeSequence"
+  ],
+  "documentation": {
+    "purpose": "Validates Musical Conductor Orchestration (MCO) for sequential beat execution and Musical Symphony Orchestration (MSO) for resource management",
+    "scope": "MusicalConductor class files that implement MCO/MSO architecture",
+    "validationTypes": [
+      "Sequential orchestration validation (MCO)",
+      "Resource management validation (MSO)",
+      "Beat-level execution queue validation",
+      "Idempotency protection checking",
+      "Event listener management validation",
+      "Queue-based system enforcement",
+      "React StrictMode compatibility"
+    ],
+    "commonIssues": [
+      "Concurrent beat execution instead of sequential",
+      "Missing resource ownership tracking",
+      "No idempotency protection for React StrictMode",
+      "Improper event listener cleanup",
+      "Missing queue-based orchestration system",
+      "No conflict resolution for resource access"
+    ],
+    "architecturalPrinciples": {
+      "MCO": "Musical Conductor Orchestration - Sequential beat execution with queue-based system",
+      "MSO": "Musical Symphony Orchestration - Resource management and conflict resolution",
+      "benefits": [
+        "Prevents concurrent beat execution conflicts",
+        "Ensures proper resource ownership tracking",
+        "Provides React StrictMode compatibility",
+        "Enables proper cleanup mechanisms",
+        "Supports scalable sequence orchestration"
+      ]
+    },
+    "examples": {
+      "validMCO": [
+        "private activeSequence: SequenceExecutionContext | null = null;",
+        "private sequenceQueue: SequenceRequest[] = [];",
+        "await this.executeBeat(beat, context);"
+      ],
+      "validMSO": [
+        "private resourceOwnership: Map<string, string> = new Map();",
+        "if (this.isDuplicateExecution(sequenceHash)) return;",
+        "this.cleanupEventListeners();"
+      ]
+    }
+  }
+}

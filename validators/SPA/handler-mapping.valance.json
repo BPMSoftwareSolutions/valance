@@ -2,7 +2,7 @@
   "name": "spa-handler-mapping",
   "description": "Validates that each movement has a corresponding handler file and proper exports",
   "type": "content",
-  "filePattern": ".*sequence\\.(ts|js)$",
+  "filePattern": ".*sequence\\.(js)$",
   "confidenceThreshold": 0.95,
   "version": "1.0.0",
   "author": "Valence SPA Validation System",
@@ -18,14 +18,18 @@
     }
   ],
   "handlerConstraints": {
-    "fileExtensions": [".ts", ".js"],
+    "fileExtensions": [".js"],
     "exportPatterns": [
+      "module.exports = {handlerName}",
+      "module.exports.{handlerName}",
+      "exports.{handlerName}",
       "export const {handlerName}",
       "export function {handlerName}",
       "export default"
     ],
     "agentContextPattern": "@agent-context",
-    "namingConvention": "camelCase"
+    "namingConvention": "camelCase",
+    "moduleFormat": "commonjs"
   },
   "documentation": {
     "purpose": "Ensures each movement in sequence.ts has a corresponding handler file with proper exports",

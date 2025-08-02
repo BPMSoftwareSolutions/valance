@@ -19,8 +19,8 @@
   ],
   "requiredFiles": [
     "manifest.json",
-    "sequence.ts", 
-    "index.ts"
+    "sequence.js",
+    "index.js"
   ],
   "requiredDirectories": [
     "handlers/"
@@ -35,18 +35,21 @@
     "purpose": "Ensures SPA plugins follow the standardized directory structure for modularity and scalability",
     "scope": "All SPA plugin directories",
     "validationTypes": [
-      "Required file existence (manifest.json, sequence.ts, index.ts)",
+      "Required file existence (manifest.json, sequence.js, index.js)",
       "Required directory existence (handlers/)",
       "Optional directory recognition (hooks/, logic/, visuals/, tests/)",
       "Plugin layout consistency",
-      "Naming convention enforcement"
+      "Domain-based naming convention enforcement (Domain.functionality-symphony)",
+      "CommonJS module format validation"
     ],
     "commonIssues": [
       "Missing manifest.json file",
-      "Missing sequence.ts definition",
-      "Missing index.ts entry point", 
+      "Missing sequence.js definition",
+      "Missing index.js entry point",
       "Empty or missing handlers/ directory",
-      "Incorrect directory naming conventions"
+      "Incorrect domain-based naming conventions",
+      "TypeScript files in runtime plugin directories",
+      "ES6 modules instead of CommonJS format"
     ]
   }
 }

@@ -1,0 +1,83 @@
+{
+  "name": "cia-plugin-directory",
+  "description": "Validates comprehensive plugin directory structure for domain-based plugins with runtime purity",
+  "type": "structure",
+  "filePattern": ".*",
+  "confidenceThreshold": 0.95,
+  "version": "1.0.0",
+  "author": "Valence CIA Validation System",
+  "tags": ["cia", "plugin-directory", "domain-based", "runtime-purity", "architectural-unit"],
+  "rules": [
+    {
+      "plugin": "validatePluginDirectory",
+      "checkDomainNaming": true,
+      "validateRuntimePurity": true,
+      "checkRequiredFiles": true,
+      "validateDirectoryStructure": true,
+      "enforceArchitecturalConsistency": true,
+      "recursiveScan": true,
+      "verbose": false
+    }
+  ],
+  "domainNamingPattern": "^[A-Z][a-zA-Z0-9]*\\.[a-z][a-z0-9-]*-symphony$",
+  "requiredFiles": [
+    "manifest.json",
+    "index.js",
+    "sequence.js"
+  ],
+  "forbiddenFiles": [
+    "*.ts",
+    "*.tsx"
+  ],
+  "requiredDirectories": [],
+  "optionalDirectories": [
+    "handlers/",
+    "hooks/",
+    "logic/",
+    "components/"
+  ],
+  "runtimePurityRules": {
+    "allowedExtensions": [".js", ".json", ".md"],
+    "forbiddenExtensions": [".ts", ".tsx", ".d.ts"],
+    "recursiveCheck": true,
+    "excludePatterns": ["node_modules/", ".git/", "tests/"]
+  },
+  "documentation": {
+    "purpose": "Validates entire plugin directories as architectural units with domain-based naming and runtime purity",
+    "scope": "All plugin directories following Domain.functionality-symphony naming convention",
+    "validationTypes": [
+      "Domain-based naming convention validation (Domain.functionality-symphony)",
+      "Runtime purity checking (no TypeScript files in runtime directories)",
+      "Required file presence validation (manifest.json, index.js, sequence.js)",
+      "Directory structure consistency checking",
+      "Recursive TypeScript file detection in subdirectories",
+      "Architectural unit integrity validation"
+    ],
+    "commonIssues": [
+      "Plugin directory doesn't follow Domain.functionality-symphony naming",
+      "TypeScript files found in runtime plugin directories",
+      "Missing required files (manifest.json, index.js, sequence.js)",
+      "Hidden TypeScript files in subdirectories (handlers/, logic/, etc.)",
+      "Inconsistent plugin directory structure",
+      "ES6 modules instead of CommonJS format in index.js"
+    ],
+    "examples": {
+      "validNaming": [
+        "App.app-shell-symphony",
+        "Canvas.component-drag-symphony", 
+        "ElementLibrary.library-drop-symphony",
+        "ControlPanel.panel-toggle-symphony"
+      ],
+      "invalidNaming": [
+        "component-drag-symphony",
+        "app-shell",
+        "Canvas.componentDrag",
+        "library_drop_symphony"
+      ],
+      "runtimePurity": {
+        "allowed": ["index.js", "sequence.js", "manifest.json", "handlers/onDrop.js"],
+        "forbidden": ["index.ts", "sequence.ts", "handlers/onDrop.ts", "types.d.ts"]
+      }
+    }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "name": "cia-sequence-trigger-mapping",
+  "description": "Validates that every SPA plugin registered via CIA is actually triggered at runtime using conductor.play() calls",
+  "type": "content",
+  "filePattern": ".*\\.(tsx|ts|jsx|js)$",
+  "confidenceThreshold": 0.95,
+  "version": "1.0.0",
+  "author": "Valence CIA Validation System",
+  "tags": ["cia", "sequence-triggers", "conductor-play", "runtime-validation"],
+  "rules": [
+    {
+      "plugin": "validateSequenceTriggerMapping",
+      "checkConductorPlayCalls": true,
+      "validateTriggerFiles": true,
+      "crossReferencePlugins": true,
+      "detectDeadCode": true,
+      "validateTriggerContext": true,
+      "verbose": false
+    }
+  ],
+  "triggerPatterns": {
+    "conductorPlayPattern": "conductor\\.play\\s*\\(\\s*['\"`]([^'\"`,]+)['\"`]\\s*,\\s*['\"`]([^'\"`,]+)['\"`]",
+    "pluginRegistrationPattern": "conductor\\.(mount|loadPlugin|registerCIAPlugins)",
+    "sequenceIdPattern": "[a-zA-Z][a-zA-Z0-9-]*-symphony",
+    "movementNamePattern": "[a-zA-Z][a-zA-Z0-9]*"
+  },
+  "triggerFiles": [
+    "App.tsx",
+    "AppContent.tsx", 
+    "Canvas.tsx",
+    "ElementLibrary.tsx",
+    "ControlPanel.tsx"
+  ],
+  "documentation": {
+    "purpose": "Ensures every SPA plugin registered via CIA is actually triggered at runtime, preventing dead code and maintaining architectural integrity",
+    "scope": "All React components and trigger files that should contain conductor.play() calls",
+    "validationTypes": [
+      "Conductor.play() call detection",
+      "Plugin-to-trigger mapping verification",
+      "Dead code prevention (registered but unused plugins)",
+      "Trigger file pattern validation",
+      "Cross-reference analysis between plugins and triggers",
+      "Movement name validation in triggers"
+    ],
+    "commonIssues": [
+      "Plugin registered but never triggered via conductor.play()",
+      "conductor.play() calls with invalid plugin IDs",
+      "Missing conductor.play() calls in expected trigger files",
+      "Incorrect movement names in conductor.play() calls",
+      "Orphaned plugin registrations without runtime usage",
+      "Trigger files missing required conductor.play() patterns"
+    ],
+    "examples": {
+      "validTrigger": "conductor.play('component-drag-symphony', 'onDragStart', context)",
+      "invalidTrigger": "startCanvasComponentDragFlow(conductor, element, eventData)",
+      "pluginRegistration": "conductor.mount(plugin.sequence, plugin.handlers)"
+    }
+  }
+}
